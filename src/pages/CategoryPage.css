@@ -1,0 +1,48 @@
+.categoryPage {
+
+    padding-top: 120px;
+
+    min-height: 100vh;
+
+    background: linear-gradient(120deg, #020024, #090979, #000000);
+
+    color: white;
+
+
+}
+
+.categoryTitle {
+
+    text-align: center;
+
+    font-size: 32px;
+
+    margin-bottom: 50px;
+
+
+
+}
+
+.productCard a {
+    text-decoration: none;
+    color: white;
+}
+
+.productCard a:hover {
+    color: #3aa9ff;
+}
+
+.productsGrid {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 30px;
+
+
+}

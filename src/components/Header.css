@@ -1,0 +1,139 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+
+    background: rgba(10, 10, 40, 0.85);
+    backdrop-filter: blur(12px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 40px;
+
+    z-index: 1000;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* LOGO */
+
+.logo a {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+/* SEARCH */
+
+.search {
+    width: 300px;
+    height: 38px;
+
+    border: none;
+    border-radius: 8px;
+
+    padding-left: 15px;
+
+    background: white;
+}
+
+/* NAV */
+
+.nav {
+    display: flex;
+    gap: 20px;
+}
+
+.nav button {
+
+    background: none;
+    border: none;
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.nav button:hover {
+    color: #3aa9ff;
+}
+
+/* ACTIONS */
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* LOGIN */
+
+.loginBtn {
+
+    width: 110px;
+    height: 40px;
+
+    background: #3aa9ff;
+
+    border: none;
+
+    border-radius: 8px;
+
+    color: white;
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 15px;
+}
+
+.loginBtn:hover {
+    background: #1d8cd6;
+}
+
+/* CART */
+
+.cart {
+    position: relative;
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+.cartCount {
+
+    position: absolute;
+
+    top: -6px;
+    right: -8px;
+
+    background: red;
+
+    color: white;
+
+    font-size: 12px;
+
+    width: 18px;
+    height: 18px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
