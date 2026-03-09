@@ -1,50 +1,41 @@
-import { Link } from "react-router-dom"
 import "./Categories.css"
+import { useNavigate } from "react-router-dom"
 
 function Categories() {
 
+    const navigate = useNavigate()
+
+    const cats = [
+
+        { name: "Laptop", img: "/images/gaminglaptop.png", link: "/category/laptop" },
+        { name: "Ekran Kartı", img: "/images/rtx4070.png", link: "/category/gpu" },
+        { name: "Kulaklık", img: "/images/headset.png", link: "/category/headset" },
+        { name: "Mouse", img: "/images/logitech-g305.png", link: "/category/mouse" }
+
+    ]
+
     return (
 
-        <section id="categories" className="categories">
+        <section className="categories">
 
             <h2>Kategoriler</h2>
 
             <div className="categoryGrid">
 
-                <Link to="/category/gpu" className="categoryCard">
-                    
-                    <span>Ekran Kartı</span>
-                </Link>
+                {cats.map((cat, i) => (
 
-                <Link to="/category/laptop" className="categoryCard">
-                    
-                    <span>Laptop</span>
-                </Link>
+                    <div key={i}
+                        className="categoryCard"
+                        onClick={() => navigate(cat.link)}
+                    >
 
-                <Link to="/category/monitor" className="categoryCard">
-                    
-                    <span>Monitör</span>
-                </Link>
+                        <img src={cat.img} />
 
-                <Link to="/category/headset" className="categoryCard">
-                    
-                    <span>Kulaklık</span>
-                </Link>
+                        <p>{cat.name}</p>
 
-                <Link to="/category/mouse" className="categoryCard">
-                    
-                    <span>Mouse</span>
-                </Link>
+                    </div>
 
-                <Link to="/category/keyboard" className="categoryCard">
-                    
-                    <span>Klavye</span>
-                </Link>
-
-                <Link to="/category/tv" className="categoryCard">
-                    
-                    <span>Televizyon</span>
-                </Link>
+                ))}
 
             </div>
 

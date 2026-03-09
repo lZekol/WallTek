@@ -1,15 +1,20 @@
 import "./CartDrawer.css"
 import { useNavigate } from "react-router-dom"
 
-function CartDrawer({ cart, drawerOpen, closeCart, removeFromCart }) {
+function CartDrawer({
+    cart,
+    drawerOpen,
+    closeCart,
+    increaseQty,
+    decreaseQty,
+    removeFromCart
+}) {
 
     const navigate = useNavigate()
 
-    const total = cart.reduce((sum, item) => sum + item.price, 0)
-
-    const handleCheckout = () => {
-        navigate("/login")
-    }
+    const total = cart.reduce(
+        (sum, item) => sum + item.price * item.qty
+        , 0)
 
     return (
 
@@ -31,9 +36,9 @@ function CartDrawer({ cart, drawerOpen, closeCart, removeFromCart }) {
 
             ) : (
 
-                cart.map((item, index) => (
+                cart.map(item => (
 
-                    <div className="cartItem" key={index}>
+                    <div className="cartItem" key={item.id}>
 
                         <img src={item.image} alt={item.name} />
 
@@ -41,13 +46,27 @@ function CartDrawer({ cart, drawerOpen, closeCart, removeFromCart }) {
 
                             <p>{item.name}</p>
 
-                            <span>{item.price.toLocaleString()} ₺</span>
+                            <span>{item.price.toLocaleString("tr-TR")} TL</span>
+
+                            <div className="qtyBox">
+
+                                <button onClick={() => decreaseQty(item.id)}>
+                                    -
+                                </button>
+
+                                <span>{item.qty}</span>
+
+                                <button onClick={() => increaseQty(item.id)}>
+                                    +
+                                </button>
+
+                            </div>
 
                         </div>
 
                         <button
                             className="removeBtn"
-                            onClick={() => removeFromCart(index)}
+                            onClick={() => removeFromCart(item.id)}
                         >
                             🗑
                         </button>
@@ -60,11 +79,11 @@ function CartDrawer({ cart, drawerOpen, closeCart, removeFromCart }) {
 
             <div className="cartFooter">
 
-                <h4>Toplam: {total.toLocaleString()} ₺</h4>
+                <h4>Toplam: {total.toLocaleString("tr-TR")} TL</h4>
 
                 <button
                     className="checkoutBtn"
-                    onClick={handleCheckout}
+                    onClick={() => navigate("/login")}
                 >
                     Satın Al
                 </button>

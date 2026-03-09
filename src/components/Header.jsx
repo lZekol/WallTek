@@ -1,17 +1,50 @@
-import { Link } from "react-router-dom"
 import "./Header.css"
+import { useNavigate, useLocation } from "react-router-dom"
+import { FaShoppingCart } from "react-icons/fa"
+import { FaSearch } from "react-icons/fa"
+import { FaUser } from "react-icons/fa"
+import { Link } from "react-router-dom"
 
 function Header({ cartCount, openCart, setSearch }) {
 
-    const scrollTo = (id) => {
+    const navigate = useNavigate()
+    const location = useLocation()
 
-        const section = document.getElementById(id)
+    const goSection = (id) => {
 
-        if (section) {
+        if (location.pathname !== "/") {
 
-            section.scrollIntoView({ behavior: "smooth" })
+            navigate("/")
+
+            setTimeout(() => {
+                document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+            }, 100)
+
+        } else {
+
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
 
         }
+
+        useEffect(() => {
+
+            const handleScroll = () => {
+
+                const header = document.querySelector(".header")
+
+                if (window.scrollY > 50) {
+                    header.classList.add("scrolled")
+                } else {
+                    header.classList.remove("scrolled")
+                }
+
+            }
+
+            window.addEventListener("scroll", handleScroll)
+
+            return () => window.removeEventListener("scroll", handleScroll)
+
+        }, [])
 
     }
 
@@ -19,43 +52,55 @@ function Header({ cartCount, openCart, setSearch }) {
 
         <header className="header">
 
-            <div className="logo">
-                <Link to="/">WallTek</Link>
+            <div className="logo" onClick={() => navigate("/")}>
+                WallTek
             </div>
 
-            <input
-                className="search"
-                placeholder="Ürün ara..."
-                onChange={(e) => setSearch(e.target.value)}
-            />
+            <div className="searchBox">
+                <FaSearch />
+                <input
+                    className="search"
+                    placeholder="Ürün ara..."
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+            </div>
 
             <nav className="nav">
 
-                <button onClick={() => scrollTo("hero")}>
-                    Anasayfa
-                </button>
+                <a onClick={() => navigate("/")}>Anasayfa</a>
 
-                <button onClick={() => scrollTo("categories")}>
-                    Kategoriler
-                </button>
+                <div className="dropdown">
 
-                <button onClick={() => scrollTo("products")}>
-                    Popüler
-                </button>
+                    <a onClick={() => goSection("categories")}>Kategoriler</a>
+
+                    <div className="dropdownMenu">
+
+                        <Link to="/category/laptop">Laptop</Link>
+                        <Link to="/category/gpu">Ekran Kartı</Link>
+                        <Link to="/category/monitor">Monitör</Link>
+                        <Link to="/category/headset">Kulaklık</Link>
+                        <Link to="/category/mouse">Mouse</Link>
+                        <Link to="/category/keyboard">Klavye</Link>
+                        <Link to="/category/tv">Televizyon</Link>
+
+                    </div>
+
+                </div>
+
+                <a onClick={() => goSection("products")}>Popüler</a>
+
+                <Link to="/campaigns">Kampanyalar</Link>
 
             </nav>
 
-            <div className="actions">
+            <Link to="/login" className="loginBtn">
+                <FaUser />
+                Giriş Yap
+            </Link>
 
-                <div className="cart" onClick={openCart}>
-                    🛒
-                    <span className="cartCount">{cartCount}</span>
-                </div>
-
-                <Link to="/login" className="loginBtn">
-                    Giriş Yap
-                </Link>
-
+            <div className="cart" onClick={openCart}>
+                <FaShoppingCart />
+                <span className="cartCount">{cartCount}</span>
             </div>
 
         </header>

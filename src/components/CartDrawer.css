@@ -124,3 +124,40 @@
 .checkoutBtn:hover {
     background: #1d8cd6;
 }
+
+.qtyBox {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 5px;
+
+}
+
+.qtyBox button {
+
+    width: 25px;
+    height: 25px;
+
+    border: none;
+
+    background: #3aa9ff;
+
+    color: white;
+
+    border-radius: 4px;
+
+    cursor: pointer;
+
+}
+
+.qtyBox span {
+
+    min-width: 20px;
+
+    text-align: center;
+
+}

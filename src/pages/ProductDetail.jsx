@@ -8,51 +8,42 @@ function ProductDetail({ addToCart }) {
 
     const product = products.find(p => p.id === Number(id))
 
-    if (!product) {
-        return <h2>Ürün bulunamadı</h2>
-    }
+    const similarProducts = products.filter(
+        p => p.category === product.category && p.id !== product.id
+    )
 
     return (
 
-        <section className="productDetail">
+        <div className="productPage">
 
-            <div className="detailContainer">
+            <div className="productDetail">
 
-                <div className="detailImage">
-
+                <div className="productImage">
                     <img src={product.image} alt={product.name} />
-
                 </div>
 
-                <div className="detailInfo">
+                <div className="productInfo">
 
                     <h1>{product.name}</h1>
 
-                    <div className="stars">
-                        ⭐ ⭐ ⭐ ⭐ ⭐
-                    </div>
+                    <div className="stars">⭐⭐⭐⭐⭐</div>
 
                     <div className="price">
-                        {product.price.toLocaleString()} ₺
+                        {product.price.toLocaleString("tr-TR")} TL
                     </div>
 
-                    <p className="desc">
+                    <p>
                         Yüksek performanslı teknoloji ürünü. Oyun, iş ve günlük kullanım için ideal.
                     </p>
 
                     <ul className="features">
-
                         <li>⚡ Yüksek performans</li>
                         <li>🔥 Gaming uyumlu</li>
                         <li>💻 Modern tasarım</li>
                         <li>🚀 Hızlı işlemci</li>
-
                     </ul>
 
-                    <button
-                        className="addCartBtn"
-                        onClick={() => addToCart(product)}
-                    >
+                    <button onClick={() => addToCart(product)}>
                         Sepete Ekle
                     </button>
 
@@ -60,7 +51,33 @@ function ProductDetail({ addToCart }) {
 
             </div>
 
-        </section>
+            <h2 className="similarTitle">Benzer Ürünler</h2>
+
+            <div className="similarGrid">
+
+                {similarProducts.slice(0, 4).map(item => (
+
+                    <div className="similarCard" key={item.id}>
+
+                        <img src={item.image} alt={item.name} />
+
+                        <h3>{item.name}</h3>
+
+                        <div className="price">
+                            {item.price.toLocaleString("tr-TR")} TL
+                        </div>
+
+                        <button onClick={() => addToCart(item)}>
+                            Sepete Ekle
+                        </button>
+
+                    </div>
+
+                ))}
+
+            </div>
+
+        </div>
 
     )
 

@@ -7,7 +7,6 @@ function Products({ addToCart, search = "" }) {
     const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(search.toLowerCase())
     )
-
     return (
 
         <section id="products" className="products">
@@ -16,38 +15,46 @@ function Products({ addToCart, search = "" }) {
 
             <div className="productsGrid">
 
-                {filteredProducts.map((product) => (
+                {filteredProducts
+                    .filter(product => product.featured)
+                    .map(product => (
 
-                    <div className="productCard" key={product.id}>
+                        <div className="productCard" key={product.id}>
 
-                        <div className="productImage">
+                            {product.discount && (
+                                <div className="discountBadge">
+                                    %{Math.round((1 - product.price / product.oldPrice) * 100)}
+                                </div>
+                            )}
 
-                            <Link to={`/product/${product.id}`}>
-                                <img src={product.image} alt={product.name} />
-                            </Link>
+                            <div className="productImage">
+
+                                <Link to={`/product/${product.id}`}>
+                                    <img src={product.image} alt={product.name} />
+                                </Link>
+
+                            </div>
+
+                            <h3>{product.name}</h3>
+
+                            <div className="stars">
+                                ⭐ ⭐ ⭐ ⭐ ⭐
+                            </div>
+
+                            <div className="price">
+                                {product.price.toLocaleString("tr-TR")} TL
+                            </div>
+
+                            <button
+                                className="addCartBtn"
+                                onClick={() => addToCart(product)}
+                            >
+                                Sepete Ekle
+                            </button>
 
                         </div>
 
-                        <h3>{product.name}</h3>
-
-                        <div className="stars">
-                            ⭐ ⭐ ⭐ ⭐ ⭐
-                        </div>
-
-                        <div className="price">
-                            {product.price}
-                        </div>
-
-                        <button
-                            className="addCartBtn"
-                            onClick={() => addToCart(product)}
-                        >
-                            Sepete Ekle
-                        </button>
-
-                    </div>
-
-                ))}
+                    ))}
 
             </div>
 

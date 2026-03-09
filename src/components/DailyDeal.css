@@ -1,0 +1,112 @@
+.deal {
+
+    width: 100%;
+    padding: 80px 0;
+
+    display: flex;
+    justify-content: center;
+
+}
+
+/* CONTAINER */
+
+.dealContainer {
+
+    max-width: 1200px;
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr 0.5fr 1fr;
+    
+
+    align-items: center;
+
+    background: linear-gradient(55deg, #b4afb5, #18235f);
+    border-radius: 18px;
+
+    padding: 50px;
+
+    gap: 30px;
+
+}
+
+/* IMAGE */
+
+.dealImage {
+
+    width: 260px;
+
+}
+
+/* INFO */
+
+.dealInfo {
+
+    color: white;
+
+}
+
+.dealInfo h2 {
+
+    font-size: 32px;
+
+    margin-bottom: 10px;
+
+}
+
+.dealInfo p {
+
+    opacity: .9;
+
+    font-size: 16px;
+
+}
+
+/* PRICE */
+
+.dealPrice {
+
+    text-align: right;
+
+    color: white;
+
+}
+
+.dealPrice span {
+
+    font-size: 34px;
+
+    font-weight: bold;
+
+    display: block;
+
+    margin-bottom: 15px;
+
+}
+
+.dealPrice button {
+
+    background: white;
+
+    color: #18235f;
+
+    border: none;
+
+    padding: 12px 28px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: .2s;
+
+}
+
+.dealPrice button:hover {
+
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #3aa9ff;
+
+}

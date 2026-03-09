@@ -52,6 +52,8 @@
 
     color: white;
 
+    position: relative;
+
 }
 
 .productCard:hover {
@@ -96,7 +98,7 @@
 
 .price {
 
-    color: #3aa9ff;
+    color: #ffffff;
 
     font-weight: bold;
 
@@ -125,5 +127,28 @@
 .addCartBtn:hover {
 
     background: #1d8cd6;
+
+}
+
+.discountBadge {
+
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    background: #ff3b3b;
+
+    color: white;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    padding: 4px 8px;
+
+    border-radius: 6px;
+
+    z-index: 5;
 
 }

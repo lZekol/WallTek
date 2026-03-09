@@ -1,23 +1,19 @@
-.productDetail {
+/* SAYFA */
 
+.productPage {
     width: 100%;
-    min-height: 100vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+    margin-top: 60px;
     background: linear-gradient(120deg, #020024, #090979, #000000);
-
-    color: white;
-
-    padding-top: 120px;
-
 }
 
-.detailContainer {
 
-    width: 1100px;
+/* ÜST DETAY BÖLÜMÜ */
+
+.productDetail {
+
+    max-width: 1200px;
+
+    margin: auto;
 
     display: grid;
 
@@ -27,32 +23,74 @@
 
     align-items: center;
 
+    margin-bottom: 80px;
+
+    background: #0f1440;
+
+    padding: 40px;
+
+    border-radius: 16px;
+
+
 }
 
-.detailImage img {
+
+/* ÜRÜN RESMİ */
+
+.productImage {
+
+    display: flex;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+}
+
+.productImage img {
 
     width: 100%;
 
-    max-width: 450px;
+    max-width: 420px;
 
     object-fit: contain;
 
+    transition: transform .35s ease;
+
+    cursor: zoom-in;
+
+    animation: productEnter .8s ease;
+
 }
 
-.detailInfo h1 {
+.productImage:hover img {
 
-    font-size: 36px;
+    transform: scale(1.35);
+
+}
+
+
+/* BİLGİ */
+
+.productInfo h1 {
+
+    font-size: 34px;
 
     margin-bottom: 10px;
 
+    color: white;
 
 }
 
 .stars {
 
-    color: gold;
+    color: #ffd700;
 
-    margin-bottom: 15px;
+    font-size: 18px;
+
+    margin-bottom: 10px;
 
 }
 
@@ -62,15 +100,19 @@
 
     color: #3aa9ff;
 
-    margin-bottom: 20px;
+    font-weight: bold;
+
+    margin-bottom: 10px;
 
 }
 
-.desc {
+.productInfo p {
 
-    margin-bottom: 20px;
+    color: #d5dcff;
 
-    opacity: 0.8;
+    line-height: 1.6;
+
+    margin-bottom: 10px;
 
 }
 
@@ -80,17 +122,24 @@
 
     padding: 0;
 
-    margin-bottom: 30px;
+    margin-top: 10px;
 
 }
 
 .features li {
 
-    margin-bottom: 8px;
+    color: white;
+
+    margin-bottom: 6px;
 
 }
 
-.addCartBtn {
+
+/* BUTON */
+
+.productInfo button {
+
+    margin-top: 20px;
 
     width: 220px;
 
@@ -108,10 +157,137 @@
 
     cursor: pointer;
 
+    transition: .2s;
+
 }
 
-.addCartBtn:hover {
+.productInfo button:hover {
 
     background: #1d8cd6;
+
+}
+
+
+/* BENZER ÜRÜNLER */
+
+.similarTitle {
+
+    font-size: 28px;
+
+    margin-bottom: 30px;
+
+    text-align: center;
+
+    color: white;
+
+}
+
+
+/* GRID */
+
+.similarGrid {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 30px;
+
+}
+
+
+/* KART */
+
+.similarCard {
+
+    background: #1b215f;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    text-align: center;
+
+    transition: .2s;
+
+}
+
+.similarCard:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+
+}
+
+.similarCard img {
+
+    width: 100%;
+
+    height: 150px;
+
+    object-fit: contain;
+
+    margin-bottom: 10px;
+
+}
+
+.similarCard h3 {
+
+    font-size: 16px;
+
+    margin-bottom: 10px;
+
+    color: white;
+
+}
+
+.similarCard .price {
+
+    margin-bottom: 10px;
+
+    color: #3aa9ff;
+
+}
+
+.similarCard button {
+
+    width: 100%;
+
+    height: 36px;
+
+    background: #3aa9ff;
+
+    border: none;
+
+    border-radius: 6px;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+@keyframes productEnter {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(40px) scale(.9);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+
+    }
 
 }

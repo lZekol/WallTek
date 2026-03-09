@@ -7,7 +7,7 @@
 body {
   margin: 0;
   padding: 0;
-  background: #000;
+  background: linear-gradient(120deg, #020024, #090979, #000000);
   min-height: 100vh;
 }
 
