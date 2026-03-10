@@ -152,3 +152,15 @@
     z-index: 5;
 
 }
+
+.filterBar {
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    margin-bottom: 30px;
+
+    color: white;
+
+}

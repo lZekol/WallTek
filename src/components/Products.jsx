@@ -1,60 +1,40 @@
 import "./Products.css"
 import products from "../data/products"
-import { Link } from "react-router-dom"
+import ProductCard from "./ProductCard"
 
-function Products({ addToCart, search = "" }) {
+function Products({ addToCart, search = "", toggleWishlist, wishlist = [] }) {
 
-    const filteredProducts = products.filter(product =>
+    /* SEARCH varsa tüm ürünlerde ara */
+
+    const searchResults = products.filter(product =>
         product.name.toLowerCase().includes(search.toLowerCase())
     )
+
+    /* SEARCH yoksa sadece popüler (featured) ürünler */
+
+    const displayProducts = search
+        ? searchResults
+        : products.filter(product => product.featured).slice(0, 8)
+
     return (
 
         <section id="products" className="products">
 
-            <h2>Popüler Ürünler</h2>
+            <h2>{search ? "Arama Sonuçları" : "Popüler Ürünler"}</h2>
 
             <div className="productsGrid">
 
-                {filteredProducts
-                    .filter(product => product.featured)
-                    .map(product => (
+                {displayProducts.map(product => (
 
-                        <div className="productCard" key={product.id}>
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        addToCart={addToCart}
+                        toggleWishlist={toggleWishlist}
+                        wishlist={wishlist}
+                    />
 
-                            {product.discount && (
-                                <div className="discountBadge">
-                                    %{Math.round((1 - product.price / product.oldPrice) * 100)}
-                                </div>
-                            )}
-
-                            <div className="productImage">
-
-                                <Link to={`/product/${product.id}`}>
-                                    <img src={product.image} alt={product.name} />
-                                </Link>
-
-                            </div>
-
-                            <h3>{product.name}</h3>
-
-                            <div className="stars">
-                                ⭐ ⭐ ⭐ ⭐ ⭐
-                            </div>
-
-                            <div className="price">
-                                {product.price.toLocaleString("tr-TR")} TL
-                            </div>
-
-                            <button
-                                className="addCartBtn"
-                                onClick={() => addToCart(product)}
-                            >
-                                Sepete Ekle
-                            </button>
-
-                        </div>
-
-                    ))}
+                ))}
 
             </div>
 

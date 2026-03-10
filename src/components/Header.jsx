@@ -1,14 +1,63 @@
 import "./Header.css"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate, useLocation, Link } from "react-router-dom"
+import { useState, useEffect } from "react"
+
 import { FaShoppingCart } from "react-icons/fa"
 import { FaSearch } from "react-icons/fa"
 import { FaUser } from "react-icons/fa"
-import { Link } from "react-router-dom"
 
-function Header({ cartCount, openCart, setSearch }) {
+import products from "../data/products"
+
+function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
     const navigate = useNavigate()
     const location = useLocation()
+
+    useEffect(() => {
+        setSearchText("")
+        setSearch("")
+
+    }, [location.pathname])
+
+    /* SEARCH STATE */
+
+    const [searchText, setSearchText] = useState("")
+
+    /* SEARCH RESULTS */
+
+    const searchResults = products
+        .filter(product =>
+            product.name.toLowerCase().includes(searchText.toLowerCase())
+        )
+        .slice(0, 5)
+
+    /* HEADER SCROLL EFFECT */
+
+    useEffect(() => {
+
+        const handleScroll = () => {
+
+            const header = document.querySelector(".header")
+
+            if (window.scrollY > 50) {
+
+                header.classList.add("scrolled")
+
+            } else {
+
+                header.classList.remove("scrolled")
+
+            }
+
+        }
+
+        window.addEventListener("scroll", handleScroll)
+
+        return () => window.removeEventListener("scroll", handleScroll)
+
+    }, [])
+
+    /* NAV SCROLL */
 
     const goSection = (id) => {
 
@@ -17,7 +66,9 @@ function Header({ cartCount, openCart, setSearch }) {
             navigate("/")
 
             setTimeout(() => {
+
                 document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+
             }, 100)
 
         } else {
@@ -25,26 +76,6 @@ function Header({ cartCount, openCart, setSearch }) {
             document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
 
         }
-
-        useEffect(() => {
-
-            const handleScroll = () => {
-
-                const header = document.querySelector(".header")
-
-                if (window.scrollY > 50) {
-                    header.classList.add("scrolled")
-                } else {
-                    header.classList.remove("scrolled")
-                }
-
-            }
-
-            window.addEventListener("scroll", handleScroll)
-
-            return () => window.removeEventListener("scroll", handleScroll)
-
-        }, [])
 
     }
 
@@ -56,14 +87,60 @@ function Header({ cartCount, openCart, setSearch }) {
                 WallTek
             </div>
 
+
+            {/* SEARCH */}
+
             <div className="searchBox">
+
                 <FaSearch />
+
                 <input
                     className="search"
                     placeholder="Ürün ara..."
-                    onChange={(e) => setSearch(e.target.value)}
+                    value={searchText}
+                    onChange={(e) => {
+
+                        setSearchText(e.target.value)
+                        setSearch(e.target.value)
+
+                    }}
                 />
+
+                {/* SEARCH DROPDOWN */}
+
+                {searchText && (
+
+                    <div className="searchDropdown">
+
+                        {searchResults.map(product => (
+
+                            <div
+                                key={product.id}
+                                className="searchItem"
+                                onClick={() => {
+
+                                    navigate(`/product/${product.id}`)
+                                    setSearchText("")
+
+                                }}
+                            >
+
+                                <img src={product.image} alt={product.name} />
+
+                                <span>{product.name}</span>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                )}
+
             </div>
+
+
+            {/* NAV */}
 
             <nav className="nav">
 
@@ -93,15 +170,38 @@ function Header({ cartCount, openCart, setSearch }) {
 
             </nav>
 
+
+            {/* LOGIN */}
+
             <Link to="/login" className="loginBtn">
                 <FaUser />
                 Giriş Yap
             </Link>
 
+
+            {/* CART */}
+
             <div className="cart" onClick={openCart}>
                 <FaShoppingCart />
                 <span className="cartCount">{cartCount}</span>
             </div>
+
+
+            {/* WISHLIST */}
+
+            <Link to="/wishlist" className="wishlistIcon">
+
+                ❤️
+
+                {wishlistCount > 0 && (
+
+                    <span className="wishlistCount">
+                        {wishlistCount}
+                    </span>
+
+                )}
+
+            </Link>
 
         </header>
 

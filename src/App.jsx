@@ -6,7 +6,6 @@ import RefreshToHome from "./components/RefreshToHome"
 
 import Header from "./components/Header"
 import Hero from "./components/Hero"
-import Categories from "./components/Categories"
 import Products from "./components/Products"
 import DailyDeal from "./components/DailyDeal"
 
@@ -16,9 +15,8 @@ import CartToast from "./components/CartToast"
 import CategoryPage from "./pages/CategoryPage"
 import ProductDetail from "./pages/ProductDetail"
 import Campaigns from "./pages/Campaigns"
-import HeroSlider from "./components/HeroSlider"
+import Wishlist from "./pages/Wishlist"
 import Login from "./pages/Login"
-
 
 function App() {
 
@@ -28,6 +26,9 @@ function App() {
 
     const [toast, setToast] = useState(false)
     const [toastProduct, setToastProduct] = useState("")
+
+    const [wishlist, setWishlist] = useState([])
+
 
     /* SEPETE EKLE */
 
@@ -97,6 +98,28 @@ function App() {
     }
 
 
+    /* WISHLIST */
+
+    const toggleWishlist = (product) => {
+
+        setWishlist(prev => {
+
+            const exists = prev.find(item => item.id === product.id)
+
+            if (exists) {
+
+                return prev.filter(item => item.id !== product.id)
+
+            } else {
+
+                return [...prev, product]
+
+            }
+
+        })
+
+    }
+
 
     return (
 
@@ -107,10 +130,10 @@ function App() {
 
             <Header
                 cartCount={cart.reduce((sum, item) => sum + item.qty, 0)}
+                wishlistCount={wishlist.length}
                 openCart={() => setDrawerOpen(true)}
                 setSearch={setSearch}
             />
-
 
             <CartDrawer
                 cart={cart}
@@ -129,9 +152,15 @@ function App() {
                     element={
                         <>
                             <Hero />
-                            
                             <DailyDeal />
-                            <Products addToCart={addToCart} search={search} />
+
+                            <Products
+                                addToCart={addToCart}
+                                search={search}
+                                toggleWishlist={toggleWishlist}
+                                wishlist={wishlist}
+                            />
+
                         </>
                     }
                 />
@@ -147,29 +176,30 @@ function App() {
                 />
 
                 <Route
-                    path="/login"
-                    element={<Login />}
-                />
-
-                <Route
                     path="/campaigns"
                     element={<Campaigns addToCart={addToCart} />}
                 />
 
-            </Routes>
+                <Route
+                    path="/wishlist"
+                    element={<Wishlist wishlist={wishlist} />}
+                />
 
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+            </Routes>
 
             <CartToast
                 show={toast}
                 productName={toastProduct}
             />
 
-
-
         </Router>
 
     )
-
 
 }
 
