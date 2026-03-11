@@ -28,7 +28,7 @@ function DailyDeal() {
 
                     <span>3450 TL</span>
 
-                    <button onClick={() => navigate("/product/1773216648106")}>
+                    <button onClick={() => navigate("/product/32")}>
                         Ürünü İncele
                     </button>
 

@@ -1,19 +1,42 @@
 import { useParams } from "react-router-dom"
-import products from "../data/products"
+import { useEffect, useState } from "react"
+import { supabase } from "../lib/supabase"
 import "./ProductDetail.css"
 
 function ProductDetail({ addToCart }) {
 
     const { id } = useParams()
 
-    const extraProducts =
-        JSON.parse(localStorage.getItem("extraProducts")) || []
+    const [allProducts, setAllProducts] = useState([])
+    const [product, setProduct] = useState(null)
 
-    const allProducts = [...products, ...extraProducts]
 
-    const product = allProducts.find(
-        p => String(p.id) === String(id)
-    )
+    useEffect(() => {
+
+        const fetchProducts = async () => {
+
+            const { data, error } = await supabase
+                .from("products")
+                .select("*")
+
+            if (!error) {
+
+                setAllProducts(data)
+
+                const found = data.find(
+                    p => String(p.id) === String(id)
+                )
+
+                setProduct(found)
+
+            }
+
+        }
+
+        fetchProducts()
+
+    }, [id])
+
 
     if (!product) {
 
@@ -29,9 +52,13 @@ function ProductDetail({ addToCart }) {
 
     }
 
+
     const similarProducts = allProducts.filter(
         p => p.category === product.category && p.id !== product.id
     )
+
+
+    /* RECENTLY VIEWED */
 
     let viewed = JSON.parse(localStorage.getItem("recent")) || []
 

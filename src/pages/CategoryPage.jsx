@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
-import products from "../data/products"
 import ProductCard from "../components/ProductCard"
 import { useEffect, useState } from "react"
+import { supabase } from "../lib/supabase"
 import "./CategoryPage.css"
 
 function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
@@ -12,10 +12,21 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
     useEffect(() => {
 
-        const extraProducts =
-            JSON.parse(localStorage.getItem("extraProducts")) || []
+        const fetchProducts = async () => {
 
-        setAllProducts([...products, ...extraProducts])
+            const { data, error } = await supabase
+                .from("products")
+                .select("*")
+
+            if (!error) {
+
+                setAllProducts(data)
+
+            }
+
+        }
+
+        fetchProducts()
 
     }, [])
 

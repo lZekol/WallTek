@@ -1,30 +1,29 @@
 import "./Products.css"
-import products from "../data/products"
 import ProductCard from "./ProductCard"
 import { useEffect, useState } from "react"
+import { supabase } from "../lib/supabase"
 
 function Products({ addToCart, search = "", toggleWishlist, wishlist = [] }) {
 
     const [allProducts, setAllProducts] = useState([])
 
-    const loadProducts = () => {
-
-        const extraProducts =
-            JSON.parse(localStorage.getItem("extraProducts")) || []
-
-        setAllProducts([...products, ...extraProducts])
-
-    }
-
     useEffect(() => {
 
-        loadProducts()
+        const fetchProducts = async () => {
 
-        window.addEventListener("storage", loadProducts)
+            const { data, error } = await supabase
+                .from("products")
+                .select("*")
 
-        return () => {
-            window.removeEventListener("storage", loadProducts)
+            if (!error) {
+
+                setAllProducts(data)
+
+            }
+
         }
+
+        fetchProducts()
 
     }, [])
 
@@ -33,9 +32,11 @@ function Products({ addToCart, search = "", toggleWishlist, wishlist = [] }) {
         product.name.toLowerCase().includes(search.toLowerCase())
     )
 
+
     const displayProducts = search
         ? searchResults
         : allProducts.filter(product => product.featured).slice(0, 8)
+
 
     return (
 

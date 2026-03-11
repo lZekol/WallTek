@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { supabase } from "../lib/supabase"
 import "./Admin.css"
 
 function Admin() {
@@ -11,71 +12,83 @@ function Admin() {
 
     const [products, setProducts] = useState([])
 
+
     useEffect(() => {
 
-        const stored = JSON.parse(localStorage.getItem("extraProducts")) || []
-
-        setProducts(stored)
+        fetchProducts()
 
     }, [])
 
 
-    const addProduct = () => {
+    const fetchProducts = async () => {
 
-        if (!name || !price || !image) {
-            alert("Tüm alanları doldur")
-            return
-        }
+        const { data, error } = await supabase
+            .from("products")
+            .select("*")
 
-        const newProduct = {
+        if (!error) {
 
-            id: Date.now(),
-            name,
-            price: Number(price),
-            image: `/images/${image}`,
-            category,
-            featured
+            setProducts(data)
 
         }
-
-        const stored = JSON.parse(localStorage.getItem("extraProducts")) || []
-
-        const updated = [...stored, newProduct]
-
-        localStorage.setItem("extraProducts", JSON.stringify(updated))
-
-        setProducts(updated)
-
-        setName("")
-        setPrice("")
-        setImage("")
-        setFeatured(false)
-
-        alert("Ürün eklendi")
 
     }
 
 
-    const deleteProduct = (id) => {
+    const addProduct = async () => {
 
-        const updated = products.filter(p => p.id !== id)
+        const { error } = await supabase
+            .from("products")
+            .insert([
+                {
+                    name,
+                    price: Number(price),
+                    image: `/images/${image}`,
+                    category,
+                    featured
+                }
+            ])
 
-        localStorage.setItem("extraProducts", JSON.stringify(updated))
+        if (error) {
 
-        setProducts(updated)
+            alert("Ürün eklenemedi")
+
+        } else {
+
+            alert("Ürün eklendi")
+
+            setName("")
+            setPrice("")
+            setImage("")
+            setFeatured(false)
+
+            fetchProducts()
+
+        }
 
     }
 
 
-    const toggleFeatured = (id) => {
+    const deleteProduct = async (id) => {
 
-        const updated = products.map(p =>
-            p.id === id ? { ...p, featured: !p.featured } : p
-        )
+        await supabase
+            .from("products")
+            .delete()
+            .eq("id", id)
 
-        localStorage.setItem("extraProducts", JSON.stringify(updated))
+        fetchProducts()
 
-        setProducts(updated)
+    }
+
+
+    const toggleFeatured = async (product) => {
+
+        await supabase
+            .from("products")
+            .update({ featured: !product.featured })
+            .eq("id", product.id)
+
+        fetchProducts()
 
     }
 
@@ -107,11 +120,13 @@ function Admin() {
                 />
 
                 {image && (
+
                     <img
                         src={`/images/${image}`}
                         alt="preview"
                         style={{ width: "120px", marginTop: "10px" }}
                     />
+
                 )}
 
                 <select
@@ -129,7 +144,7 @@ function Admin() {
 
                 </select>
 
-                <label style={{ marginTop: "10px" }}>
+                <label>
 
                     <input
                         type="checkbox"
@@ -148,7 +163,7 @@ function Admin() {
             </div>
 
 
-            <h2 style={{ marginTop: "50px" }}>Eklenen Ürünler</h2>
+            <h2>Eklenen Ürünler</h2>
 
 
             <div className="adminProducts">
@@ -161,16 +176,14 @@ function Admin() {
 
                         <h3>{product.name}</h3>
 
-                        <div className="adminPrice">
-                            {product.price} TL
-                        </div>
+                        <div>{product.price} TL</div>
 
                         <label>
 
                             <input
                                 type="checkbox"
                                 checked={product.featured}
-                                onChange={() => toggleFeatured(product.id)}
+                                onChange={() => toggleFeatured(product)}
                             />
 
                             Featured
