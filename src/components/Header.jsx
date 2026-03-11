@@ -1,10 +1,8 @@
 import "./Header.css"
 import { useNavigate, useLocation, Link } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
-import { FaShoppingCart } from "react-icons/fa"
-import { FaSearch } from "react-icons/fa"
-import { FaUser } from "react-icons/fa"
+import { FaShoppingCart, FaSearch, FaUser } from "react-icons/fa"
 
 import products from "../data/products"
 
@@ -13,23 +11,40 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
     const navigate = useNavigate()
     const location = useLocation()
 
+    const [searchText, setSearchText] = useState("")
+    const [allProducts, setAllProducts] = useState([])
+    const [selectedIndex, setSelectedIndex] = useState(-1)
+
+    const searchRef = useRef()
+
     useEffect(() => {
+
+        const extraProducts = JSON.parse(localStorage.getItem("extraProducts")) || []
+
+        setAllProducts([...products, ...extraProducts])
+
+    }, [])
+
+
+    /* SAYFA DEĞİŞİNCE SEARCH TEMİZLE */
+
+    useEffect(() => {
+
         setSearchText("")
         setSearch("")
+        setSelectedIndex(-1)
 
     }, [location.pathname])
 
-    /* SEARCH STATE */
-
-    const [searchText, setSearchText] = useState("")
 
     /* SEARCH RESULTS */
 
-    const searchResults = products
+    const searchResults = allProducts
         .filter(product =>
             product.name.toLowerCase().includes(searchText.toLowerCase())
         )
         .slice(0, 5)
+
 
     /* HEADER SCROLL EFFECT */
 
@@ -40,13 +55,9 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
             const header = document.querySelector(".header")
 
             if (window.scrollY > 50) {
-
                 header.classList.add("scrolled")
-
             } else {
-
                 header.classList.remove("scrolled")
-
             }
 
         }
@@ -57,7 +68,75 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
     }, [])
 
-    /* NAV SCROLL */
+
+
+    /* KEYBOARD SEARCH */
+
+    const handleSearch = (e) => {
+
+        if (e.key === "ArrowDown") {
+
+            e.preventDefault()
+
+            setSelectedIndex(prev =>
+                prev < searchResults.length - 1 ? prev + 1 : prev
+            )
+
+        }
+
+        if (e.key === "ArrowUp") {
+
+            e.preventDefault()
+
+            setSelectedIndex(prev =>
+                prev > 0 ? prev - 1 : -1
+            )
+
+        }
+
+        if (e.key === "Enter") {
+
+            if (selectedIndex >= 0) {
+
+                const product = searchResults[selectedIndex]
+
+                navigate(`/product/${product.id}`)
+                setSearchText("")
+
+            } else {
+
+                setSearch(searchText)
+                navigate("/")
+
+            }
+
+        }
+
+    }
+
+
+
+    /* DROPDOWN DIŞINA TIKLAMA */
+
+    useEffect(() => {
+
+        const handleClick = (e) => {
+
+            if (!searchRef.current?.contains(e.target)) {
+
+                setSearchText("")
+
+            }
+
+        }
+
+        document.addEventListener("click", handleClick)
+
+        return () => document.removeEventListener("click", handleClick)
+
+    }, [])
+
+
 
     const goSection = (id) => {
 
@@ -79,6 +158,7 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
     }
 
+
     return (
 
         <header className="header">
@@ -90,7 +170,7 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
             {/* SEARCH */}
 
-            <div className="searchBox">
+            <div className="searchBox" ref={searchRef}>
 
                 <FaSearch />
 
@@ -98,36 +178,55 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
                     className="search"
                     placeholder="Ürün ara..."
                     value={searchText}
+
                     onChange={(e) => {
 
                         setSearchText(e.target.value)
                         setSearch(e.target.value)
+                        setSelectedIndex(-1)
 
                     }}
+
+                    onKeyDown={handleSearch}
                 />
+
 
                 {/* SEARCH DROPDOWN */}
 
-                {searchText && (
+                {searchText && searchResults.length > 0 && (
 
                     <div className="searchDropdown">
 
-                        {searchResults.map(product => (
+                        {searchResults.map((product, index) => (
 
                             <div
                                 key={product.id}
                                 className="searchItem"
+                                style={{
+                                    background:
+                                        index === selectedIndex
+                                            ? "#f3f3f3"
+                                            : "white"
+                                }}
+
                                 onClick={() => {
 
                                     navigate(`/product/${product.id}`)
                                     setSearchText("")
 
                                 }}
+
                             >
 
                                 <img src={product.image} alt={product.name} />
 
-                                <span>{product.name}</span>
+                                <div>
+
+                                    <span>{product.name}</span>
+
+                                    <p>{product.price} TL</p>
+
+                                </div>
 
                             </div>
 
@@ -174,16 +273,23 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
             {/* LOGIN */}
 
             <Link to="/login" className="loginBtn">
+
                 <FaUser />
                 Giriş Yap
+
             </Link>
 
 
             {/* CART */}
 
             <div className="cart" onClick={openCart}>
+
                 <FaShoppingCart />
-                <span className="cartCount">{cartCount}</span>
+
+                <span className="cartCount">
+                    {cartCount}
+                </span>
+
             </div>
 
 
@@ -196,7 +302,9 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
                 {wishlistCount > 0 && (
 
                     <span className="wishlistCount">
+
                         {wishlistCount}
+
                     </span>
 
                 )}

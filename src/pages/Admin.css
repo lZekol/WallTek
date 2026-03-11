@@ -1,0 +1,169 @@
+.adminPage {
+
+    padding-top: 120px;
+    padding-left: 10%;
+    padding-right: 10%;
+
+    color: white;
+
+}
+
+/* TITLE */
+
+.adminTitle {
+
+    font-size: 32px;
+    margin-bottom: 30px;
+
+}
+
+/* FORM */
+
+.adminForm {
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    max-width: 400px;
+
+}
+
+/* INPUT */
+
+.adminForm input,
+.adminForm select {
+
+    height: 40px;
+
+    border: none;
+    border-radius: 8px;
+
+    padding-left: 12px;
+
+    background: white;
+
+}
+
+/* BUTTON */
+
+.adminForm button {
+
+    height: 42px;
+
+    background: #3aa9ff;
+
+    border: none;
+
+    border-radius: 8px;
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+.adminForm button:hover {
+
+    background: #1d8cd6;
+
+}
+
+/* PRODUCTS GRID */
+
+.adminProducts {
+
+    margin-top: 50px;
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+
+    gap: 25px;
+
+}
+
+/* CARD */
+
+.adminCard {
+
+    background: #0f0f3c;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    transition: .25s;
+
+}
+
+.adminCard:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+
+}
+
+/* IMAGE */
+
+.adminCard img {
+
+    width: 100%;
+    height: 120px;
+
+    object-fit: contain;
+
+    margin-bottom: 10px;
+
+}
+
+/* TITLE */
+
+.adminCard h3 {
+
+    font-size: 16px;
+    margin-bottom: 5px;
+
+}
+
+/* PRICE */
+
+.adminPrice {
+
+    color: #3aa9ff;
+    margin-bottom: 10px;
+
+}
+
+/* DELETE BUTTON */
+
+.deleteBtn {
+
+    background: #ff3b3b;
+
+    border: none;
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    color: white;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+.deleteBtn:hover {
+
+    background: #c62828;
+
+}

@@ -16,7 +16,9 @@ import CategoryPage from "./pages/CategoryPage"
 import ProductDetail from "./pages/ProductDetail"
 import Campaigns from "./pages/Campaigns"
 import Wishlist from "./pages/Wishlist"
+import Admin from "./pages/Admin"
 import Login from "./pages/Login"
+
 
 function App() {
 
@@ -126,7 +128,7 @@ function App() {
         <Router>
 
             <ScrollToTop />
-            <RefreshToHome />
+
 
             <Header
                 cartCount={cart.reduce((sum, item) => sum + item.qty, 0)}
@@ -167,7 +169,13 @@ function App() {
 
                 <Route
                     path="/category/:categoryName"
-                    element={<CategoryPage addToCart={addToCart} />}
+                    element={
+                        <CategoryPage
+                            addToCart={addToCart}
+                            toggleWishlist={toggleWishlist}
+                            wishlist={wishlist}
+                        />
+                    }
                 />
 
                 <Route
@@ -188,6 +196,11 @@ function App() {
                 <Route
                     path="/login"
                     element={<Login />}
+                />
+
+                <Route
+                    path="/admin"
+                    element={<Admin />}
                 />
 
             </Routes>

@@ -12,7 +12,7 @@ function DailyDeal() {
             <div className="dealContainer">
 
                 <img
-                    src="/images/rtx4070.png"
+                    src="/images/RazerKrakenV3X.png"
                     className="dealImage"
                 />
 
@@ -20,15 +20,15 @@ function DailyDeal() {
 
                     <h2>⚡ Günün Fırsatı</h2>
 
-                    <p>RTX 4070 Gaming GPU</p>
+                    <p>Razer Kraken V3 X</p>
 
                 </div>
 
                 <div className="dealPrice">
 
-                    <span>36.000 TL</span>
+                    <span>3450 TL</span>
 
-                    <button onClick={() => navigate("/product/2")}>
+                    <button onClick={() => navigate("/product/1773216648106")}>
                         Ürünü İncele
                     </button>
 

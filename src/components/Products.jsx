@@ -1,20 +1,41 @@
 import "./Products.css"
 import products from "../data/products"
 import ProductCard from "./ProductCard"
+import { useEffect, useState } from "react"
 
 function Products({ addToCart, search = "", toggleWishlist, wishlist = [] }) {
 
-    /* SEARCH varsa tüm ürünlerde ara */
+    const [allProducts, setAllProducts] = useState([])
 
-    const searchResults = products.filter(product =>
+    const loadProducts = () => {
+
+        const extraProducts =
+            JSON.parse(localStorage.getItem("extraProducts")) || []
+
+        setAllProducts([...products, ...extraProducts])
+
+    }
+
+    useEffect(() => {
+
+        loadProducts()
+
+        window.addEventListener("storage", loadProducts)
+
+        return () => {
+            window.removeEventListener("storage", loadProducts)
+        }
+
+    }, [])
+
+
+    const searchResults = allProducts.filter(product =>
         product.name.toLowerCase().includes(search.toLowerCase())
     )
 
-    /* SEARCH yoksa sadece popüler (featured) ürünler */
-
     const displayProducts = search
         ? searchResults
-        : products.filter(product => product.featured).slice(0, 8)
+        : allProducts.filter(product => product.featured).slice(0, 8)
 
     return (
 

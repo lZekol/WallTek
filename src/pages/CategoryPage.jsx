@@ -1,67 +1,53 @@
-import { useParams, Link } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import products from "../data/products"
+import ProductCard from "../components/ProductCard"
+import { useEffect, useState } from "react"
 import "./CategoryPage.css"
 
-function CategoryPage({ addToCart }) {
+function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
     const { categoryName } = useParams()
 
-    const filteredProducts = products.filter(
-        (product) => product.category.toLowerCase() === categoryName.toLowerCase()
+    const [allProducts, setAllProducts] = useState([])
+
+    useEffect(() => {
+
+        const extraProducts =
+            JSON.parse(localStorage.getItem("extraProducts")) || []
+
+        setAllProducts([...products, ...extraProducts])
+
+    }, [])
+
+
+    const categoryProducts = allProducts.filter(product =>
+        product.category?.toLowerCase() === categoryName?.toLowerCase()
     )
+
 
     return (
 
-        <section className="categoryPage">
+        <div className="categoryPage">
 
-            <h2 className="categoryTitle">
-                {categoryName.toUpperCase()}
-            </h2>
+            <h1>{categoryName.toUpperCase()}</h1>
 
-            {filteredProducts.length === 0 ? (
+            <div className="productsGrid">
 
-                <p style={{ textAlign: "center", marginTop: "40px" }}>
-                    Bu kategoride ürün bulunamadı
-                </p>
+                {categoryProducts.map(product => (
 
-            ) : (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        addToCart={addToCart}
+                        toggleWishlist={toggleWishlist}
+                        wishlist={wishlist}
+                    />
 
-                <div className="productsGrid">
+                ))}
 
-                    {filteredProducts.map((product) => (
+            </div>
 
-                        <div className="productCard" key={product.id}>
-
-                            <Link to={`/product/${product.id}`}>
-
-                                <div className="productImage">
-                                    <img src={product.image} alt={product.name} />
-                                </div>
-
-                                <h3>{product.name}</h3>
-
-                            </Link>
-
-                            <div className="price">
-                                {product.price.toLocaleString()} ₺
-                            </div>
-
-                            <button
-                                className="addCartBtn"
-                                onClick={() => addToCart(product)}
-                            >
-                                Sepete Ekle
-                            </button>
-
-                        </div>
-
-                    ))}
-
-                </div>
-
-            )}
-
-        </section>
+        </div>
 
     )
 

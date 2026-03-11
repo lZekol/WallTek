@@ -4,7 +4,7 @@ import "./Hero.css"
 
 import laptop from "../assets/images/laptop1.png"
 
-const monitor = "/images/XiaomiMiCurved34.png"
+import monitor from "../assets/images/msımonitor.png"
 
 function Hero() {
 

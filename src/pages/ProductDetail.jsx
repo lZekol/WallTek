@@ -1,33 +1,48 @@
 import { useParams } from "react-router-dom"
 import products from "../data/products"
 import "./ProductDetail.css"
-import { useEffect } from "react"
 
 function ProductDetail({ addToCart }) {
 
     const { id } = useParams()
 
-    const product = products.find(p => p.id === Number(id))
+    const extraProducts =
+        JSON.parse(localStorage.getItem("extraProducts")) || []
 
-    /* RECENTLY VIEWED */
+    const allProducts = [...products, ...extraProducts]
 
-    useEffect(() => {
+    const product = allProducts.find(
+        p => String(p.id) === String(id)
+    )
 
-        let viewed = JSON.parse(localStorage.getItem("recent")) || []
+    if (!product) {
 
-        viewed = viewed.filter(p => p.id !== product.id)
+        return (
+            <div style={{
+                marginTop: "120px",
+                color: "white",
+                textAlign: "center"
+            }}>
+                Ürün bulunamadı
+            </div>
+        )
 
-        viewed.unshift(product)
+    }
 
-        localStorage.setItem("recent", JSON.stringify(viewed.slice(0, 4)))
-
-    }, [product])
-
-    const similarProducts = products.filter(
+    const similarProducts = allProducts.filter(
         p => p.category === product.category && p.id !== product.id
     )
 
+    let viewed = JSON.parse(localStorage.getItem("recent")) || []
+
+    viewed = viewed.filter(p => p.id !== product.id)
+
+    viewed.unshift(product)
+
+    localStorage.setItem("recent", JSON.stringify(viewed.slice(0, 4)))
+
     const recent = JSON.parse(localStorage.getItem("recent")) || []
+
 
     return (
 
