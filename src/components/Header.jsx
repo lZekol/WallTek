@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../lib/supabase"
 
-import { FaShoppingCart, FaSearch, FaUser } from "react-icons/fa"
+import { FaShoppingCart, FaSearch, FaUser, FaBars } from "react-icons/fa"
 
 import products from "../data/products"
 
@@ -18,25 +18,25 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
     const [user, setUser] = useState(null)
 
+    const [menuOpen, setMenuOpen] = useState(false)
+
     const searchRef = useRef()
 
     useEffect(() => {
 
         const extraProducts = JSON.parse(localStorage.getItem("extraProducts")) || []
-
         setAllProducts([...products, ...extraProducts])
 
     }, [])
 
 
-    /* SUPABASE USER */
+    /* USER */
 
     useEffect(() => {
 
         const getUser = async () => {
 
             const { data } = await supabase.auth.getUser()
-
             setUser(data.user)
 
         }
@@ -49,15 +49,11 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
     const logout = async () => {
 
         await supabase.auth.signOut()
-
         setUser(null)
-
         navigate("/")
 
     }
 
-
-    /* SAYFA DEĞİŞİNCE SEARCH TEMİZLE */
 
     useEffect(() => {
 
@@ -68,8 +64,6 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
     }, [location.pathname])
 
 
-    /* SEARCH RESULTS */
-
     const searchResults = allProducts
         .filter(product =>
             product.name.toLowerCase().includes(searchText.toLowerCase())
@@ -77,113 +71,12 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
         .slice(0, 5)
 
 
-    /* HEADER SCROLL EFFECT */
-
-    useEffect(() => {
-
-        const handleScroll = () => {
-
-            const header = document.querySelector(".header")
-
-            if (window.scrollY > 50) {
-                header.classList.add("scrolled")
-            } else {
-                header.classList.remove("scrolled")
-            }
-
-        }
-
-        window.addEventListener("scroll", handleScroll)
-
-        return () => window.removeEventListener("scroll", handleScroll)
-
-    }, [])
-
-
-
-    /* KEYBOARD SEARCH */
-
     const handleSearch = (e) => {
-
-        if (e.key === "ArrowDown") {
-
-            e.preventDefault()
-
-            setSelectedIndex(prev =>
-                prev < searchResults.length - 1 ? prev + 1 : prev
-            )
-
-        }
-
-        if (e.key === "ArrowUp") {
-
-            e.preventDefault()
-
-            setSelectedIndex(prev =>
-                prev > 0 ? prev - 1 : -1
-            )
-
-        }
 
         if (e.key === "Enter") {
 
-            if (selectedIndex >= 0) {
-
-                const product = searchResults[selectedIndex]
-
-                navigate(`/product/${product.id}`)
-                setSearchText("")
-
-            } else {
-
-                setSearch(searchText)
-                navigate("/")
-
-            }
-
-        }
-
-    }
-
-
-
-    /* DROPDOWN DIŞINA TIKLAMA */
-
-    useEffect(() => {
-
-        const handleClick = (e) => {
-
-            if (!searchRef.current?.contains(e.target)) {
-
-                setSearchText("")
-
-            }
-
-        }
-
-        document.addEventListener("click", handleClick)
-
-        return () => document.removeEventListener("click", handleClick)
-
-    }, [])
-
-
-
-    const goSection = (id) => {
-
-        if (location.pathname !== "/") {
-
+            setSearch(searchText)
             navigate("/")
-
-            setTimeout(() => {
-
-                document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
-
-            }, 100)
-
-        } else {
-
-            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
 
         }
 
@@ -214,56 +107,11 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
                         setSearchText(e.target.value)
                         setSearch(e.target.value)
-                        setSelectedIndex(-1)
 
                     }}
 
                     onKeyDown={handleSearch}
                 />
-
-
-                {searchText && searchResults.length > 0 && (
-
-                    <div className="searchDropdown">
-
-                        {searchResults.map((product, index) => (
-
-                            <div
-                                key={product.id}
-                                className="searchItem"
-                                style={{
-                                    background:
-                                        index === selectedIndex
-                                            ? "#f3f3f3"
-                                            : "white"
-                                }}
-
-                                onClick={() => {
-
-                                    navigate(`/product/${product.id}`)
-                                    setSearchText("")
-
-                                }}
-
-                            >
-
-                                <img src={product.image} alt={product.name} />
-
-                                <div>
-
-                                    <span>{product.name}</span>
-
-                                    <p>{product.price} TL</p>
-
-                                </div>
-
-                            </div>
-
-                        ))}
-
-                    </div>
-
-                )}
 
             </div>
 
@@ -274,32 +122,16 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
                 <a onClick={() => navigate("/")}>Anasayfa</a>
 
-                <div className="dropdown">
+                <Link to="/category/laptop">Kategoriler</Link>
 
-                    <a onClick={() => goSection("categories")}>Kategoriler</a>
-
-                    <div className="dropdownMenu">
-
-                        <Link to="/category/laptop">Laptop</Link>
-                        <Link to="/category/gpu">Ekran Kartı</Link>
-                        <Link to="/category/monitor">Monitör</Link>
-                        <Link to="/category/headset">Kulaklık</Link>
-                        <Link to="/category/mouse">Mouse</Link>
-                        <Link to="/category/keyboard">Klavye</Link>
-                        <Link to="/category/tv">Televizyon</Link>
-
-                    </div>
-
-                </div>
-
-                <a onClick={() => goSection("products")}>Popüler</a>
+                <a onClick={() => navigate("/")}>Popüler</a>
 
                 <Link to="/campaigns">Kampanyalar</Link>
 
             </nav>
 
 
-            {/* LOGIN */}
+            {/* USER */}
 
             {user ? (
 
@@ -311,7 +143,6 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
                     >
 
                         <FaUser />
-
                         <span>{user.email}</span>
 
                     </div>
@@ -365,9 +196,41 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
             </Link>
 
+
             <Link to="/orders" className="ordersLink">
                 📦 Siparişlerim
             </Link>
+
+
+            {/* MOBILE MENU BUTTON */}
+
+            <div
+                className="mobileMenuBtn"
+                onClick={() => setMenuOpen(!menuOpen)}
+            >
+                <FaBars />
+            </div>
+
+
+            {/* MOBILE MENU */}
+
+            {menuOpen && (
+
+                <div className="mobileMenu">
+
+                    <Link to="/" onClick={() => setMenuOpen(false)}>Anasayfa</Link>
+
+                    <Link to="/category/laptop" onClick={() => setMenuOpen(false)}>Kategoriler</Link>
+
+                    <Link to="/" onClick={() => setMenuOpen(false)}>Popüler</Link>
+
+                    <Link to="/campaigns" onClick={() => setMenuOpen(false)}>Kampanyalar</Link>
+
+                    <Link to="/orders" onClick={() => setMenuOpen(false)}>Siparişlerim</Link>
+
+                </div>
+
+            )}
 
         </header>
 

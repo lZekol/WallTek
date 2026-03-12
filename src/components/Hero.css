@@ -3,7 +3,7 @@
     width: 100%;
     min-height: 560px;
 
-    padding: 80px 10%;
+    padding: 120px 10% 80px 10%;
 
     display: flex;
     flex-direction: column;
@@ -243,6 +243,31 @@
 
     100% {
         transform: translateY(0)
+    }
+
+}
+
+@media (max-width:768px) {
+
+    .heroContent {
+
+        flex-direction: column;
+        height: auto;
+        gap: 30px;
+        text-align: center;
+
+    }
+
+    .heroImg {
+
+        width: 220px;
+
+    }
+
+    .heroText h1 {
+
+        font-size: 28px;
+
     }
 
 }

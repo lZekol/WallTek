@@ -71,8 +71,8 @@ function Hero() {
                         src={slide.img}
                         alt="hero"
                         className={`heroImg ${slide.direction === "left"
-                                ? "slideLeftImg"
-                                : "slideRightImg"
+                            ? "slideLeftImg"
+                            : "slideRightImg"
                             }`}
                     />
 

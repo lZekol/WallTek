@@ -12,9 +12,9 @@
     align-items: center;
     justify-content: space-between;
 
-    padding: 0 40px;
+    padding: 0 20px;
 
-    z-index: 1000;
+    z-index: 9999;
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     transition: .3s;
@@ -40,6 +40,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    max-width: 180px;
 }
 
 .searchBox svg {
@@ -372,5 +373,126 @@
 .userProfile:hover {
 
     color: #3aa9ff;
+
+}
+
+@media (max-width:768px) {
+
+    .header {
+
+        height: 70px;
+        padding: 0 12px;
+
+    }
+
+    .logo {
+
+        font-size: 20px;
+
+    }
+
+    .search {
+
+        width: 150px;
+        height: 34px;
+
+    }
+
+    .nav {
+
+        display: none;
+        /* mobilde menüyü gizle */
+
+    }
+
+    .ordersLink {
+
+        display: none;
+
+    }
+
+    .userProfile span {
+
+        display: none;
+        /* email yazısı mobilde çok yer kaplıyor */
+
+    }
+
+}
+
+/* MOBILE MENU */
+
+.mobileMenuBtn {
+
+    display: none;
+
+    font-size: 22px;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+
+.mobileMenu {
+
+    position: fixed;
+
+    top: 80px;
+    left: 0;
+
+    width: 100%;
+
+    background: #0f0f3c;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+    padding: 20px;
+
+    z-index: 999;
+
+}
+
+
+.mobileMenu a {
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 18px;
+
+}
+
+
+
+/* MOBILE */
+
+@media (max-width:768px) {
+
+    .nav {
+        display: none;
+    }
+
+    .ordersLink {
+        display: none;
+    }
+
+    .mobileMenuBtn {
+        display: block;
+    }
+
+    .userProfile span {
+        display: none;
+    }
+
+    .search {
+        width: 150px;
+    }
 
 }

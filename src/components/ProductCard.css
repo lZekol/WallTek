@@ -12,12 +12,15 @@
 
     transition: 0.3s;
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
 }
 
 .productCard img {
 
     width: 160px;
-
     height: 120px;
 
     object-fit: contain;
@@ -29,6 +32,14 @@
 .productCard h3 {
 
     color: white;
+
+    margin-bottom: 10px;
+
+    font-size: 16px;
+
+}
+
+.stars {
 
     margin-bottom: 10px;
 
@@ -60,6 +71,8 @@
 
     cursor: pointer;
 
+    width: 100%;
+
 }
 
 .addCartBtn:hover {
@@ -68,7 +81,7 @@
 
 }
 
-/* wishlist kalp */
+/* wishlist */
 
 .wishlistBtn {
 
@@ -103,5 +116,64 @@
 .wishlistBtn:hover {
 
     transform: scale(1.15);
+
+}
+
+
+/* -------- TABLET -------- */
+
+@media (max-width:1024px) {
+
+    .productCard {
+
+        padding: 18px;
+
+    }
+
+    .productCard img {
+
+        width: 140px;
+        height: 110px;
+
+    }
+
+}
+
+
+/* -------- MOBILE -------- */
+
+@media (max-width:768px) {
+
+    .productCard {
+
+        padding: 16px;
+
+    }
+
+    .productCard img {
+
+        width: 120px;
+        height: 100px;
+
+    }
+
+    .productCard h3 {
+
+        font-size: 15px;
+
+    }
+
+    .price {
+
+        font-size: 20px;
+
+    }
+
+    .addCartBtn {
+
+        padding: 10px;
+        font-size: 14px;
+
+    }
 
 }
