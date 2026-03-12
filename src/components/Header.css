@@ -40,7 +40,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    max-width: 180px;
+    max-width: 380px;
 }
 
 .searchBox svg {
@@ -493,6 +493,44 @@
 
     .search {
         width: 150px;
+    }
+
+}
+
+@media (max-width:768px) {
+
+    .header {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 12px;
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .searchBox {
+        order: 3;
+        width: 100%;
+    }
+
+    .search {
+        width: 100%;
+    }
+
+    .loginBtn {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .cart,
+    .wishlistIcon {
+        font-size: 18px;
+    }
+
+    .mobileMenuBtn {
+        font-size: 20px;
     }
 
 }

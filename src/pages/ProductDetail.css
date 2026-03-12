@@ -1,13 +1,14 @@
 /* SAYFA */
 
 .productPage {
+
     width: 100%;
     margin-top: 60px;
     background: linear-gradient(120deg, #020024, #090979, #000000);
 }
 
 
-/* ÜST DETAY BÖLÜMÜ */
+/* DETAY BÖLÜMÜ */
 
 .productDetail {
 
@@ -31,17 +32,18 @@
 
     border-radius: 16px;
 
-
 }
 
 
-/* ÜRÜN RESMİ */
+/* RESİM */
 
 .productImage {
 
     display: flex;
 
     justify-content: center;
+
+    align-items: center;
 
     overflow: hidden;
 
@@ -273,19 +275,24 @@
 }
 
 
-.zoomImg{
+/* ZOOM */
 
-transition: transform 0.3s ease;
+.zoomImg {
 
-cursor: zoom-in;
+    transition: transform 0.3s ease;
+
+    cursor: zoom-in;
+
+}
+
+.zoomImg:hover {
+
+    transform: scale(1.3);
 
 }
 
-.zoomImg:hover{
 
-transform: scale(1.3);
-
-}
+/* ANIMATION */
 
 @keyframes productEnter {
 
@@ -302,6 +309,169 @@ transform: scale(1.3);
         opacity: 1;
 
         transform: translateY(0) scale(1);
+
+    }
+
+}
+
+
+/* ---------- TABLET ---------- */
+
+@media (max-width:1000px) {
+
+    .similarGrid {
+
+        grid-template-columns: repeat(2, 1fr);
+
+    }
+
+}
+
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width:768px) {
+
+    .productDetail {
+
+        grid-template-columns: 1fr;
+
+        text-align: center;
+
+        gap: 30px;
+
+        padding: 30px 20px;
+
+    }
+
+    .productImage {
+
+        order: 1;
+
+    }
+
+    .productImage img {
+
+        max-width: 280px;
+
+    }
+
+    .productInfo {
+
+        order: 2;
+
+    }
+
+    .productInfo h1 {
+
+        font-size: 26px;
+
+    }
+
+    .price {
+
+        font-size: 24px;
+
+    }
+
+    .productInfo button {
+
+        width: 100%;
+
+    }
+
+    .similarGrid {
+
+        grid-template-columns: 1fr;
+
+        gap: 20px;
+
+    }
+
+}
+
+/* MOBILE LAYOUT */
+
+@media (max-width:768px) {
+
+    .productDetail {
+
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 30px;
+
+    }
+
+    .productImage img {
+
+        max-width: 280px;
+
+    }
+
+    .productInfo button {
+
+        width: 100%;
+
+    }
+
+}
+
+
+/* STICKY CART BAR */
+
+.mobileCartBar {
+
+    display: none;
+
+}
+
+@media (max-width:768px) {
+
+    .mobileCartBar {
+
+        position: fixed;
+
+        bottom: 0;
+        left: 0;
+
+        width: 100%;
+
+        background: #0f1440;
+
+        display: flex;
+
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 15px;
+
+        z-index: 999;
+
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.4);
+
+    }
+
+    .mobilePrice {
+
+        color: #3aa9ff;
+        font-size: 22px;
+        font-weight: bold;
+
+    }
+
+    .mobileCartBar button {
+
+        background: #3aa9ff;
+
+        border: none;
+
+        padding: 12px 22px;
+
+        border-radius: 8px;
+
+        color: white;
+
+        font-weight: bold;
 
     }
 

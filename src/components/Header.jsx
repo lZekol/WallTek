@@ -3,14 +3,15 @@ import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../lib/supabase"
 
-import { FaShoppingCart, FaSearch, FaUser, FaBars } from "react-icons/fa"
-
 import products from "../data/products"
+
+import { FaShoppingCart, FaSearch, FaUser, FaBars } from "react-icons/fa"
 
 function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
     const navigate = useNavigate()
     const location = useLocation()
+    const cartRef = useRef()
 
     const [searchText, setSearchText] = useState("")
     const [allProducts, setAllProducts] = useState([])
@@ -167,7 +168,7 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
             {/* CART */}
 
-            <div className="cart" onClick={openCart}>
+            <div className="cart" ref={cartRef} onClick={openCart}>
 
                 <FaShoppingCart />
 

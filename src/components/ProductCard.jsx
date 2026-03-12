@@ -1,11 +1,27 @@
 import "./ProductCard.css"
 import { useNavigate } from "react-router-dom"
+import { useRef } from "react"
+import { flyToCart } from "../utils/flyToCart"
 
 function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
     const navigate = useNavigate()
 
+    const imgRef = useRef()
+
     const isFav = wishlist?.some(item => item.id === product.id)
+
+    const handleAddCart = (e) => {
+
+        e.stopPropagation()
+
+        const cartIcon = document.querySelector(".cart")
+
+        flyToCart(imgRef.current, cartIcon)
+
+        addToCart(product)
+
+    }
 
     return (
 
@@ -20,15 +36,14 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
                     toggleWishlist(product)
                 }}
             >
-
                 {isFav ? "❤️" : "🤍"}
-
             </button>
 
 
             {/* ÜRÜN RESMİ */}
 
             <img
+                ref={imgRef}
                 src={product.image}
                 alt={product.name}
                 onClick={() => navigate(`/product/${product.id}`)}
@@ -58,14 +73,9 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
             <button
                 className="addCartBtn"
-                onClick={(e) => {
-                    e.stopPropagation()
-                    addToCart(product)
-                }}
+                onClick={handleAddCart}
             >
-
                 Sepete Ekle
-
             </button>
 
         </div>

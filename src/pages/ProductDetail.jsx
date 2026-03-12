@@ -10,7 +10,6 @@ function ProductDetail({ addToCart }) {
     const [allProducts, setAllProducts] = useState([])
     const [product, setProduct] = useState(null)
 
-
     useEffect(() => {
 
         const fetchProducts = async () => {
@@ -56,19 +55,6 @@ function ProductDetail({ addToCart }) {
     const similarProducts = allProducts.filter(
         p => p.category === product.category && p.id !== product.id
     )
-
-
-    /* RECENTLY VIEWED */
-
-    let viewed = JSON.parse(localStorage.getItem("recent")) || []
-
-    viewed = viewed.filter(p => p.id !== product.id)
-
-    viewed.unshift(product)
-
-    localStorage.setItem("recent", JSON.stringify(viewed.slice(0, 4)))
-
-    const recent = JSON.parse(localStorage.getItem("recent")) || []
 
 
     return (
@@ -117,38 +103,28 @@ function ProductDetail({ addToCart }) {
             </div>
 
 
+            {/* STICKY MOBILE CART BAR */}
+
+            <div className="mobileCartBar">
+
+                <span className="mobilePrice">
+                    {product.price.toLocaleString("tr-TR")} TL
+                </span>
+
+                <button
+                    onClick={() => addToCart(product)}
+                >
+                    Sepete Ekle
+                </button>
+
+            </div>
+
+
             <h2 className="similarTitle">Benzer Ürünler</h2>
 
             <div className="similarGrid">
 
                 {similarProducts.slice(0, 4).map(item => (
-
-                    <div className="similarCard" key={item.id}>
-
-                        <img src={item.image} alt={item.name} />
-
-                        <h3>{item.name}</h3>
-
-                        <div className="price">
-                            {item.price.toLocaleString("tr-TR")} TL
-                        </div>
-
-                        <button onClick={() => addToCart(item)}>
-                            Sepete Ekle
-                        </button>
-
-                    </div>
-
-                ))}
-
-            </div>
-
-
-            <h2 className="similarTitle">Son Görüntülenenler</h2>
-
-            <div className="similarGrid">
-
-                {recent.map(item => (
 
                     <div className="similarCard" key={item.id}>
 

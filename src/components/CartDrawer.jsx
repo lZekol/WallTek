@@ -13,17 +13,13 @@ function CartDrawer({
 }) {
 
     const navigate = useNavigate()
-
     const [user, setUser] = useState(null)
-
-    /* USER CHECK */
 
     useEffect(() => {
 
         const getUser = async () => {
 
             const { data } = await supabase.auth.getUser()
-
             setUser(data.user)
 
         }
@@ -38,93 +34,117 @@ function CartDrawer({
 
     const handleCheckout = () => {
 
-        if (user) {
-
-            navigate("/checkout")
-
-        } else {
-
-            navigate("/login")
-
-        }
+        if (user) navigate("/checkout")
+        else navigate("/login")
 
     }
 
     return (
 
-        <div className={`cartDrawer ${drawerOpen ? "open" : ""}`}>
+        <>
+            {/* ARKA PLAN KARARTMA */}
+            {drawerOpen && (
+                <div className="cartOverlay" onClick={closeCart}></div>
+            )}
 
-            <div className="cartHeader">
+            <div className={`cartDrawer ${drawerOpen ? "open" : ""}`}>
 
-                <h3>Sepet</h3>
+                {/* HEADER */}
 
-                <button className="closeBtn" onClick={closeCart}>
-                    ✖
-                </button>
+                <div className="cartHeader">
 
-            </div>
+                    <h3>Sepet</h3>
 
-            {cart.length === 0 ? (
+                    <button
+                        className="closeBtn"
+                        onClick={closeCart}
+                    >
+                        ✖
+                    </button>
 
-                <p>Sepet boş</p>
+                </div>
 
-            ) : (
 
-                cart.map(item => (
+                {/* ITEMS */}
 
-                    <div className="cartItem" key={item.id}>
+                <div className="cartItems">
 
-                        <img src={item.image} alt={item.name} />
+                    {cart.length === 0 ? (
 
-                        <div className="cartInfo">
+                        <p>Sepet boş</p>
 
-                            <p>{item.name}</p>
+                    ) : (
 
-                            <span>{item.price.toLocaleString("tr-TR")} TL</span>
+                        cart.map(item => (
 
-                            <div className="qtyBox">
+                            <div className="cartItem" key={item.id}>
 
-                                <button onClick={() => decreaseQty(item.id)}>
-                                    -
-                                </button>
+                                <img src={item.image} alt={item.name} />
 
-                                <span>{item.qty}</span>
+                                <div className="cartInfo">
 
-                                <button onClick={() => increaseQty(item.id)}>
-                                    +
+                                    <p>{item.name}</p>
+
+                                    <span>
+                                        {item.price.toLocaleString("tr-TR")} TL
+                                    </span>
+
+                                    <div className="qtyBox">
+
+                                        <button
+                                            onClick={() => decreaseQty(item.id)}
+                                        >
+                                            -
+                                        </button>
+
+                                        <span>{item.qty}</span>
+
+                                        <button
+                                            onClick={() => increaseQty(item.id)}
+                                        >
+                                            +
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <button
+                                    className="removeBtn"
+                                    onClick={() => removeFromCart(item.id)}
+                                >
+                                    🗑
                                 </button>
 
                             </div>
 
-                        </div>
+                        ))
 
-                        <button
-                            className="removeBtn"
-                            onClick={() => removeFromCart(item.id)}
-                        >
-                            🗑
-                        </button>
+                    )}
 
-                    </div>
+                </div>
 
-                ))
 
-            )}
+                {/* FOOTER */}
 
-            <div className="cartFooter">
+                <div className="cartFooter">
 
-                <h4>Toplam: {total.toLocaleString("tr-TR")} TL</h4>
+                    <h4>
+                        Toplam: {total.toLocaleString("tr-TR")} TL
+                    </h4>
 
-                <button
-                    className="checkoutBtn"
-                    onClick={handleCheckout}
-                >
-                    Satın Al
-                </button>
+                    <button
+                        className="checkoutBtn"
+                        onClick={handleCheckout}
+                    >
+                        Satın Al
+                    </button>
+
+                </div>
 
             </div>
 
-        </div>
+        </>
 
     )
 

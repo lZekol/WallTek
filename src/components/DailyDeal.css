@@ -17,7 +17,7 @@
 
     display: grid;
     grid-template-columns: 1fr 0.5fr 1fr;
-    
+
 
     align-items: center;
 
@@ -34,7 +34,8 @@
 
 .dealImage {
 
-    width: 260px;
+    width: 300px;
+    max-width: 100%;
 
 }
 
@@ -108,5 +109,32 @@
 
     transform: scale(1.05);
     box-shadow: 0 0 15px #3aa9ff;
+
+}
+
+@media (max-width:768px) {
+
+    .dealContainer {
+
+        grid-template-columns: 1fr;
+
+        text-align: center;
+
+        padding: 30px;
+
+    }
+
+    .dealImage {
+
+        margin: auto;
+        width: 140px;
+
+    }
+
+    .dealPrice {
+
+        text-align: center;
+
+    }
 
 }
