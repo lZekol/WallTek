@@ -1,5 +1,7 @@
 import "./CartDrawer.css"
 import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { supabase } from "../lib/supabase"
 
 function CartDrawer({
     cart,
@@ -12,9 +14,41 @@ function CartDrawer({
 
     const navigate = useNavigate()
 
+    const [user, setUser] = useState(null)
+
+    /* USER CHECK */
+
+    useEffect(() => {
+
+        const getUser = async () => {
+
+            const { data } = await supabase.auth.getUser()
+
+            setUser(data.user)
+
+        }
+
+        getUser()
+
+    }, [])
+
     const total = cart.reduce(
         (sum, item) => sum + item.price * item.qty
         , 0)
+
+    const handleCheckout = () => {
+
+        if (user) {
+
+            navigate("/checkout")
+
+        } else {
+
+            navigate("/login")
+
+        }
+
+    }
 
     return (
 
@@ -83,7 +117,7 @@ function CartDrawer({
 
                 <button
                     className="checkoutBtn"
-                    onClick={() => navigate("/login")}
+                    onClick={handleCheckout}
                 >
                     Satın Al
                 </button>

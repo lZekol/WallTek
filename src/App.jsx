@@ -18,6 +18,9 @@ import Campaigns from "./pages/Campaigns"
 import Wishlist from "./pages/Wishlist"
 import Admin from "./pages/Admin"
 import Login from "./pages/Login"
+import Checkout from "./pages/Checkout"
+import Orders from "./pages/Orders"
+import Profile from "./pages/Profile"
 
 
 function App() {
@@ -201,6 +204,21 @@ function App() {
                 <Route
                     path="/admin"
                     element={<Admin />}
+                />
+
+                <Route
+                    path="/checkout"
+                    element={<Checkout cart={cart} />}
+                />
+
+                <Route
+                    path="/orders"
+                    element={<Orders />}
+                />
+
+                <Route
+                    path="/profile"
+                    element={<Profile />}
                 />
 
             </Routes>

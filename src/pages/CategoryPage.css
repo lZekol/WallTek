@@ -8,8 +8,9 @@
 
     color: white;
 
-
 }
+
+/* title */
 
 .categoryTitle {
 
@@ -17,22 +18,13 @@
 
     font-size: 32px;
 
-    margin-bottom: 50px;
-
-
+    margin-bottom: 40px;
 
 }
 
-.productCard a {
-    text-decoration: none;
-    color: white;
-}
+/* layout */
 
-.productCard a:hover {
-    color: #3aa9ff;
-}
-
-.productsGrid {
+.categoryLayout {
 
     max-width: 1200px;
 
@@ -40,9 +32,180 @@
 
     display: grid;
 
+    grid-template-columns: 260px 1fr;
+
+    gap: 30px;
+
+    align-items: start;
+
+}
+
+/* sidebar */
+
+.filterSidebar {
+
+    background: rgba(255, 255, 255, 0.03);
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 25px;
+
+    position: sticky;
+
+    top: 120px;
+    margin-top: 45px;
+}
+
+/* price filter */
+
+.priceFilter {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+}
+
+.priceFilter span {
+
+    font-size: 14px;
+
+}
+
+.priceFilter input {
+
+    width: 100%;
+
+}
+
+/* sidebar banner */
+
+.sidebarBanner {
+
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+}
+
+.sidebarBanner h3 {
+
+    margin-bottom: 10px;
+
+}
+
+.sidebarBanner button {
+
+    margin-top: 10px;
+
+    padding: 8px 16px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: #3aa9ff;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+/* sidebar product */
+
+.sidebarProduct {
+
+    background: rgba(255, 255, 255, 0.05);
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+}
+
+.sidebarProduct img {
+
+    width: 80px;
+
+    margin-bottom: 10px;
+
+}
+
+.sidebarProduct span {
+
+    display: block;
+
+    color: #3aa9ff;
+
+}
+
+/* sort bar */
+
+.sortBar {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+
+}
+
+.sortBar select {
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    border: none;
+
+    cursor: pointer;
+
+}
+
+/* product grid */
+
+.productsGrid {
+
+    display: grid;
+
     grid-template-columns: repeat(4, 1fr);
 
     gap: 30px;
 
+}
+
+/* product links */
+
+.productCard a {
+
+    text-decoration: none;
+
+    color: white;
+
+}
+
+.productCard a:hover {
+
+    color: #3aa9ff;
 
 }

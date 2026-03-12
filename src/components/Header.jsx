@@ -1,6 +1,7 @@
 import "./Header.css"
 import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
+import { supabase } from "../lib/supabase"
 
 import { FaShoppingCart, FaSearch, FaUser } from "react-icons/fa"
 
@@ -15,6 +16,8 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
     const [allProducts, setAllProducts] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(-1)
 
+    const [user, setUser] = useState(null)
+
     const searchRef = useRef()
 
     useEffect(() => {
@@ -24,6 +27,34 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
         setAllProducts([...products, ...extraProducts])
 
     }, [])
+
+
+    /* SUPABASE USER */
+
+    useEffect(() => {
+
+        const getUser = async () => {
+
+            const { data } = await supabase.auth.getUser()
+
+            setUser(data.user)
+
+        }
+
+        getUser()
+
+    }, [])
+
+
+    const logout = async () => {
+
+        await supabase.auth.signOut()
+
+        setUser(null)
+
+        navigate("/")
+
+    }
 
 
     /* SAYFA DEĞİŞİNCE SEARCH TEMİZLE */
@@ -191,8 +222,6 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
                 />
 
 
-                {/* SEARCH DROPDOWN */}
-
                 {searchText && searchResults.length > 0 && (
 
                     <div className="searchDropdown">
@@ -272,12 +301,37 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
             {/* LOGIN */}
 
-            <Link to="/login" className="loginBtn">
+            {user ? (
 
-                <FaUser />
-                Giriş Yap
+                <div className="userArea">
 
-            </Link>
+                    <div
+                        className="userProfile"
+                        onClick={() => navigate("/profile")}
+                    >
+
+                        <FaUser />
+
+                        <span>{user.email}</span>
+
+                    </div>
+
+                    <button onClick={logout} className="logoutBtn">
+                        Çıkış
+                    </button>
+
+                </div>
+
+            ) : (
+
+                <Link to="/login" className="loginBtn">
+
+                    <FaUser />
+                    Giriş Yap
+
+                </Link>
+
+            )}
 
 
             {/* CART */}
@@ -309,6 +363,10 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
                 )}
 
+            </Link>
+
+            <Link to="/orders" className="ordersLink">
+                📦 Siparişlerim
             </Link>
 
         </header>

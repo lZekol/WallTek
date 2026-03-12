@@ -11,6 +11,7 @@
 
     background: linear-gradient(120deg, #020024, #090979, #000000);
     overflow: hidden;
+
 }
 
 /* content */
@@ -32,7 +33,13 @@
 
 .heroText {
 
-    animation: slideLeft 1s ease forwards;
+    color: white;
+
+}
+
+.slideText {
+
+    animation: slideLeft 0.9s ease forwards;
 
 }
 
@@ -40,7 +47,6 @@
 
     font-size: 42px;
     margin-bottom: 15px;
-    color: white;
 
 }
 
@@ -48,7 +54,6 @@
 
     opacity: .8;
     margin-bottom: 20px;
-    color: white;
 
 }
 
@@ -69,9 +74,9 @@
 /* image */
 
 .heroImgWrapper {
+
     display: flex;
     justify-content: center;
-    animation: float 4s ease-in-out infinite;
 
 }
 
@@ -81,11 +86,21 @@
     max-height: 300px;
 
     object-fit: contain;
-
-    animation: slideRight 1s ease forwards, float 4s ease-in-out infinite;
-
+    animation: float 4s ease-in-out infinite;
     filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4));
 
+}
+
+/* image animations */
+
+.slideLeftImg {
+
+    animation: slideLeftImg 0.9s ease forwards;
+}
+
+.slideRightImg {
+
+    animation: slideRightImg 0.9s ease forwards;
 }
 
 /* controls */
@@ -167,7 +182,7 @@
     from {
 
         opacity: 0;
-        transform: translateX(-80px);
+        transform: translateX(-140px);
 
     }
 
@@ -180,12 +195,30 @@
 
 }
 
-@keyframes slideRight {
+@keyframes slideLeftImg {
 
     from {
 
         opacity: 0;
-        transform: translateX(120px);
+        transform: translateX(-120px);
+
+    }
+
+    to {
+
+        opacity: 1;
+        transform: translateX(0);
+
+    }
+
+}
+
+@keyframes slideRightImg {
+
+    from {
+
+        opacity: 0;
+        transform: translateX(140px);
 
     }
 

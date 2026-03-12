@@ -1,0 +1,167 @@
+.checkoutPage {
+
+    padding-top: 120px;
+    min-height: 100vh;
+
+    background: linear-gradient(120deg, #020024, #090979, #000000);
+
+    color: white;
+
+    max-width: 1200px;
+    margin: auto;
+
+}
+
+.checkoutTitle {
+
+    margin-bottom: 40px;
+
+}
+
+.checkoutContainer {
+
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+
+    gap: 40px;
+
+}
+
+.checkoutForm {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    padding: 30px;
+
+    border-radius: 12px;
+
+}
+
+.checkoutForm input,
+.checkoutForm textarea {
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 8px;
+
+}
+
+.checkoutForm textarea {
+
+    min-height: 120px;
+
+}
+
+.orderSummary {
+
+    background: rgba(255, 255, 255, 0.05);
+
+    padding: 30px;
+
+    border-radius: 12px;
+
+    height: fit-content;
+
+}
+
+.orderSummary h2 {
+
+    margin: 10px 0 20px;
+
+}
+
+.orderSummary button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #3aa9ff;
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+}
+
+.orderSummary button:hover {
+
+    background: #1e8bd8;
+
+}
+
+.orderItems {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+
+}
+
+.orderItem {
+
+    display: flex;
+    gap: 12px;
+
+    align-items: center;
+
+}
+
+.orderItem img {
+
+    width: 60px;
+    height: 60px;
+
+    object-fit: contain;
+
+    background: white;
+
+    border-radius: 6px;
+
+}
+
+.orderItem p {
+
+    font-size: 14px;
+
+    margin-bottom: 4px;
+
+}
+
+.orderItem span {
+
+    font-size: 13px;
+    opacity: .8;
+
+}
+
+.orderTotal {
+
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+
+    padding-top: 15px;
+
+    margin-bottom: 20px;
+
+    display: flex;
+    justify-content: space-between;
+
+    align-items: center;
+
+}

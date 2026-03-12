@@ -308,3 +308,69 @@
     background: #f3f3f3;
 
 }
+
+.userArea {
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+
+}
+
+.logoutBtn {
+
+    background: #ff4d4d;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+
+}
+
+.logoutBtn:hover {
+
+    background: #e63939;
+
+}
+
+.ordersLink {
+
+    color: white;
+
+    text-decoration: none;
+
+    font-weight: 500;
+
+    margin-left: 15px;
+
+    transition: 0.2s;
+
+}
+
+.ordersLink:hover {
+
+    color: #3aa9ff;
+
+}
+
+.userProfile {
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    cursor: pointer;
+
+    color: white;
+
+    transition: .2s;
+
+}
+
+.userProfile:hover {
+
+    color: #3aa9ff;
+
+}

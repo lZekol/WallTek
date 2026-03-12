@@ -79,3 +79,29 @@
     background: #1f8ae0;
 
 }
+
+.guestBtn {
+
+    margin-top: 10px;
+
+    background: transparent;
+
+    border: 1px solid #3aa9ff;
+
+    color: #3aa9ff;
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+}
+
+.guestBtn:hover {
+
+    background: #3aa9ff;
+
+    color: white;
+
+}

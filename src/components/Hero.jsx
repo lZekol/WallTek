@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import "./Hero.css"
 
 import laptop from "../assets/images/laptop1.png"
-
 import monitor from "../assets/images/msımonitor.png"
 
 function Hero() {
@@ -15,13 +14,15 @@ function Hero() {
             title: "Yeni Nesil Laptoplar",
             desc: "RTX destekli en yeni laptop modelleri",
             img: laptop,
-            link: "/category/laptop"
+            link: "/category/laptop",
+            direction: "left"
         },
         {
             title: "Gaming Monitörler",
             desc: "240hz ve 4K monitör fırsatları",
             img: monitor,
-            link: "/category/monitor"
+            link: "/category/monitor",
+            direction: "right"
         }
     ]
 
@@ -45,9 +46,11 @@ function Hero() {
 
         <section className="hero">
 
-            <div className="heroContent" key={index}>
+            <div className="heroContent">
 
-                <div className="heroText">
+                {/* TEXT */}
+
+                <div key={index} className="heroText slideText">
 
                     <h1>{slide.title}</h1>
 
@@ -59,9 +62,19 @@ function Hero() {
 
                 </div>
 
+                {/* IMAGE */}
+
                 <div className="heroImgWrapper">
 
-                    <img src={slide.img} className="heroImg" />
+                    <img
+                        key={index}
+                        src={slide.img}
+                        alt="hero"
+                        className={`heroImg ${slide.direction === "left"
+                                ? "slideLeftImg"
+                                : "slideRightImg"
+                            }`}
+                    />
 
                 </div>
 
@@ -69,8 +82,11 @@ function Hero() {
 
             <div className="heroControls">
 
-                <button className="arrow"
-                    onClick={() => setIndex((index - 1 + slides.length) % slides.length)}
+                <button
+                    className="arrow"
+                    onClick={() =>
+                        setIndex((index - 1 + slides.length) % slides.length)
+                    }
                 >
                     ❮
                 </button>
@@ -87,7 +103,8 @@ function Hero() {
 
                 </div>
 
-                <button className="arrow"
+                <button
+                    className="arrow"
                     onClick={() => setIndex((index + 1) % slides.length)}
                 >
                     ❯

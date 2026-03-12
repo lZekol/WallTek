@@ -1,0 +1,130 @@
+.ordersPage {
+
+    padding-top: 120px;
+
+    min-height: 100vh;
+
+    background: linear-gradient(120deg, #020024, #090979, #000000);
+
+    color: white;
+
+    max-width: 1100px;
+    margin: auto;
+
+    padding-left: 20px;
+    padding-right: 20px;
+
+}
+
+.ordersPage h1 {
+
+    margin-bottom: 40px;
+
+}
+
+.orderCard {
+
+    background: rgba(255, 255, 255, 0.05);
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+    margin-bottom: 25px;
+
+    backdrop-filter: blur(10px);
+
+    transition: .2s;
+
+}
+
+.orderCard:hover {
+
+    transform: translateY(-3px);
+
+}
+
+.orderHeader {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+
+    font-weight: 600;
+
+    font-size: 15px;
+
+}
+
+.orderProducts {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+}
+
+.orderProduct {
+
+    display: flex;
+
+    gap: 12px;
+
+    align-items: center;
+
+    background: rgba(255, 255, 255, 0.03);
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+}
+
+.orderProduct img {
+
+    width: 60px;
+    height: 60px;
+
+    object-fit: contain;
+
+    background: white;
+
+    border-radius: 6px;
+
+}
+
+.orderProduct p {
+
+    font-size: 14px;
+
+    margin-bottom: 4px;
+
+}
+
+.orderProduct span {
+
+    font-size: 13px;
+
+    opacity: .8;
+
+}
+
+.ordersContainer {
+
+    max-width: 900px;
+
+    margin: auto;
+
+    margin-top: 30px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+}
