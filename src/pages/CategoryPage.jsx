@@ -3,6 +3,7 @@ import ProductCard from "../components/ProductCard"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import "./CategoryPage.css"
+import SkeletonCard from "../components/SkeletonCard"
 
 function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
@@ -31,6 +32,8 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
         fetchProducts()
 
     }, [])
+
+
 
     let categoryProducts = allProducts
         .filter(product =>
@@ -148,17 +151,27 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
                     <div className="productsGrid">
 
-                        {categoryProducts.map(product => (
+                        {categoryProducts.length === 0 ? (
 
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                                addToCart={addToCart}
-                                toggleWishlist={toggleWishlist}
-                                wishlist={wishlist}
-                            />
+                            Array(8).fill().map((_, i) => (
+                                <SkeletonCard key={i} />
+                            ))
 
-                        ))}
+                        ) : (
+
+                            categoryProducts.map(product => (
+
+                                <ProductCard
+                                    key={product.id}
+                                    product={product}
+                                    addToCart={addToCart}
+                                    toggleWishlist={toggleWishlist}
+                                    wishlist={wishlist}
+                                />
+
+                            ))
+
+                        )}
 
                     </div>
 

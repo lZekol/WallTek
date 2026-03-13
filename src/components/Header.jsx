@@ -123,14 +123,35 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
                 <a onClick={() => navigate("/")}>Anasayfa</a>
 
-                <Link to="/category/laptop">Kategoriler</Link>
+                <div className="dropdown">
+
+                    <a>Kategoriler</a>
+
+                    <div className="dropdownMenu">
+
+                        <Link to="/category/laptop">Laptop</Link>
+
+                        <Link to="/category/gpu">Ekran Kartı</Link>
+
+                        <Link to="/category/monitor">Monitör</Link>
+
+                        <Link to="/category/headset">Kulaklık</Link>
+
+                        <Link to="/category/mouse">Mouse</Link>
+
+                        <Link to="/category/keyboard">Klavye</Link>
+
+                        <Link to="/category/tv">Televizyon</Link>
+
+                    </div>
+
+                </div>
 
                 <a onClick={() => navigate("/")}>Popüler</a>
 
                 <Link to="/campaigns">Kampanyalar</Link>
 
             </nav>
-
 
             {/* USER */}
 
@@ -214,14 +235,27 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
 
             {/* MOBILE MENU */}
+            {menuOpen && <div className="menuOverlay" onClick={() => setMenuOpen(false)}></div>}
 
             {menuOpen && (
 
-                <div className="mobileMenu">
+                <div className={`mobileMenu ${menuOpen ? "open" : ""}`}>
 
                     <Link to="/" onClick={() => setMenuOpen(false)}>Anasayfa</Link>
 
-                    <Link to="/category/laptop" onClick={() => setMenuOpen(false)}>Kategoriler</Link>
+                    <div className="mobileCategories">
+
+                        <span>Kategoriler</span>
+
+                        <Link to="/category/laptop" onClick={() => setMenuOpen(false)}>Laptop</Link>
+                        <Link to="/category/gpu" onClick={() => setMenuOpen(false)}>Ekran Kartı</Link>
+                        <Link to="/category/monitor" onClick={() => setMenuOpen(false)}>Monitör</Link>
+                        <Link to="/category/headset" onClick={() => setMenuOpen(false)}>Kulaklık</Link>
+                        <Link to="/category/mouse" onClick={() => setMenuOpen(false)}>Mouse</Link>
+                        <Link to="/category/keyboard" onClick={() => setMenuOpen(false)}>Klavye</Link>
+                        <Link to="/category/tv" onClick={() => setMenuOpen(false)}>Televizyon</Link>
+
+                    </div>
 
                     <Link to="/" onClick={() => setMenuOpen(false)}>Popüler</Link>
 
@@ -231,9 +265,11 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
                 </div>
 
-            )}
 
-        </header>
+            )
+            }
+
+        </header >
 
     )
 
