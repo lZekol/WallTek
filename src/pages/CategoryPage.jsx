@@ -17,22 +17,42 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
         const fetchProducts = async () => {
 
-            const { data, error } = await supabase
+            const { data: products } = await supabase
                 .from("products")
                 .select("*")
 
-            if (!error) {
+            const { data: reviews } = await supabase
+                .from("reviews")
+                .select("product_id, rating")
 
-                setAllProducts(data)
+            const productsWithRating = products.map(product => {
 
-            }
+                const productReviews = reviews.filter(
+                    r => String(r.product_id) === String(product.id)
+                )
+
+                const reviewCount = productReviews.length
+
+                const avgRating =
+                    reviewCount > 0
+                        ? productReviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount
+                        : 0
+
+                return {
+                    ...product,
+                    rating: avgRating,
+                    reviewCount
+                }
+
+            })
+
+            setAllProducts(productsWithRating)
 
         }
 
         fetchProducts()
 
     }, [])
-
 
 
     let categoryProducts = allProducts
@@ -74,10 +94,7 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
             <div className="categoryLayout">
 
 
-                {/* FILTER SIDEBAR */}
-
                 <div className="filterSidebar">
-                    {/* CAMPAIGN BANNER */}
 
                     <div className="priceFilter">
 
@@ -107,8 +124,6 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
                     </div>
 
 
-                    {/* POPULAR PRODUCT */}
-
                     <div className="sidebarProduct">
 
                         <img src="/images/AsusTufGamingF16FX608.png" />
@@ -119,16 +134,10 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
                     </div>
 
-
-
                 </div>
 
 
-                {/* PRODUCTS */}
-
                 <div>
-
-                    {/* SORT */}
 
                     <div className="sortBar">
 

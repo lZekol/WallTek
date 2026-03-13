@@ -177,3 +177,40 @@
     }
 
 }
+
+/* hover upgrade */
+
+.productCard:hover {
+
+    transform: translateY(-6px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+
+}
+
+/* rating */
+
+.stars {
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #ffd43b;
+
+    font-size: 14px;
+
+}
+
+.ratingNumber {
+
+    color: white;
+    font-size: 13px;
+
+}
+
+.reviewCount {
+
+    color: #9aa4c8;
+    font-size: 12px;
+
+}

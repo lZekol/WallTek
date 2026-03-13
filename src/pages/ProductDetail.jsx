@@ -277,8 +277,8 @@ function ProductDetail({ addToCart }) {
                         {product.price.toLocaleString("tr-TR")} TL
                     </div>
 
-                    <p>
-                        Yüksek performanslı teknoloji ürünü. Oyun ve iş için ideal.
+                    <p className="productDescription">
+                        {product.description}
                     </p>
 
                     <button onClick={() => addToCart(product)}>

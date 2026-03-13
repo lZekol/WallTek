@@ -11,6 +11,9 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
     const isFav = wishlist?.some(item => item.id === product.id)
 
+    const rating = product.rating || 0
+    const reviewCount = product.reviewCount || 0
+
     const handleAddCart = (e) => {
 
         e.stopPropagation()
@@ -20,6 +23,22 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
         flyToCart(imgRef.current, cartIcon)
 
         addToCart(product)
+
+    }
+
+    const renderStars = () => {
+
+        const stars = []
+        const rounded = Math.round(rating * 2) / 2
+
+        for (let i = 1; i <= 5; i++) {
+
+            if (i <= rounded) stars.push("⭐")
+            else stars.push("☆")
+
+        }
+
+        return stars.join(" ")
 
     }
 
@@ -60,8 +79,20 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
             </h3>
 
 
+            {/* RATING */}
+
             <div className="stars">
-                ⭐ ⭐ ⭐ ⭐ ⭐
+
+                {renderStars()}
+
+                <span className="ratingNumber">
+                    {rating.toFixed(1)}
+                </span>
+
+                <span className="reviewCount">
+                    ({reviewCount})
+                </span>
+
             </div>
 
 

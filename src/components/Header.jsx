@@ -25,8 +25,19 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
     useEffect(() => {
 
-        const extraProducts = JSON.parse(localStorage.getItem("extraProducts")) || []
-        setAllProducts([...products, ...extraProducts])
+        const fetchProducts = async () => {
+
+            const { data } = await supabase
+                .from("products")
+                .select("*")
+
+            if (data) {
+                setAllProducts(data)
+            }
+
+        }
+
+        fetchProducts()
 
     }, [])
 
@@ -114,6 +125,45 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
                     onKeyDown={handleSearch}
                 />
 
+                {searchText && searchResults.length > 0 && (
+
+                    <div className="searchDropdown">
+
+                        {searchResults.map((product, index) => (
+
+                            <div
+                                key={product.id}
+                                className={`searchItem ${index === selectedIndex ? "active" : ""}`}
+                                onClick={() => {
+
+                                    navigate(`/product/${product.id}`)
+                                    setSearchText("")
+                                    setSearch("")
+                                }}
+                            >
+
+                                <img src={product.image} alt="" />
+
+                                <div>
+
+                                    <span className="searchName">
+                                        {product.name}
+                                    </span>
+
+                                    <span className="searchPrice">
+                                        {product.price.toLocaleString("tr-TR")} TL
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                )}
+
             </div>
 
 
@@ -147,7 +197,43 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
                 </div>
 
-                <a onClick={() => navigate("/")}>Popüler</a>
+                <a
+                    onClick={() => {
+
+                        navigate("/")
+
+                        setTimeout(() => {
+
+                            const el = document.getElementById("products")
+
+                            if (el) {
+
+                                const headerOffset = 90
+
+                                const elementPosition =
+                                    el.getBoundingClientRect().top + window.pageYOffset
+
+                                const offsetPosition = elementPosition - headerOffset
+
+                                window.scrollTo({
+                                    top: offsetPosition,
+                                    behavior: "smooth"
+                                })
+
+                                el.classList.add("highlight")
+
+                                setTimeout(() => {
+                                    el.classList.remove("highlight")
+                                }, 1200)
+
+                            }
+
+                        }, 120)
+
+                    }}
+                >
+                    Popüler
+                </a>
 
                 <Link to="/campaigns">Kampanyalar</Link>
 
