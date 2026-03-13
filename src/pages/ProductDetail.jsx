@@ -267,7 +267,7 @@ function ProductDetail({ addToCart }) {
 
                         <span className="ratingText">
 
-                            {averageRating} / 5 ({reviews.length} değerlendirme)
+                            {averageRating} • {reviews.length} yorum
 
                         </span>
 
@@ -276,10 +276,25 @@ function ProductDetail({ addToCart }) {
                     <div className="price">
                         {product.price.toLocaleString("tr-TR")} TL
                     </div>
+                    <div className="productMeta">
 
-                    <p className="productDescription">
-                        {product.description}
-                    </p>
+                        <span>✔ Stokta</span>
+                        <span>🚚 Ücretsiz Kargo</span>
+                        <span>↩ 14 Gün İade</span>
+
+                    </div>
+
+                    <div className="productDescriptionBox">
+
+                        <h2 className="sectionTitle">
+                            Ürün Açıklaması
+                        </h2>
+
+                        <p className="productDescription">
+                            {product.description}
+                        </p>
+
+                    </div>
 
                     <button onClick={() => addToCart(product)}>
                         Sepete Ekle

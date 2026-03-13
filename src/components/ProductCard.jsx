@@ -6,13 +6,16 @@ import { flyToCart } from "../utils/flyToCart"
 function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
     const navigate = useNavigate()
-
     const imgRef = useRef()
 
     const isFav = wishlist?.some(item => item.id === product.id)
 
     const rating = product.rating || 0
     const reviewCount = product.reviewCount || 0
+
+    const discount = product.old_price
+        ? Math.round(((product.old_price - product.price) / product.old_price) * 100)
+        : null
 
     const handleAddCart = (e) => {
 
@@ -46,7 +49,11 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
         <div className="productCard">
 
-            {/* FAVORİ */}
+            {discount && (
+                <div className="discountBadge">
+                    %{discount}
+                </div>
+            )}
 
             <button
                 className="wishlistBtn"
@@ -58,19 +65,19 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
                 {isFav ? "❤️" : "🤍"}
             </button>
 
-
-            {/* ÜRÜN RESMİ */}
-
-            <img
-                ref={imgRef}
-                src={product.image}
-                alt={product.name}
-                loading="lazy"
+            <div
+                className="imageWrapper"
                 onClick={() => navigate(`/product/${product.id}`)}
-            />
+            >
 
+                <img
+                    ref={imgRef}
+                    src={product.image}
+                    alt={product.name}
+                    loading="lazy"
+                />
 
-            {/* İSİM */}
+            </div>
 
             <h3
                 onClick={() => navigate(`/product/${product.id}`)}
@@ -78,30 +85,41 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
                 {product.name}
             </h3>
 
-
-            {/* RATING */}
-
             <div className="stars">
 
-                {renderStars()}
+                {reviewCount > 0 ? (
+                    <>
+                        {renderStars()}
 
-                <span className="ratingNumber">
-                    {rating.toFixed(1)}
-                </span>
+                        <span className="ratingNumber">
+                            {rating.toFixed(1)}
+                        </span>
 
-                <span className="reviewCount">
-                    ({reviewCount})
-                </span>
+                        <span className="reviewCount">
+                            ({reviewCount})
+                        </span>
+                    </>
+                ) : (
+                    <span className="noReview">
+                        Henüz yorum yok
+                    </span>
+                )}
 
             </div>
 
+            <div className="priceBox">
 
-            <p className="price">
-                {product.price.toLocaleString("tr-TR")} TL
-            </p>
+                {product.old_price && (
+                    <span className="oldPrice">
+                        {product.old_price.toLocaleString("tr-TR")} TL
+                    </span>
+                )}
 
+                <span className="newPrice">
+                    {product.price.toLocaleString("tr-TR")} TL
+                </span>
 
-            {/* SEPET */}
+            </div>
 
             <button
                 className="addCartBtn"

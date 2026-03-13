@@ -7,7 +7,7 @@ const laptop = [
         category: "laptop",
         image: "/images/gaminglaptop.png",
         featured: false,
-        oldPrice: 82000,
+        oldPrice: 79999,
         discount: 5
     }
 

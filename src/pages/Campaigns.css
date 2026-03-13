@@ -7,7 +7,7 @@
     min-height: 100vh;
 
     background: linear-gradient(245deg, #3aa9ff, #18235f);
-    
+
 
 }
 
@@ -35,7 +35,7 @@
 
     margin-bottom: 10px;
 
-    
+
 
 }
 
@@ -53,13 +53,15 @@
 
 .countdown span {
 
-    background: #00000055;
+    background: #0f1535;
 
-    padding: 10px 15px;
+    padding: 12px 18px;
 
-    border-radius: 6px;
+    border-radius: 8px;
 
     font-weight: bold;
+
+    font-size: 16px;
 
 }
 
@@ -69,7 +71,7 @@
 
     display: grid;
 
-    grid-template-columns: repeat(auto-fill, 260px);
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 
     gap: 40px;
 
@@ -95,16 +97,14 @@
 
     transition: .3s;
 
-    aspect-ratio: 1/1;
+
 
     display: flex;
 
     flex-direction: column;
 
     justify-content: center;
-    width: 260px;
-    height: 260px;
-
+    min-height: 300px;
 }
 
 .campaignCard:hover {
@@ -196,8 +196,8 @@
 
     position: absolute;
 
-    top: 15px;
-    left: 15px;
+    top: 10px;
+    left: 10px;
 
     background: #ff3b3b;
 

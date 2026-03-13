@@ -1,18 +1,43 @@
 import "./Campaigns.css"
-import products from "../data/products"
+import { supabase } from "../lib/supabase"
 import { useEffect, useState } from "react"
 
 function Campaigns({ addToCart }) {
 
-    const campaignProducts = products.filter(p => p.discount)
-
+    const [campaignProducts, setCampaignProducts] = useState([])
     const [time, setTime] = useState(3600)
+
+    // SUPABASE CAMPAIGNS
+
+    useEffect(() => {
+
+        const fetchCampaigns = async () => {
+
+            const { data } = await supabase
+                .from("products")
+                .select("*")
+                .eq("is_campaign", true)
+
+            if (data) setCampaignProducts(data)
+
+        }
+
+        fetchCampaigns()
+
+    }, [])
+
+    // COUNTDOWN
 
     useEffect(() => {
 
         const interval = setInterval(() => {
 
-            setTime(prev => prev - 1)
+            setTime(prev => {
+
+                if (prev <= 0) return 0
+                return prev - 1
+
+            })
 
         }, 1000)
 
@@ -44,41 +69,53 @@ function Campaigns({ addToCart }) {
 
             </div>
 
-
-
             <div className="campaignGrid">
 
-                {campaignProducts.map(product => (
+                {campaignProducts.map(product => {
 
-                    <div className="campaignCard" key={product.id}>
+                    const discount = product.old_price
+                        ? Math.round(
+                            ((product.old_price - product.price) / product.old_price) * 100
+                        )
+                        : 0
 
-                        <div className="discountBadge">
-                            %{product.discount}
+                    return (
+
+                        <div className="campaignCard" key={product.id}>
+
+                            {discount > 0 && (
+                                <div className="discountBadge">
+                                    %{discount}
+                                </div>
+                            )}
+
+                            <img src={product.image} alt={product.name} />
+
+                            <h3>{product.name}</h3>
+
+                            <div className="priceArea">
+
+                                {product.old_price && (
+                                    <span className="oldPrice">
+                                        {product.old_price.toLocaleString("tr-TR")} TL
+                                    </span>
+                                )}
+
+                                <span className="newPrice">
+                                    {product.price.toLocaleString("tr-TR")} TL
+                                </span>
+
+                            </div>
+
+                            <button onClick={() => addToCart(product)}>
+                                Sepete Ekle
+                            </button>
+
                         </div>
 
-                        <img src={product.image} alt={product.name} />
+                    )
 
-                        <h3>{product.name}</h3>
-
-                        <div className="priceArea">
-
-                            <span className="oldPrice">
-                                {product.oldPrice} TL
-                            </span>
-
-                            <span className="newPrice">
-                                {product.price} TL
-                            </span>
-
-                        </div>
-
-                        <button onClick={() => addToCart(product)}>
-                            Sepete Ekle
-                        </button>
-
-                    </div>
-
-                ))}
+                })}
 
             </div>
 
