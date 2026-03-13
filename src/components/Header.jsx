@@ -193,7 +193,7 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
                 <FaShoppingCart />
 
-                <span className="cartCount">
+                <span className={`cartCount ${cartCount > 0 ? "pop" : ""}`}>
                     {cartCount}
                 </span>
 

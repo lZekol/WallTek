@@ -46,6 +46,7 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
                 ref={imgRef}
                 src={product.image}
                 alt={product.name}
+                loading="lazy"
                 onClick={() => navigate(`/product/${product.id}`)}
             />
 

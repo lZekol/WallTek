@@ -229,6 +229,28 @@
     justify-content: center;
 }
 
+.cartCount.pop {
+
+    animation: cartPop .35s ease;
+
+}
+
+@keyframes cartPop {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.5);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
 .wishlistIcon {
 
     position: relative;
