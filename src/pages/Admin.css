@@ -8,16 +8,12 @@
 
 }
 
-/* TITLE */
-
 .adminTitle {
 
     font-size: 32px;
     margin-bottom: 30px;
 
 }
-
-/* FORM */
 
 .adminForm {
 
@@ -28,8 +24,6 @@
     max-width: 400px;
 
 }
-
-/* INPUT */
 
 .adminForm input,
 .adminForm select {
@@ -44,8 +38,6 @@
     background: white;
 
 }
-
-/* BUTTON */
 
 .adminForm button {
 
@@ -63,17 +55,7 @@
 
     cursor: pointer;
 
-    transition: .2s;
-
 }
-
-.adminForm button:hover {
-
-    background: #1d8cd6;
-
-}
-
-/* PRODUCTS GRID */
 
 .adminProducts {
 
@@ -87,8 +69,6 @@
 
 }
 
-/* CARD */
-
 .adminCard {
 
     background: #0f0f3c;
@@ -97,21 +77,7 @@
 
     border-radius: 12px;
 
-    border: 1px solid rgba(255, 255, 255, 0.08);
-
-    transition: .25s;
-
 }
-
-.adminCard:hover {
-
-    transform: translateY(-4px);
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-
-}
-
-/* IMAGE */
 
 .adminCard img {
 
@@ -124,16 +90,12 @@
 
 }
 
-/* TITLE */
-
 .adminCard h3 {
 
     font-size: 16px;
     margin-bottom: 5px;
 
 }
-
-/* PRICE */
 
 .adminPrice {
 
@@ -142,7 +104,23 @@
 
 }
 
-/* DELETE BUTTON */
+/* SEARCH */
+
+.adminSearch {
+
+    width: 350px;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    border: none;
+
+    margin: 20px 0;
+
+}
+
+/* DELETE */
 
 .deleteBtn {
 
@@ -158,11 +136,93 @@
 
     cursor: pointer;
 
-    transition: .2s;
+    margin-top: 8px;
 
 }
 
-.deleteBtn:hover {
+/* PRICE UPDATE */
+
+.priceInput {
+
+    width: 90px;
+
+    padding: 5px;
+
+    border-radius: 5px;
+
+    border: none;
+
+}
+
+.priceUpdateBtn {
+
+    background: #2ecc71;
+
+    border: none;
+
+    padding: 5px 10px;
+
+    border-radius: 5px;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+.priceUpdateBtn:hover {
+
+    background: #27ae60;
+
+}
+
+/* CAMPAIGN ADD */
+
+.campaignAddBtn {
+
+    background: #3aa9ff;
+
+    border: none;
+
+    padding: 6px 12px;
+
+    border-radius: 6px;
+
+    color: white;
+
+    cursor: pointer;
+
+    margin-top: 8px;
+
+}
+
+.campaignAddBtn:hover {
+
+    background: #1d8cd6;
+
+}
+
+/* CAMPAIGN REMOVE */
+
+.campaignRemoveBtn {
+
+    background: #ff3b3b;
+
+    border: none;
+
+    padding: 6px 12px;
+
+    border-radius: 6px;
+
+    color: white;
+
+    cursor: pointer;
+
+    margin-top: 8px;
+
+}
+
+.campaignRemoveBtn:hover {
 
     background: #c62828;
 

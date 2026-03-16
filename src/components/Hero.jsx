@@ -4,6 +4,7 @@ import "./Hero.css"
 
 import laptop from "../assets/images/laptop1.png"
 import monitor from "../assets/images/msımonitor.png"
+import headset from "../assets/images/headset.png"
 
 function Hero() {
 
@@ -23,10 +24,19 @@ function Hero() {
             img: monitor,
             link: "/category/monitor",
             direction: "right"
+        },
+        {
+            title: "Profesyonel Gaming Kulaklıklar",
+            desc: "7.1 surround ve düşük gecikmeli oyuncu kulaklıkları",
+            img: headset,
+            link: "/category/headset",
+            direction: "right",
+            textDirection: "right"
         }
     ]
 
     const [index, setIndex] = useState(0)
+    const [mouseX, setMouseX] = useState(0)
 
     useEffect(() => {
 
@@ -40,17 +50,27 @@ function Hero() {
 
     }, [])
 
+    const handleMove = (e) => {
+
+        setMouseX(e.clientX / window.innerWidth - 0.5)
+
+    }
+
     const slide = slides[index]
 
     return (
 
-        <section className="hero">
+        <section className="hero" onMouseMove={handleMove}>
 
             <div className="heroContent">
 
-                {/* TEXT */}
-
-                <div key={index} className="heroText slideText">
+                <div
+                    key={index}
+                    className={`heroText ${slide.textDirection === "right"
+                            ? "slideRightText"
+                            : "slideText"
+                        }`}
+                >
 
                     <h1>{slide.title}</h1>
 
@@ -62,17 +82,20 @@ function Hero() {
 
                 </div>
 
-                {/* IMAGE */}
-
-                <div className="heroImgWrapper">
+                <div
+                    className="heroImgWrapper"
+                    style={{
+                        transform: `translateX(${mouseX * 20}px)`
+                    }}
+                >
 
                     <img
                         key={index}
                         src={slide.img}
                         alt="hero"
                         className={`heroImg ${slide.direction === "left"
-                            ? "slideLeftImg"
-                            : "slideRightImg"
+                                ? "slideLeftImg"
+                                : "slideRightImg"
                             }`}
                     />
 

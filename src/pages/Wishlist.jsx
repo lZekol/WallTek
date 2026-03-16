@@ -1,35 +1,50 @@
 import "./Wishlist.css"
+import ProductCard from "../components/ProductCard"
 
-function Wishlist({ wishlist }) {
-    
-        return (
+function Wishlist({ wishlist, addToCart, toggleWishlist }) {
 
-            <section className="wishlistPage">
+    return (
 
-                <h2>Favoriler</h2>
-               
+        <section className="wishlistPage">
+
+            <h2>
+                Favoriler ({wishlist.length})
+            </h2>
+
+            {wishlist.length === 0 ? (
+
+                <div className="emptyWishlist">
+
+                    <h3>💔 Favori ürününüz yok</h3>
+
+                    <p>Beğendiğiniz ürünleri favorilere ekleyin</p>
+
+                </div>
+
+            ) : (
+
                 <div className="productsGrid">
 
                     {wishlist.map(product => (
 
-                        <div className="productCard" key={product.id}>
-
-                            <img src={product.image} />
-
-                            <h3>{product.name}</h3>
-
-                            <p>{product.price} TL</p>
-
-                        </div>
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            addToCart={addToCart}
+                            toggleWishlist={toggleWishlist}
+                            wishlist={wishlist}
+                        />
 
                     ))}
 
                 </div>
 
-            </section>
+            )}
 
-        )
+        </section>
 
-    }
+    )
 
-    export default Wishlist
+}
+
+export default Wishlist

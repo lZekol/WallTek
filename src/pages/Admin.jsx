@@ -7,18 +7,16 @@ function Admin() {
     const [name, setName] = useState("")
     const [price, setPrice] = useState("")
     const [image, setImage] = useState("")
+    const [search, setSearch] = useState("")
+    const [editPrice, setEditPrice] = useState({})
     const [category, setCategory] = useState("gpu")
     const [featured, setFeatured] = useState(false)
 
     const [products, setProducts] = useState([])
 
-
     useEffect(() => {
-
         fetchProducts()
-
     }, [])
-
 
     const fetchProducts = async () => {
 
@@ -26,14 +24,23 @@ function Admin() {
             .from("products")
             .select("*")
 
-        if (!error) {
-
-            setProducts(data)
-
-        }
+        if (!error) setProducts(data)
 
     }
 
+    const updatePrice = async (id) => {
+
+        const newPrice = editPrice[id]
+        if (!newPrice) return
+
+        const { error } = await supabase
+            .from("products")
+            .update({ price: Number(newPrice) })
+            .eq("id", id)
+
+        if (!error) fetchProducts()
+
+    }
 
     const addProduct = async () => {
 
@@ -68,6 +75,18 @@ function Admin() {
 
     }
 
+    const toggleCampaign = async (product) => {
+
+        const { error } = await supabase
+            .from("products")
+            .update({
+                is_campaign: !product.is_campaign
+            })
+            .eq("id", product.id)
+
+        if (!error) fetchProducts()
+
+    }
 
     const deleteProduct = async (id) => {
 
@@ -80,7 +99,6 @@ function Admin() {
 
     }
 
-
     const toggleFeatured = async (product) => {
 
         await supabase
@@ -91,7 +109,6 @@ function Admin() {
         fetchProducts()
 
     }
-
 
     return (
 
@@ -120,13 +137,11 @@ function Admin() {
                 />
 
                 {image && (
-
                     <img
                         src={`/images/${image}`}
                         alt="preview"
                         style={{ width: "120px", marginTop: "10px" }}
                     />
-
                 )}
 
                 <select
@@ -162,44 +177,94 @@ function Admin() {
 
             </div>
 
+            <input
+                className="adminSearch"
+                placeholder="Ürün ara..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
 
             <h2>Eklenen Ürünler</h2>
 
-
             <div className="adminProducts">
 
-                {products.map(product => (
+                {products
+                    .filter(p =>
+                        p.name.toLowerCase().includes(search.toLowerCase())
+                    )
+                    .map(product => (
 
-                    <div className="adminCard" key={product.id}>
+                        <div className="adminCard" key={product.id}>
 
-                        <img src={product.image} alt={product.name} />
+                            <img src={product.image} alt={product.name} />
 
-                        <h3>{product.name}</h3>
+                            <h3>{product.name}</h3>
 
-                        <div>{product.price} TL</div>
+                            <div className="adminPrice">
+                                {product.price} TL
+                            </div>
 
-                        <label>
+                            <label>
 
-                            <input
-                                type="checkbox"
-                                checked={product.featured}
-                                onChange={() => toggleFeatured(product)}
-                            />
+                                <input
+                                    type="checkbox"
+                                    checked={product.featured}
+                                    onChange={() => toggleFeatured(product)}
+                                />
 
-                            Featured
+                                Featured
 
-                        </label>
+                            </label>
 
-                        <button
-                            className="deleteBtn"
-                            onClick={() => deleteProduct(product.id)}
-                        >
-                            Sil
-                        </button>
+                            <div style={{ display: "flex", gap: "6px", marginTop: "10px" }}>
 
-                    </div>
+                                <input
+                                    className="priceInput"
+                                    type="number"
+                                    placeholder="Yeni fiyat"
+                                    value={editPrice[product.id] || ""}
+                                    onChange={(e) =>
+                                        setEditPrice({
+                                            ...editPrice,
+                                            [product.id]: e.target.value
+                                        })
+                                    }
+                                />
 
-                ))}
+                                <button
+                                    className="priceUpdateBtn"
+                                    onClick={() => updatePrice(product.id)}
+                                >
+                                    Güncelle
+                                </button>
+
+                            </div>
+
+                            <button
+                                className={
+                                    product.is_campaign
+                                        ? "campaignRemoveBtn"
+                                        : "campaignAddBtn"
+                                }
+                                onClick={() => toggleCampaign(product)}
+                            >
+
+                                {product.is_campaign
+                                    ? "Kampanyadan Kaldır"
+                                    : "Kampanyaya Ekle"}
+
+                            </button>
+
+                            <button
+                                className="deleteBtn"
+                                onClick={() => deleteProduct(product.id)}
+                            >
+                                Sil
+                            </button>
+
+                        </div>
+
+                    ))}
 
             </div>
 

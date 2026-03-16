@@ -290,14 +290,16 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
             <Link to="/wishlist" className="wishlistIcon">
 
-                ❤️
+                <span className="heartIcon">❤️</span>
+
+                <span className="wishlistText">
+                    Favoriler
+                </span>
 
                 {wishlistCount > 0 && (
 
                     <span className="wishlistCount">
-
                         {wishlistCount}
-
                     </span>
 
                 )}
