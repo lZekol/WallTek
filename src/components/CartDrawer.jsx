@@ -34,8 +34,19 @@ function CartDrawer({
 
     const handleCheckout = () => {
 
-        if (user) navigate("/checkout")
-        else navigate("/login")
+        const guest = localStorage.getItem("guest")
+
+        // giriş yapılmış veya guest ise direkt checkout
+        if (user || guest) {
+
+            navigate("/checkout")
+
+        } else {
+
+            // 🔥 KRİTİK SATIR
+            navigate("/login", { state: { from: "/checkout" } })
+
+        }
 
     }
 

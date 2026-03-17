@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useState } from "react"
 import { supabase } from "../lib/supabase"
 import "./Login.css"
@@ -6,10 +6,13 @@ import "./Login.css"
 function Login() {
 
     const navigate = useNavigate()
+    const location = useLocation()
+
+    // 🔥 NEREDEN GELDİĞİNİ YAKALA
+    const from = location.state?.from || "/"
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-
 
     /* EMAIL LOGIN */
 
@@ -26,12 +29,11 @@ function Login() {
 
         } else {
 
-            navigate("/")
+            navigate(from) // 🔥 BURASI DEĞİŞTİ
 
         }
 
     }
-
 
     /* REGISTER */
 
@@ -54,7 +56,6 @@ function Login() {
 
     }
 
-
     /* GOOGLE LOGIN */
 
     const googleLogin = async () => {
@@ -71,17 +72,15 @@ function Login() {
 
     }
 
-
     /* GUEST LOGIN */
 
     const guestLogin = () => {
 
         localStorage.setItem("guest", "true")
 
-        navigate("/")
+        navigate(from) // 🔥 BURASI DEĞİŞTİ
 
     }
-
 
     return (
 
@@ -91,14 +90,12 @@ function Login() {
 
                 <h2>Giriş Yap</h2>
 
-
                 <input
                     type="email"
                     placeholder="E-posta"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-
 
                 <input
                     type="password"
@@ -107,31 +104,25 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-
                 <button onClick={handleLogin}>
                     Giriş Yap
                 </button>
-
 
                 <button onClick={handleRegister} className="registerBtn">
                     Kayıt Ol
                 </button>
 
-
                 <div className="loginDivider">
                     veya
                 </div>
-
 
                 <button onClick={googleLogin} className="googleBtn">
                     Google ile Giriş Yap
                 </button>
 
-
                 <button onClick={guestLogin} className="guestBtn">
                     Misafir Olarak Devam Et
                 </button>
-
 
             </div>
 

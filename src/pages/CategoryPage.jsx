@@ -131,7 +131,7 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
                             />
 
                         </div>
-                        
+
 
 
                         <div className="ratingFilter">
@@ -172,7 +172,7 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
                     </div>
 
                 </div>
-                
+
 
 
                 {/* PRODUCTS */}
@@ -196,9 +196,9 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
                         </select>
 
                     </div>
-                    
 
-                    
+
+
 
 
                     <div className="productsGrid">

@@ -1,9 +1,22 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { supabase } from "../lib/supabase"
 import "./Profile.css"
 
 function Profile() {
 
     const [activeTab, setActiveTab] = useState("profile")
+    const [user, setUser] = useState(null)
+
+    useEffect(() => {
+
+        const getUser = async () => {
+            const { data } = await supabase.auth.getUser()
+            setUser(data.user)
+        }
+
+        getUser()
+
+    }, [])
 
     return (
 
@@ -12,36 +25,58 @@ function Profile() {
             <div className="dashboard">
 
                 {/* SIDEBAR */}
-
                 <div className="sidebar">
 
                     <h3>Hesabım</h3>
 
-                    <button onClick={() => setActiveTab("profile")}>👤 Profil</button>
+                    <button
+                        className={activeTab === "profile" ? "active" : ""}
+                        onClick={() => setActiveTab("profile")}
+                    >
+                        👤 Profil
+                    </button>
 
-                    <button onClick={() => setActiveTab("orders")}>📦 Siparişlerim</button>
+                    <button
+                        className={activeTab === "orders" ? "active" : ""}
+                        onClick={() => setActiveTab("orders")}
+                    >
+                        📦 Siparişlerim
+                    </button>
 
-                    <button onClick={() => setActiveTab("address")}>📍 Adreslerim</button>
+                    <button
+                        className={activeTab === "address" ? "active" : ""}
+                        onClick={() => setActiveTab("address")}
+                    >
+                        📍 Adreslerim
+                    </button>
 
-                    <button onClick={() => setActiveTab("cards")}>💳 Kartlarım</button>
+                    <button
+                        className={activeTab === "cards" ? "active" : ""}
+                        onClick={() => setActiveTab("cards")}
+                    >
+                        💳 Kartlarım
+                    </button>
 
-                    <button onClick={() => setActiveTab("wishlist")}>❤️ Favoriler</button>
+                    <button
+                        className={activeTab === "wishlist" ? "active" : ""}
+                        onClick={() => setActiveTab("wishlist")}
+                    >
+                        ❤️ Favoriler
+                    </button>
 
                 </div>
 
-
                 {/* CONTENT */}
-
                 <div className="content">
 
-
                     {/* PROFIL */}
-
                     {activeTab === "profile" && (
 
-                        <div className="profileForm">
+                        <div className="cardBox">
 
                             <h2>Profil Bilgileri</h2>
+
+                            <input defaultValue={user?.email} />
 
                             <input placeholder="Ad Soyad" />
 
@@ -55,29 +90,29 @@ function Profile() {
 
                     )}
 
-
-
                     {/* SIPARISLER */}
-
                     {activeTab === "orders" && (
 
-                        <div className="panel">
+                        <div className="cardBox">
 
                             <h2>Siparişlerim</h2>
 
-                            <p>Henüz siparişiniz yok.</p>
+                            <div className="orderCard">
+
+                                <p>#123456789</p>
+                                <span>2 ürün • 12.499 TL</span>
+                                <small>Durum: Kargoda</small>
+
+                            </div>
 
                         </div>
 
                     )}
 
-
-
-                    {/* ADRESLER */}
-
+                    {/* ADRES */}
                     {activeTab === "address" && (
 
-                        <div className="panel">
+                        <div className="cardBox">
 
                             <h2>Adreslerim</h2>
 
@@ -89,19 +124,22 @@ function Profile() {
 
                     )}
 
-
-
-                    {/* KARTLAR */}
-
+                    {/* KART */}
                     {activeTab === "cards" && (
 
-                        <div className="panel">
+                        <div className="cardBox">
 
                             <h2>Kartlarım</h2>
 
-                            <input placeholder="Kart Numarası" />
+                            <div className="creditCard">
 
-                            <input placeholder="Son Kullanma Tarihi" />
+                                <p>**** **** **** 4242</p>
+                                <span>12/26</span>
+
+                            </div>
+
+                            <input placeholder="Kart Numarası" />
+                            <input placeholder="MM/YY" />
 
                             <button className="saveBtn">Kart Kaydet</button>
 
@@ -109,13 +147,10 @@ function Profile() {
 
                     )}
 
-
-
                     {/* FAVORILER */}
-
                     {activeTab === "wishlist" && (
 
-                        <div className="panel">
+                        <div className="cardBox">
 
                             <h2>Favoriler</h2>
 
@@ -124,8 +159,6 @@ function Profile() {
                         </div>
 
                     )}
-
-
 
                 </div>
 
