@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { supabase } from "./lib/supabase"
 
 import ScrollToTop from "./components/ScrollToTop"
-import RefreshToHome from "./components/RefreshToHome"
 
 import Header from "./components/Header"
 import Hero from "./components/Hero"
@@ -22,7 +22,6 @@ import Checkout from "./pages/Checkout"
 import Orders from "./pages/Orders"
 import Profile from "./pages/Profile"
 
-
 function App() {
 
     const [cart, setCart] = useState([])
@@ -34,8 +33,74 @@ function App() {
 
     const [wishlist, setWishlist] = useState([])
 
+    /* 🔥 AUTH + WISHLIST SYNC */
 
-    /* SEPETE EKLE */
+    useEffect(() => {
+
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            async (event, session) => {
+
+                if (session?.user) {
+
+                    const { data } = await supabase
+                        .from("wishlist")
+                        .select("*")
+                        .eq("user_email", session.user.email)
+
+                    setWishlist(data || [])
+
+                } else {
+
+                    setWishlist([])
+
+                }
+
+            }
+        )
+
+        return () => {
+            listener.subscription.unsubscribe()
+        }
+
+    }, [])
+
+    /* ❤️ HEART ANIMATION */
+
+    const flyHeart = (event) => {
+
+        const heart = document.createElement("div")
+        heart.className = "flying-heart"
+        heart.innerText = "❤️"
+
+        const start = event.currentTarget.getBoundingClientRect()
+
+        heart.style.left = start.left + "px"
+        heart.style.top = start.top + "px"
+
+        document.body.appendChild(heart)
+
+        const target = document.getElementById("wishlist-target")
+
+        if (!target) return
+
+        const end = target.getBoundingClientRect()
+
+        requestAnimationFrame(() => {
+
+            heart.style.transform =
+                `translate(${end.left - start.left}px, ${end.top - start.top}px) scale(0.4)`
+
+            heart.style.opacity = "0"
+
+        })
+
+        setTimeout(() => {
+            heart.remove()
+        }, 700)
+
+    }
+
+    /* 🛒 ADD TO CART */
 
     const addToCart = (product) => {
 
@@ -64,9 +129,6 @@ function App() {
 
     }
 
-
-    /* ARTTIR */
-
     const increaseQty = (id) => {
 
         setCart(cart.map(item =>
@@ -76,9 +138,6 @@ function App() {
         ))
 
     }
-
-
-    /* AZALT */
 
     const decreaseQty = (id) => {
 
@@ -93,45 +152,64 @@ function App() {
 
     }
 
-
-    /* SİL */
-
     const removeFromCart = (id) => {
 
         setCart(cart.filter(item => item.id !== id))
 
     }
 
+    /* ❤️ WISHLIST */
 
-    /* WISHLIST */
+    const toggleWishlist = async (product, e) => {
 
-    const toggleWishlist = (product) => {
+        if (e) {
+            e.stopPropagation()
+            flyHeart(e)
+        }
 
-        setWishlist(prev => {
+        const { data: userData } = await supabase.auth.getUser()
 
-            const exists = prev.find(item => item.id === product.id)
+        if (!userData.user) {
+            alert("Giriş yapmalısın")
+            return
+        }
 
-            if (exists) {
+        const userEmail = userData.user.email
 
-                return prev.filter(item => item.id !== product.id)
+        const existing = wishlist.find(w => w.product_id === product.id)
 
-            } else {
+        if (existing) {
 
-                return [...prev, product]
+            await supabase
+                .from("wishlist")
+                .delete()
+                .eq("id", existing.id)
 
+            setWishlist(prev => prev.filter(w => w.id !== existing.id))
+
+        } else {
+
+            const { data } = await supabase
+                .from("wishlist")
+                .insert([{
+                    user_email: userEmail,
+                    product_id: product.id
+                }])
+                .select()
+
+            if (data && data.length > 0) {
+                setWishlist(prev => [...prev, data[0]])
             }
 
-        })
+        }
 
     }
-
 
     return (
 
         <Router>
 
             <ScrollToTop />
-
 
             <Header
                 cartCount={cart.reduce((sum, item) => sum + item.qty, 0)}
@@ -149,7 +227,6 @@ function App() {
                 removeFromCart={removeFromCart}
             />
 
-
             <Routes>
 
                 <Route
@@ -165,7 +242,6 @@ function App() {
                                 toggleWishlist={toggleWishlist}
                                 wishlist={wishlist}
                             />
-
                         </>
                     }
                 />
@@ -183,7 +259,13 @@ function App() {
 
                 <Route
                     path="/product/:id"
-                    element={<ProductDetail addToCart={addToCart} />}
+                    element={
+                        <ProductDetail
+                            addToCart={addToCart}
+                            toggleWishlist={toggleWishlist}
+                            wishlist={wishlist}
+                        />
+                    }
                 />
 
                 <Route
@@ -193,33 +275,20 @@ function App() {
 
                 <Route
                     path="/wishlist"
-                    element={<Wishlist wishlist={wishlist} />}
+                    element={
+                        <Wishlist
+                            wishlist={wishlist}
+                            addToCart={addToCart}
+                            toggleWishlist={toggleWishlist}
+                        />
+                    }
                 />
 
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
-
-                <Route
-                    path="/admin"
-                    element={<Admin />}
-                />
-
-                <Route
-                    path="/checkout"
-                    element={<Checkout cart={cart} />}
-                />
-
-                <Route
-                    path="/orders"
-                    element={<Orders />}
-                />
-
-                <Route
-                    path="/profile"
-                    element={<Profile />}
-                />
+                <Route path="/login" element={<Login />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/checkout" element={<Checkout cart={cart} />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/profile" element={<Profile />} />
 
             </Routes>
 

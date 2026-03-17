@@ -21,6 +21,16 @@ function Checkout({ cart }) {
         (sum, item) => sum + item.price * item.qty, 0
     )
 
+    const [user, setUser] = useState(null)
+
+    useEffect(() => {
+        const getUser = async () => {
+            const { data } = await supabase.auth.getUser()
+            setUser(data.user)
+        }
+        getUser()
+    }, [])
+
     const createOrder = async () => {
 
         if (!name || !email || !address || !cardNumber) {
@@ -31,7 +41,7 @@ function Checkout({ cart }) {
         const { error } = await supabase
             .from("orders")
             .insert([{
-                user_email: email,
+                user_email: user?.email || email,
                 products: cart,
                 total_price: total,
                 address

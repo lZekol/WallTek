@@ -288,7 +288,7 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
             {/* WISHLIST */}
 
-            <Link to="/wishlist" className="wishlistIcon">
+            <Link to="/wishlist" className="wishlistIcon" id="wishlist-target">
 
                 <span className="heartIcon">❤️</span>
 

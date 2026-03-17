@@ -197,3 +197,39 @@
     }
 
 }
+
+.orderTop {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+}
+
+.orderTop span {
+    background: #3aa9ff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.orderProducts {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+
+.orderItemMini {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 5px 8px;
+    border-radius: 6px;
+}
+
+.orderItemMini img {
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 4px;
+}

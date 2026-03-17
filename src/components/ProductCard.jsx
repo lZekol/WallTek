@@ -8,7 +8,7 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
     const navigate = useNavigate()
     const imgRef = useRef()
 
-    const isFav = wishlist?.some(item => item.id === product.id)
+    const isFav = wishlist?.some(item => item.product_id === product.id)
 
     const rating = product.rating || 0
     const reviewCount = product.reviewCount || 0
@@ -57,10 +57,7 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
             <button
                 className="wishlistBtn"
-                onClick={(e) => {
-                    e.stopPropagation()
-                    toggleWishlist(product)
-                }}
+                onClick={(e) => toggleWishlist(product, e)}
             >
                 {isFav ? "❤️" : "🤍"}
             </button>

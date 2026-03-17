@@ -6,6 +6,7 @@ function Profile() {
 
     const [activeTab, setActiveTab] = useState("profile")
     const [user, setUser] = useState(null)
+    const [orders, setOrders] = useState([])
 
     useEffect(() => {
 
@@ -15,6 +16,28 @@ function Profile() {
         }
 
         getUser()
+
+    }, [])
+
+    useEffect(() => {
+
+        const getOrders = async () => {
+
+            const { data: userData } = await supabase.auth.getUser()
+
+            if (!userData.user) return
+
+            const { data } = await supabase
+                .from("orders")
+                .select("*")
+                .eq("user_email", userData.user.email)
+                .order("created_at", { ascending: false })
+
+            setOrders(data || [])
+
+        }
+
+        getOrders()
 
     }, [])
 
@@ -97,13 +120,51 @@ function Profile() {
 
                             <h2>Siparişlerim</h2>
 
-                            <div className="orderCard">
+                            {orders.length === 0 ? (
 
-                                <p>#123456789</p>
-                                <span>2 ürün • 12.499 TL</span>
-                                <small>Durum: Kargoda</small>
+                                <p>Henüz sipariş yok</p>
 
-                            </div>
+                            ) : (
+
+                                orders.map(order => (
+
+                                    <div className="orderCard" key={order.id}>
+
+                                        <div className="orderTop">
+
+                                            <p>#{order.id}</p>
+                                            <span>{order.status}</span>
+
+                                        </div>
+
+                                        <small>
+                                            {new Date(order.created_at).toLocaleDateString()}
+                                        </small>
+
+                                        <div className="orderProducts">
+
+                                            {order.products.map((p, i) => (
+
+                                                <div key={i} className="orderItemMini">
+
+                                                    <img src={p.image} />
+                                                    <span>{p.name}</span>
+
+                                                </div>
+
+                                            ))}
+
+                                        </div>
+
+                                        <h4>
+                                            {order.total_price.toLocaleString("tr-TR")} TL
+                                        </h4>
+
+                                    </div>
+
+                                ))
+
+                            )}
 
                         </div>
 
