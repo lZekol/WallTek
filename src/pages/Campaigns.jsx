@@ -1,11 +1,14 @@
 import "./Campaigns.css"
 import { supabase } from "../lib/supabase"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 function Campaigns({ addToCart }) {
 
     const [campaignProducts, setCampaignProducts] = useState([])
     const [time, setTime] = useState(3600)
+    const navigate = useNavigate()
+    
 
     // SUPABASE CAMPAIGNS
 
@@ -89,9 +92,17 @@ function Campaigns({ addToCart }) {
                                 </div>
                             )}
 
-                            <img src={product.image} alt={product.name} />
+                            <img
+                                src={product.image}
+                                alt={product.name}
+                                onClick={() => navigate(`/product/${product.id}`)}
+                            />
 
-                            <h3>{product.name}</h3>
+                            <h3
+                                onClick={() => navigate(`/product/${product.id}`)}
+                            >
+                                {product.name}
+                            </h3>
 
                             <div className="priceArea">
 

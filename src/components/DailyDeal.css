@@ -1,7 +1,7 @@
 .deal {
 
     width: 100%;
-    padding: 80px 0;
+    padding: 20px 0;
 
     display: flex;
     justify-content: center;
@@ -21,10 +21,11 @@
 
     align-items: center;
 
-    background: linear-gradient(55deg, #b4afb5, #18235f);
+  background: linear-gradient(35deg, #040239, #55c27f, #010b3d);
+
     border-radius: 18px;
 
-    padding: 50px;
+    padding: 30px;
 
     gap: 30px;
 
@@ -34,8 +35,8 @@
 
 .dealImage {
 
-    width: 300px;
-    max-width: 100%;
+    width: 280px;
+    max-width: 90%;
 
 }
 

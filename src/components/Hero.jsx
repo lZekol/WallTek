@@ -27,7 +27,7 @@ function Hero() {
         },
         {
             title: "Profesyonel Gaming Kulaklıklar",
-            desc: "7.1 surround ve düşük gecikmeli oyuncu kulaklıkları",
+            desc: "7.1 surround oyuncu kulaklıkları",
             img: headset,
             link: "/category/headset",
             direction: "right",

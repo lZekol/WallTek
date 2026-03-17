@@ -6,7 +6,7 @@
 
     min-height: 100vh;
 
-    background: linear-gradient(245deg, #3aa9ff, #18235f);
+   background: linear-gradient(120deg, #020024, #090979, #000000);
 
 
 }
@@ -15,7 +15,7 @@
 
 .campaignBanner {
 
-    background: linear-gradient(135deg, #3aa9ff, #1c2f8f);
+    background: linear-gradient(160deg, #020024, #5d12b1, #000000);
 
     padding: 40px;
 
@@ -170,7 +170,7 @@
 
 .campaignCard button {
 
-    background: #3aa9ff;
+    background: linear-gradient(35deg, #020024, #5d12b1, #000000);
 
     border: none;
 
@@ -186,7 +186,7 @@
 
 .campaignCard button:hover {
 
-    background: #1d8cd6;
+    background: #2ced93;
 
 }
 

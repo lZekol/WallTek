@@ -12,6 +12,8 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
     const [allProducts, setAllProducts] = useState([])
     const [priceRange, setPriceRange] = useState(100000)
     const [sortType, setSortType] = useState("default")
+    const [ratingFilter, setRatingFilter] = useState("all")
+    const [campaignOnly, setCampaignOnly] = useState(false)
 
     useEffect(() => {
 
@@ -23,7 +25,7 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
             const { data: reviews } = await supabase
                 .from("reviews")
-                .select("product_id, rating")
+                .select("product_id,rating")
 
             const productsWithRating = products.map(product => {
 
@@ -54,15 +56,25 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
     }, [])
 
-
     let categoryProducts = allProducts
-        .filter(product =>
-            product.category?.toLowerCase() === categoryName?.toLowerCase()
+        .filter(p =>
+            p.category?.toLowerCase() === categoryName?.toLowerCase()
         )
-        .filter(product => product.price <= priceRange)
+        .filter(p => p.price <= priceRange)
 
+    if (campaignOnly) {
 
-    /* SORTING */
+        categoryProducts = categoryProducts.filter(p => p.old_price)
+
+    }
+
+    if (ratingFilter !== "all") {
+
+        categoryProducts = categoryProducts.filter(
+            p => Math.floor(p.rating) >= Number(ratingFilter)
+        )
+
+    }
 
     if (sortType === "priceLow") {
 
@@ -90,54 +102,82 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
                 {categoryName.toUpperCase()}
             </h1>
 
+            <p className="productCount">
+                {categoryProducts.length} ürün bulundu
+            </p>
 
             <div className="categoryLayout">
 
 
-                <div className="filterSidebar">
+                {/* SIDEBAR */}
 
-                    <div className="priceFilter">
+                <div className="sidebarWrapper">
 
-                        <span>
-                            Fiyat: 0 - {Number(priceRange).toLocaleString("tr-TR")} TL
-                        </span>
+                    <div className="filterSidebar">
 
-                        <input
-                            type="range"
-                            min="0"
-                            max="100000"
-                            step="1000"
-                            value={priceRange}
-                            onChange={(e) => setPriceRange(e.target.value)}
-                        />
+                        <div className="priceFilter">
 
-                    </div>
+                            <span>
+                                Fiyat: 0 - {Number(priceRange).toLocaleString("tr-TR")} TL
+                            </span>
 
-                    <div className="sidebarBanner">
+                            <input
+                                type="range"
+                                min="0"
+                                max="100000"
+                                step="1000"
+                                value={priceRange}
+                                onChange={(e) => setPriceRange(e.target.value)}
+                            />
 
-                        <h3>🔥 Gaming Week</h3>
-
-                        <p>Seçili ürünlerde %20 indirim</p>
-
-                        <button>Kampanyayı Gör</button>
-
-                    </div>
+                        </div>
+                        
 
 
-                    <div className="sidebarProduct">
+                        <div className="ratingFilter">
 
-                        <img src="/images/AsusTufGamingF16FX608.png" />
+                            <span>⭐ Rating</span>
 
-                        <p>Asus Tuf Gaming F16X608</p>
+                            <select
+                                value={ratingFilter}
+                                onChange={(e) => setRatingFilter(e.target.value)}
+                            >
 
-                        <span>54.999 TL</span>
+                                <option value="all">Tümü</option>
+                                <option value="4">4⭐ ve üzeri</option>
+                                <option value="3">3⭐ ve üzeri</option>
+                                <option value="2">2⭐ ve üzeri</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div className="campaignFilter">
+
+                            <label>
+
+                                <input
+                                    type="checkbox"
+                                    checked={campaignOnly}
+                                    onChange={(e) => setCampaignOnly(e.target.checked)}
+                                />
+
+                                Sadece indirimli ürünler
+
+                            </label>
+
+                        </div>
 
                     </div>
 
                 </div>
+                
 
 
-                <div>
+                {/* PRODUCTS */}
+
+                <div className="categoryProducts">
 
                     <div className="sortBar">
 
@@ -156,17 +196,22 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
                         </select>
 
                     </div>
+                    
+
+                    
 
 
                     <div className="productsGrid">
 
-                        {categoryProducts.length === 0 ? (
+                        {categoryProducts.length === 0 ?
 
                             Array(8).fill().map((_, i) => (
+
                                 <SkeletonCard key={i} />
+
                             ))
 
-                        ) : (
+                            :
 
                             categoryProducts.map(product => (
 
@@ -180,7 +225,7 @@ function CategoryPage({ addToCart, toggleWishlist, wishlist }) {
 
                             ))
 
-                        )}
+                        }
 
                     </div>
 
