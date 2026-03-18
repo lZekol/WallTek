@@ -88,6 +88,17 @@
 
 }
 
+.oldPrice {
+    text-decoration: line-through;
+    opacity: 0.6;
+    font-size: 16px;
+}
+
+.newPrice {
+    font-size: 34px;
+    font-weight: bold;
+}
+
 .dealPrice span {
 
     font-size: 34px;

@@ -22,7 +22,6 @@
     padding: 8px 14px;
     border-radius: 8px;
     cursor: pointer;
-    margin-left: 10px;
 }
 
 /* SLIDER */
@@ -30,45 +29,61 @@
 .slider {
     display: flex;
     gap: 20px;
-    overflow: hidden;
+    
+    align-items: center;
     justify-content: center;
 }
 
 /* CARD */
 
 .dealCard {
+    position: relative;
+
     min-width: 260px;
+    max-width: 260px;
+
     background: rgba(255, 255, 255, 0.05);
-    padding: 25px;
+    padding: 20px;
     border-radius: 16px;
+
     text-align: center;
     cursor: pointer;
 
-    transition: 0.3s;
-    opacity: 0.4;
-    transform: scale(0.9);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+
+    /* 🔥 EN KRİTİK FIX */
+    pointer-events: auto;
+    z-index: 1;
 }
 
 /* ACTIVE */
 
 .dealCard.active {
+    transform: scale(1.05);
     opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    z-index: 2;
+    z-index: 5;
+}
+
+/* PASSIVE */
+
+.dealCard:not(.active) {
+    opacity: 0.5;
 }
 
 /* IMAGE */
 
 .dealCard img {
     width: 140px;
-    margin-bottom: 15px;
+    height: 140px;
+    object-fit: contain;
+    margin-bottom: 10px;
 }
 
 /* TEXT */
 
 .dealCard h4 {
-    margin-bottom: 10px;
+    font-size: 15px;
+    margin-bottom: 8px;
 }
 
 /* PRICE */
@@ -76,13 +91,13 @@
 .priceBox {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 
 .oldPrice {
     text-decoration: line-through;
+    font-size: 13px;
     opacity: 0.6;
-    font-size: 14px;
 }
 
 .newPrice {
@@ -95,10 +110,55 @@
 
 .dealDiscount {
     position: absolute;
+    top: 10px;
+    left: 10px;
+
     background: #ff4d4d;
-    padding: 6px 10px;
-    border-radius: 8px;
+    padding: 5px 8px;
+    border-radius: 6px;
     font-size: 12px;
-    top: 15px;
-    left: 15px;
+}
+
+/* BUTTON */
+
+.dealBtn {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #3aa9ff;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+
+    /* 🔥 BUTON TIK FIX */
+    position: relative;
+    z-index: 10;
+}
+
+.dealBtn:hover {
+    transform: scale(1.05);
+}
+
+/* 📱 MOBILE */
+
+@media (max-width:768px) {
+
+    .slider {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 10px;
+    }
+
+    .dealCard {
+        min-width: 220px;
+        max-width: 220px;
+
+        opacity: 1 !important;
+        transform: scale(1) !important;
+    }
+
+    .arrows {
+        display: none;
+    }
 }

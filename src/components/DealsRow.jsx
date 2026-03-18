@@ -2,7 +2,7 @@ import "./DealsRow.css"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
 
-function DealsRow() {
+function DealsRow({ addToCart }) {
 
     const navigate = useNavigate()
     const [index, setIndex] = useState(0)
@@ -11,7 +11,7 @@ function DealsRow() {
     const deals = [
         {
             id: 56,
-            name: "TCL 65 inc Akıllı TV ",
+            name: "TCL 65 inc Akıllı TV",
             price: 71932,
             oldPrice: 79999,
             image: "/images/TCL65inç65Q7C4k.png"
@@ -26,16 +26,9 @@ function DealsRow() {
         {
             id: 24,
             name: "MSI 31.5 MAG321",
-            price: 4999,
-            oldPrice: 6999,
+            price: 44999,
+            oldPrice: 47999,
             image: "/images/MSI31.5MAG321UPQD-OLED.png"
-        },
-        {
-            id: 39,
-            name: "Logitech G G203",
-            price: 799,
-            oldPrice: 1199,
-            image: "/images/LogitechGG203.png"
         },
         {
             id: 28,
@@ -43,38 +36,33 @@ function DealsRow() {
             price: 949,
             oldPrice: 1149,
             image: "/images/HavitGamenoteH2002D.png"
+        },
+        {
+            id: 8,
+            name: "Logitech G G203",
+            price: 799,
+            oldPrice: 1199,
+            image: "/images/LogitechGG203.png"
         }
     ]
 
-    /* AUTO SLIDE */
     useEffect(() => {
-
         const interval = setInterval(() => {
             setIndex(prev => (prev + 1) % deals.length)
         }, 3000)
 
         return () => clearInterval(interval)
-
     }, [])
 
-    const next = () => {
-        setIndex((prev) => (prev + 1) % deals.length)
-    }
+    const next = () => setIndex(prev => (prev + 1) % deals.length)
+    const prev = () => setIndex(prev => prev === 0 ? deals.length - 1 : prev - 1)
 
-    const prev = () => {
-        setIndex((prev) =>
-            prev === 0 ? deals.length - 1 : prev - 1
-        )
-    }
-
-    /* MOBILE SWIPE */
-
+    /* SWIPE */
     const handleTouchStart = (e) => {
         touchStart.current = e.touches[0].clientX
     }
 
     const handleTouchEnd = (e) => {
-
         const end = e.changedTouches[0].clientX
 
         if (touchStart.current - end > 50) next()
@@ -86,14 +74,11 @@ function DealsRow() {
         <section className="dealsRow">
 
             <div className="dealsHeader">
-
                 <h2>🔥 Fırsatlar</h2>
-
                 <div className="arrows">
                     <button onClick={prev}>‹</button>
                     <button onClick={next}>›</button>
                 </div>
-
             </div>
 
             <div
@@ -116,11 +101,9 @@ function DealsRow() {
                             onClick={() => navigate(`/product/${item.id}`)}
                         >
 
-                            <span className="dealDiscount">
-                                %{discount}
-                            </span>
+                            <span className="dealDiscount">%{discount}</span>
 
-                            <img src={item.image} />
+                            <img src={item.image} alt={item.name} />
 
                             <h4>{item.name}</h4>
 
@@ -135,6 +118,23 @@ function DealsRow() {
                                 </span>
 
                             </div>
+
+                            {/* 💥 FIX BURASI */}
+                            <button
+                                className="dealBtn"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+
+                                    addToCart({
+                                        id: item.id,
+                                        name: item.name,
+                                        price: item.price,
+                                        image: item.image
+                                    })
+                                }}
+                            >
+                                Sepete Ekle
+                            </button>
 
                         </div>
 

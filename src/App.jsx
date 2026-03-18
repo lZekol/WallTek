@@ -236,7 +236,7 @@ function App() {
                         <>
                             <Hero />
                             <DailyDeal />
-                            <DealsRow />
+                            <DealsRow addToCart={addToCart} />
 
                             <Products
                                 addToCart={addToCart}
