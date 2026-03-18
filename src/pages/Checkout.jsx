@@ -133,7 +133,7 @@ function Checkout({ cart }) {
                         </div>
 
                         <p className="secureText">
-                            🔒 Güvenli ödeme - bilgileriniz saklanmaz
+                            🔒 Güvenli ödeme 
                         </p>
 
                     </div>

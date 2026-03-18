@@ -60,7 +60,7 @@ function Campaigns({ addToCart }) {
 
                 <h2>⚡ Büyük Gaming Kampanyası</h2>
 
-                <p>RTX Laptoplarda kaçırılmayacak fırsatlar</p>
+                <p>%35'e varan indirimler </p>
 
                 <div className="countdown">
 

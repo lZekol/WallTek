@@ -8,6 +8,7 @@ import Header from "./components/Header"
 import Hero from "./components/Hero"
 import Products from "./components/Products"
 import DailyDeal from "./components/DailyDeal"
+import DealsRow from "./components/DealsRow"
 
 import CartDrawer from "./components/CartDrawer"
 import CartToast from "./components/CartToast"
@@ -235,6 +236,7 @@ function App() {
                         <>
                             <Hero />
                             <DailyDeal />
+                            <DealsRow />
 
                             <Products
                                 addToCart={addToCart}

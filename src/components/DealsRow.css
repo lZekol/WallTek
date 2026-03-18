@@ -1,0 +1,104 @@
+.dealsRow {
+    max-width: 1400px;
+    margin: 60px auto;
+    padding: 0 20px;
+    color: white;
+}
+
+/* HEADER */
+
+.dealsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.arrows button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* SLIDER */
+
+.slider {
+    display: flex;
+    gap: 20px;
+    overflow: hidden;
+    justify-content: center;
+}
+
+/* CARD */
+
+.dealCard {
+    min-width: 260px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+
+    transition: 0.3s;
+    opacity: 0.4;
+    transform: scale(0.9);
+}
+
+/* ACTIVE */
+
+.dealCard.active {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    z-index: 2;
+}
+
+/* IMAGE */
+
+.dealCard img {
+    width: 140px;
+    margin-bottom: 15px;
+}
+
+/* TEXT */
+
+.dealCard h4 {
+    margin-bottom: 10px;
+}
+
+/* PRICE */
+
+.priceBox {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.oldPrice {
+    text-decoration: line-through;
+    opacity: 0.6;
+    font-size: 14px;
+}
+
+.newPrice {
+    font-size: 18px;
+    font-weight: bold;
+    color: #3aa9ff;
+}
+
+/* DISCOUNT */
+
+.dealDiscount {
+    position: absolute;
+    background: #ff4d4d;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    top: 15px;
+    left: 15px;
+}

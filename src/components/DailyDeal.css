@@ -8,11 +8,20 @@
 
 }
 
+.dealBadge {
+    display: inline-block;
+    margin-top: 10px;
+    background: #ff4d4d;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
 /* CONTAINER */
 
 .dealContainer {
 
-    max-width: 1200px;
+    max-width: 1400px;
     width: 100%;
 
     display: grid;
@@ -21,11 +30,11 @@
 
     align-items: center;
 
-  background: linear-gradient(35deg, #040239, #55c27f, #010b3d);
+    background: linear-gradient(35deg, #040239, #55c27f, #010b3d);
 
-    border-radius: 18px;
+    border-radius: 16px;
 
-    padding: 30px;
+    padding: 40px;
 
     gap: 30px;
 
@@ -37,7 +46,12 @@
 
     width: 280px;
     max-width: 90%;
+    transition: transform 0.3s ease;
 
+}
+
+.dealContainer:hover .dealImage {
+    transform: scale(1.05);
 }
 
 /* INFO */
