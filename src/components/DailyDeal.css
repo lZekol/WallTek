@@ -1,166 +1,160 @@
 .deal {
-
     width: 100%;
-    padding: 20px 0;
+    padding: 0;
 
-    display: flex;
-    justify-content: center;
-
-}
-
-.dealBadge {
-    display: inline-block;
-    margin-top: 10px;
-    background: #ff4d4d;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 14px;
+    /* ❗ boşluğu kaldırdık */
 }
 
 /* CONTAINER */
 
 .dealContainer {
-
-    max-width: 1400px;
     width: 100%;
+    max-width: 100%;
 
     display: grid;
-    grid-template-columns: 1fr 0.5fr 1fr;
-
+    grid-template-columns: 1fr 1fr 1fr;
 
     align-items: center;
 
-    background: linear-gradient(35deg, #040239, #55c27f, #010b3d);
+    border-radius: 0;
+    /* ❗ köşeleri kaldır → full kaplasın */
 
-    border-radius: 16px;
+    padding: 60px 8%;
 
-    padding: 40px;
+    gap: 40px;
 
-    gap: 30px;
+    /* 🔥 FULL BACKGROUND */
+    background: radial-gradient(circle at 20% 30%, #00ff88 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, #00cfff 0%, transparent 40%),
+        linear-gradient(135deg, #040239, #020024);
 
 }
 
 /* IMAGE */
 
 .dealImage {
-
-    width: 280px;
-    max-width: 90%;
-    transition: transform 0.3s ease;
-
+    width: 340px;
+    max-width: 100%;
+    transition: transform 0.4s ease;
 }
 
 .dealContainer:hover .dealImage {
-    transform: scale(1.05);
+    transform: scale(1.08) rotate(-2deg);
 }
 
 /* INFO */
 
 .dealInfo {
-
     color: white;
-
+    text-align: left;
 }
+
+/* 🔥 BAŞLIK YUKARI ALINDI */
 
 .dealInfo h2 {
-
-    font-size: 32px;
-
-    margin-bottom: 10px;
-
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.1;
 }
 
+/* ürün adı */
+
 .dealInfo p {
+    opacity: 0.9;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
 
-    opacity: .9;
+/* 🔥 NEON BADGE */
 
-    font-size: 16px;
+.dealBadge {
+    display: inline-block;
 
+    background: linear-gradient(135deg, #00ff88, #00cfff);
+    color: #002b20;
+
+    padding: 12px 28px;
+    border-radius: 999px;
+
+    font-weight: bold;
+    font-size: 15px;
+
+    box-shadow: 0 0 20px rgba(0, 255, 150, 0.7);
+
+    transition: 0.3s;
+}
+
+.dealBadge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px rgba(0, 255, 150, 1);
 }
 
 /* PRICE */
 
 .dealPrice {
-
     text-align: right;
-
     color: white;
-
-}
-
-.oldPrice {
-    text-decoration: line-through;
-    opacity: 0.6;
-    font-size: 16px;
-}
-
-.newPrice {
-    font-size: 34px;
-    font-weight: bold;
 }
 
 .dealPrice span {
-
-    font-size: 34px;
-
-    font-weight: bold;
-
+    font-size: 46px;
+    font-weight: 900;
     display: block;
-
-    margin-bottom: 15px;
-
+    margin-bottom: 20px;
 }
 
+/* BUTTON */
+
 .dealPrice button {
-
     background: white;
-
     color: #18235f;
 
     border: none;
 
-    padding: 12px 28px;
-
-    border-radius: 8px;
+    padding: 14px 32px;
+    border-radius: 10px;
 
     cursor: pointer;
-
     font-weight: bold;
 
-    transition: .2s;
-
+    transition: .3s;
 }
 
 .dealPrice button:hover {
-
-    transform: scale(1.05);
-    box-shadow: 0 0 15px #3aa9ff;
-
+    transform: scale(1.08);
+    box-shadow: 0 0 20px #3aa9ff;
 }
 
-@media (max-width:768px) {
+/* 🔥 RESPONSIVE */
+
+@media (max-width: 900px) {
 
     .dealContainer {
-
         grid-template-columns: 1fr;
-
         text-align: center;
-
-        padding: 30px;
-
+        padding: 40px 20px;
+        gap: 30px;
     }
 
     .dealImage {
-
         margin: auto;
-        width: 140px;
+        width: 220px;
+    }
 
+    .dealInfo {
+        text-align: center;
+    }
+
+    .dealInfo h2 {
+        font-size: 32px;
     }
 
     .dealPrice {
-
         text-align: center;
-
     }
 
+    .dealPrice span {
+        font-size: 34px;
+    }
 }

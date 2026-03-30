@@ -21,8 +21,8 @@ function DailyDeal() {
                     <h2>⚡ Günün Fırsatı</h2>
                     <p>Razer Kraken V3 X</p>
 
-                    <span className="dealBadge">
-                        %30 İndirim
+                    <span className="dealBadge neon">
+                       🔥 %30 İNDİRİM
                     </span>
 
                 </div>

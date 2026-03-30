@@ -58,10 +58,11 @@ function Hero() {
 
         <section className="hero" onMouseMove={handleMove}>
 
-            <div className="heroContent">
+            {/* 🔥 BURASI EN KRİTİK FIX */}
+            <div key={animKey} className="heroContent">
 
-                {/* TEXT — always slides in from the left */}
-                <div key={`text-${animKey}`} className="heroText slideInLeft">
+                {/* TEXT */}
+                <div className="heroText slideIn">
 
                     <h1>{slide.title}</h1>
 
@@ -73,16 +74,15 @@ function Hero() {
 
                 </div>
 
-                {/* IMAGE — always slides in from the right */}
+                {/* IMAGE */}
                 <div
                     className="heroImgWrapper"
                     style={{ transform: `translateX(${mouseX * 20}px)` }}
                 >
                     <img
-                        key={`img-${animKey}`}
                         src={slide.img}
                         alt="hero"
-                        className="heroImg slideInRight"
+                        className="heroImg slideIn"
                     />
                 </div>
 
