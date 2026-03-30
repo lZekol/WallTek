@@ -2,6 +2,7 @@ import "./ProductCard.css"
 import { useNavigate } from "react-router-dom"
 import { useRef } from "react"
 import { flyToCart } from "../utils/flyToCart"
+import { FaHeart } from "react-icons/fa"
 
 function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
@@ -18,75 +19,66 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
         : null
 
     const handleAddCart = (e) => {
-
         e.stopPropagation()
-
         const cartIcon = document.querySelector(".cart")
-
         flyToCart(imgRef.current, cartIcon)
-
         addToCart(product)
-
     }
 
     const renderStars = () => {
-
         const stars = []
-        const rounded = Math.round(rating * 2) / 2
+        const rounded = Math.round(rating)
 
         for (let i = 1; i <= 5; i++) {
-
-            if (i <= rounded) stars.push("⭐")
-            else stars.push("☆")
-
+            stars.push(i <= rounded ? "★" : "☆")
         }
 
-        return stars.join(" ")
-
+        return stars.join("")
     }
 
     return (
 
         <div className="productCard">
 
+            {/* DISCOUNT */}
             {discount && (
                 <div className="discountBadge">
                     %{discount}
                 </div>
             )}
 
+            {/* WISHLIST */}
             <button
-                className="wishlistBtn"
+                className={`wishlistBtn ${isFav ? "active" : ""}`}
                 onClick={(e) => toggleWishlist(product, e)}
             >
-                {isFav ? "❤️" : "🤍"}
+                <FaHeart />
             </button>
 
+            {/* IMAGE */}
             <div
                 className="imageWrapper"
                 onClick={() => navigate(`/product/${product.id}`)}
             >
-
                 <img
                     ref={imgRef}
                     src={product.image}
                     alt={product.name}
                     loading="lazy"
                 />
-
             </div>
 
-            <h3
-                onClick={() => navigate(`/product/${product.id}`)}
-            >
+            {/* TITLE */}
+            <h3 onClick={() => navigate(`/product/${product.id}`)}>
                 {product.name}
             </h3>
 
+            {/* RATING */}
             <div className="stars">
 
                 {reviewCount > 0 ? (
                     <>
-                        {renderStars()}
+                        <span className="starText">{renderStars()}</span>
 
                         <span className="ratingNumber">
                             {rating.toFixed(1)}
@@ -104,6 +96,7 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
             </div>
 
+            {/* PRICE */}
             <div className="priceBox">
 
                 {product.old_price && (
@@ -118,6 +111,7 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
 
             </div>
 
+            {/* BUTTON */}
             <button
                 className="addCartBtn"
                 onClick={handleAddCart}

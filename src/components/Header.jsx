@@ -3,8 +3,6 @@ import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../lib/supabase"
 
-import products from "../data/products"
-
 import { FaShoppingCart, FaSearch, FaUser, FaBars } from "react-icons/fa"
 
 function Header({ cartCount, openCart, setSearch, wishlistCount }) {
@@ -55,6 +53,15 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
         getUser()
 
+        /* Listen for auth changes so header updates instantly on login/logout */
+        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null)
+        })
+
+        return () => {
+            listener.subscription.unsubscribe()
+        }
+
     }, [])
 
 
@@ -99,6 +106,7 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
         <header className="header">
 
+            {/* LOGO */}
             <div className="logo" onClick={() => navigate("/")}>
                 WallTek
             </div>
@@ -239,42 +247,8 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
             </nav>
 
-            {/* USER */}
 
-            {user ? (
-
-                <div className="userArea">
-
-                    <div
-                        className="userProfile"
-                        onClick={() => navigate("/profile")}
-                    >
-
-                        <FaUser />
-                        <span>{user.email}</span>
-
-                    </div>
-
-                    <button onClick={logout} className="logoutBtn">
-                        Çıkış
-                    </button>
-
-                </div>
-
-            ) : (
-
-                <Link to="/login" className="loginBtn">
-
-                    <FaUser />
-                    Giriş Yap
-
-                </Link>
-
-            )}
-
-
-            {/* CART */}
-
+            {/* CART — always visible */}
             <div className="cart" ref={cartRef} onClick={openCart}>
 
                 <FaShoppingCart />
@@ -286,30 +260,51 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
             </div>
 
 
-            {/* WISHLIST */}
+            {/* USER AREA — logged in */}
 
-            <Link to="/wishlist" className="wishlistIcon" id="wishlist-target">
+            {user ? (
 
-                <span className="heartIcon">❤️</span>
+                <div className="userArea">
 
-                <span className="wishlistText">
-                    Favoriler
-                </span>
+                    <div
+                        className="userProfile"
+                        onClick={() => navigate("/profile")}
+                    >
+                        <FaUser />
+                        <span>{user.email}</span>
+                    </div>
 
-                {wishlistCount > 0 && (
+                    <Link to="/wishlist" className="wishlistIcon" id="wishlist-target">
 
-                    <span className="wishlistCount">
-                        {wishlistCount}
-                    </span>
+                        <span className="heartIcon">❤️</span>
 
-                )}
+                        <span className="wishlistText">Favoriler</span>
 
-            </Link>
+                        {wishlistCount > 0 && (
+                            <span className="wishlistCount">{wishlistCount}</span>
+                        )}
 
+                    </Link>
 
-            <Link to="/orders" className="ordersLink">
-                📦 Siparişlerim
-            </Link>
+                    <Link to="/orders" className="ordersLink">
+                        📦 Siparişlerim
+                    </Link>
+
+                    <button onClick={logout} className="logoutBtn">
+                        Çıkış
+                    </button>
+
+                </div>
+
+            ) : (
+
+                /* NOT logged in — only show login button */
+                <Link to="/login" className="loginBtn">
+                    <FaUser />
+                    Giriş Yap
+                </Link>
+
+            )}
 
 
             {/* MOBILE MENU BUTTON */}
@@ -322,9 +317,12 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
             </div>
 
 
-            {/* MOBILE MENU */}
-            {menuOpen && <div className="menuOverlay" onClick={() => setMenuOpen(false)}></div>}
+            {/* MOBILE MENU OVERLAY */}
+            {menuOpen && (
+                <div className="menuOverlay" onClick={() => setMenuOpen(false)} />
+            )}
 
+            {/* MOBILE MENU */}
             {menuOpen && (
 
                 <div className={`mobileMenu ${menuOpen ? "open" : ""}`}>
@@ -349,15 +347,19 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
 
                     <Link to="/campaigns" onClick={() => setMenuOpen(false)}>Kampanyalar</Link>
 
-                    <Link to="/orders" onClick={() => setMenuOpen(false)}>Siparişlerim</Link>
+                    {/* Only show these links when logged in */}
+                    {user && (
+                        <>
+                            <Link to="/wishlist" onClick={() => setMenuOpen(false)}>❤️ Favoriler</Link>
+                            <Link to="/orders" onClick={() => setMenuOpen(false)}>📦 Siparişlerim</Link>
+                        </>
+                    )}
 
                 </div>
 
+            )}
 
-            )
-            }
-
-        </header >
+        </header>
 
     )
 

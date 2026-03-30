@@ -16,44 +16,40 @@ function Hero() {
             desc: "RTX destekli en yeni laptop modelleri",
             img: laptop,
             link: "/category/laptop",
-            direction: "left"
         },
         {
             title: "Gaming Monitörler",
             desc: "240hz ve 4K monitör fırsatları",
             img: monitor,
             link: "/category/monitor",
-            direction: "right"
         },
         {
             title: "Profesyonel Gaming Kulaklıklar",
             desc: "7.1 surround oyuncu kulaklıkları",
             img: headset,
             link: "/category/headset",
-            direction: "right",
-            textDirection: "right"
         }
     ]
 
     const [index, setIndex] = useState(0)
     const [mouseX, setMouseX] = useState(0)
+    const [animKey, setAnimKey] = useState(0)
 
     useEffect(() => {
-
         const interval = setInterval(() => {
-
             setIndex(prev => (prev + 1) % slides.length)
-
+            setAnimKey(prev => prev + 1)
         }, 5000)
-
         return () => clearInterval(interval)
-
     }, [])
 
+    const goTo = (i) => {
+        setIndex(i)
+        setAnimKey(prev => prev + 1)
+    }
+
     const handleMove = (e) => {
-
         setMouseX(e.clientX / window.innerWidth - 0.5)
-
     }
 
     const slide = slides[index]
@@ -64,13 +60,8 @@ function Hero() {
 
             <div className="heroContent">
 
-                <div
-                    key={index}
-                    className={`heroText ${slide.textDirection === "right"
-                            ? "slideRightText"
-                            : "slideText"
-                        }`}
-                >
+                {/* TEXT — always slides in from the left */}
+                <div key={`text-${animKey}`} className="heroText slideInLeft">
 
                     <h1>{slide.title}</h1>
 
@@ -82,23 +73,17 @@ function Hero() {
 
                 </div>
 
+                {/* IMAGE — always slides in from the right */}
                 <div
                     className="heroImgWrapper"
-                    style={{
-                        transform: `translateX(${mouseX * 20}px)`
-                    }}
+                    style={{ transform: `translateX(${mouseX * 20}px)` }}
                 >
-
                     <img
-                        key={index}
+                        key={`img-${animKey}`}
                         src={slide.img}
                         alt="hero"
-                        className={`heroImg ${slide.direction === "left"
-                                ? "slideLeftImg"
-                                : "slideRightImg"
-                            }`}
+                        className="heroImg slideInRight"
                     />
-
                 </div>
 
             </div>
@@ -107,28 +92,24 @@ function Hero() {
 
                 <button
                     className="arrow"
-                    onClick={() =>
-                        setIndex((index - 1 + slides.length) % slides.length)
-                    }
+                    onClick={() => goTo((index - 1 + slides.length) % slides.length)}
                 >
                     ❮
                 </button>
 
                 <div className="heroDots">
-
-                    {slides.map((s, i) => (
+                    {slides.map((_, i) => (
                         <span
                             key={i}
                             className={i === index ? "activeDot" : "dot"}
-                            onClick={() => setIndex(i)}
+                            onClick={() => goTo(i)}
                         />
                     ))}
-
                 </div>
 
                 <button
                     className="arrow"
-                    onClick={() => setIndex((index + 1) % slides.length)}
+                    onClick={() => goTo((index + 1) % slides.length)}
                 >
                     ❯
                 </button>

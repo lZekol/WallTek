@@ -15,9 +15,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
 
     height: 100%;
     overflow: hidden;
+    gap: 8px;
 
 }
 
@@ -57,7 +59,7 @@
 
 .productCard:hover img {
 
-    transform: scale(1.08);
+    transform: scale(1.05);
 
 }
 
@@ -72,6 +74,14 @@
     font-size: 16px;
 
     min-height: 40px;
+
+    display: -webkit-box;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+
+    text-align: left !important;
 
     cursor: pointer;
 
@@ -97,6 +107,7 @@
 
     color: white;
     font-size: 13px;
+    font-weight: 500;
 
 }
 
@@ -132,7 +143,7 @@
 
 .addCartBtn {
 
-    background: #4aa8ff;
+    background: linear-gradient(135deg, #4aa8ff, #3a97ea);
 
     border: none;
 
@@ -146,9 +157,9 @@
 
     width: 100%;
 
-    font-weight: 500;
+    font-weight: 600;
 
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 
 }
 
@@ -156,8 +167,9 @@
 
     background: #3a97ea;
 
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 
+    box-shadow: 0 8px 20px rgba(74, 168, 255, 0.4)
 }
 
 /* wishlist */
@@ -196,6 +208,20 @@
 
     transform: scale(1.15);
 
+}
+
+.wishlistBtn svg {
+    color: #bbb;
+    transition: 0.2s;
+}
+
+.wishlistBtn:hover svg {
+    color: red;
+}
+
+/* aktif */
+.wishlistBtn.active svg {
+    color: red;
 }
 
 /* tablet */
@@ -255,10 +281,19 @@
 
 }
 
+.productInfo {
+    flex-grow: 1;
+}
+
+.addToCartBtn {
+    margin-top: auto;
+}
+
 .priceBox {
 
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
 
     margin-bottom: 15px;
 
@@ -270,7 +305,7 @@
 
     color: #8f96c9;
 
-    font-size: 14px;
+    font-size: 13px;
 
 }
 
@@ -291,13 +326,13 @@
     top: 0;
     left: 0;
 
-    background: #ff3c3c;
+    background: linear-gradient(135deg, #ff3c3c, #ff6b6b);
 
     color: white;
 
     padding: 6px 12px;
 
-    border-radius: 6px;
+    border-radius: 8px;
 
     font-size: 12px;
 
@@ -307,4 +342,10 @@
 
     border-bottom-right-radius: 10px;
 
+}
+
+.productCard .priceBox {
+    width: 100%;
+    align-items: flex-start !important;
+    text-align: left !important;
 }

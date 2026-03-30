@@ -7,6 +7,7 @@ function Products({ addToCart, search = "", toggleWishlist, wishlist = [] }) {
 
     const [allProducts, setAllProducts] = useState([])
     const [loading, setLoading] = useState(true)
+    
 
     const fetchProducts = async () => {
 
@@ -87,6 +88,8 @@ function Products({ addToCart, search = "", toggleWishlist, wishlist = [] }) {
     const displayProducts = search
         ? searchResults
         : featuredProducts.slice(0, 8)
+
+        
 
     return (
 
