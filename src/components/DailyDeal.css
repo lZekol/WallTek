@@ -2,6 +2,7 @@
     width: 100%;
     padding: 0;
 
+
     /* ❗ boşluğu kaldırdık */
 }
 
@@ -27,6 +28,9 @@
     background: radial-gradient(circle at 20% 30%, #00ff88 0%, transparent 40%),
         radial-gradient(circle at 80% 70%, #00cfff 0%, transparent 40%),
         linear-gradient(135deg, #040239, #020024);
+
+    transform: translateY(0);
+    transition: transform 0.4s ease;
 
 }
 

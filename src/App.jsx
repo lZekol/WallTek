@@ -70,8 +70,13 @@ function App() {
     const flyHeart = (event) => {
 
         const heart = document.createElement("div")
-        heart.className = "flying-heart"
         heart.innerText = "❤️"
+
+        heart.style.position = "fixed"
+        heart.style.zIndex = "9999"
+        heart.style.fontSize = "20px"
+        heart.style.pointerEvents = "none"
+        heart.style.transition = "all 0.7s ease"
 
         const start = event.currentTarget.getBoundingClientRect()
 
@@ -80,25 +85,14 @@ function App() {
 
         document.body.appendChild(heart)
 
-        const target = document.getElementById("wishlist-target")
-
-        if (!target) return
-
-        const end = target.getBoundingClientRect()
-
         requestAnimationFrame(() => {
-
-            heart.style.transform =
-                `translate(${end.left - start.left}px, ${end.top - start.top}px) scale(0.4)`
-
+            heart.style.transform = "translateY(-120px) scale(0.6)"
             heart.style.opacity = "0"
-
         })
 
         setTimeout(() => {
             heart.remove()
         }, 700)
-
     }
 
     /* 🛒 ADD TO CART */
@@ -203,7 +197,6 @@ function App() {
             }
 
         }
-
     }
 
     return (
