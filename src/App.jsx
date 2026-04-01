@@ -110,7 +110,6 @@ function AppInner() {
     const toggleWishlist = async (product, e) => {
         if (e) { e.stopPropagation(); flyHeart(e) }
 
-        /* Giriş yoksa → login sayfasına yönlendir, toast/alert yok */
         if (!user) {
             navigate("/login", { state: { from: window.location.pathname } })
             return
@@ -136,7 +135,6 @@ function AppInner() {
         <>
             <ScrollToTop />
 
-            {/* ✅ user prop Header'a geçiliyor — Header artık kendi user state'ini tutmuyor */}
             <Header
                 cartCount={cart.reduce((sum, item) => sum + item.qty, 0)}
                 wishlistCount={wishlist.length}
@@ -167,16 +165,22 @@ function AppInner() {
                 <Route path="/category/:categoryName" element={<CategoryPage {...sharedProps} />} />
                 <Route path="/product/:id" element={<ProductDetail {...sharedProps} />} />
                 <Route path="/campaigns" element={<Campaigns     {...sharedProps} />} />
-
-                <Route path="/wishlist" element={
-                    <Wishlist wishlist={wishlist} addToCart={addToCart} toggleWishlist={toggleWishlist} user={user} />
-                } />
+                <Route path="/wishlist" element={<Wishlist      {...sharedProps} />} />
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/checkout" element={<Checkout cart={cart} />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/profile" element={<Profile user={user} />} />
+                <Route path="/orders" element={<Orders user={user} />} />
+
+                {/* ✅ Profile'a toggleWishlist ve addToCart da geçiliyor */}
+                <Route path="/profile" element={
+                    <Profile
+                        user={user}
+                        wishlist={wishlist}
+                        toggleWishlist={toggleWishlist}
+                        addToCart={addToCart}
+                    />
+                } />
             </Routes>
 
             <CartToast show={toast} productName={toastProduct} />
@@ -184,7 +188,6 @@ function AppInner() {
     )
 }
 
-/* useNavigate Router içinde çalışır — AppInner Router'ın içine alındı */
 function App() {
     return (
         <Router>

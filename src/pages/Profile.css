@@ -1,6 +1,6 @@
 /* ─── PROFILE PAGE ────────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 :root {
     --blue: #3aa9ff;
@@ -19,7 +19,7 @@
     padding-top: 110px;
     padding-bottom: 80px;
     min-height: 100vh;
-    background: #04040f;
+    background: linear-gradient(120deg, #020024, #090979, #000000);
     color: white;
     font-family: 'DM Sans', sans-serif;
 }
@@ -34,9 +34,7 @@
     align-items: start;
 }
 
-/* ────────────────────────────────
-   SIDEBAR
-──────────────────────────────── */
+/* ── SIDEBAR ── */
 .profileSidebar {
     position: sticky;
     top: 110px;
@@ -44,22 +42,21 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    backdrop-filter: blur(12px);
 }
 
 .sidebarHeader {
-    padding: 24px 20px 20px;
+    padding: 22px 18px 18px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
 .avatarCircle {
-    width: 48px;
-    height: 48px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,7 +65,7 @@
     font-size: 20px;
     color: white;
     flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(58, 169, 255, 0.35);
+    box-shadow: 0 4px 14px rgba(58, 169, 255, 0.3);
 }
 
 .sidebarUserInfo {
@@ -95,7 +92,7 @@
 }
 
 .sidebarNav {
-    padding: 10px 10px;
+    padding: 8px 8px;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -106,7 +103,7 @@
     align-items: center;
     gap: 10px;
     width: 100%;
-    padding: 11px 14px;
+    padding: 10px 13px;
     background: transparent;
     border: none;
     border-radius: var(--radius-sm);
@@ -141,13 +138,23 @@
 }
 
 .tabIcon {
-    font-size: 16px;
+    font-size: 15px;
     flex-shrink: 0;
 }
 
-/* ────────────────────────────────
-   CONTENT
-──────────────────────────────── */
+.tabBadge {
+    margin-left: auto;
+    background: #ff4d4d;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* ── CONTENT ── */
 .profileContent {
     min-width: 0;
 }
@@ -156,10 +163,10 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 28px 28px;
+    padding: 26px 26px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
     animation: fadeUp 0.3s ease both;
 }
 
@@ -180,7 +187,6 @@
     font-size: 20px;
     font-weight: 700;
     margin: 0 0 4px;
-    color: white;
 }
 
 .contentCardHeader p {
@@ -189,13 +195,11 @@
     margin: 0;
 }
 
-/* ────────────────────────────────
-   FORM
-──────────────────────────────── */
+/* ── FORM ── */
 .formGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: 12px;
 }
 
 .formGroup {
@@ -209,8 +213,8 @@
 }
 
 .formGroup label {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     color: var(--text-muted);
@@ -221,7 +225,7 @@
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 11px 14px;
+    padding: 10px 13px;
     color: white;
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
@@ -234,18 +238,18 @@
 
 .contentCard input::placeholder,
 .contentCard textarea::placeholder {
-    color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.22);
 }
 
 .contentCard input:focus,
 .contentCard textarea:focus {
-    border-color: rgba(58, 169, 255, 0.55);
-    background: rgba(58, 169, 255, 0.06);
+    border-color: rgba(58, 169, 255, 0.5);
+    background: rgba(58, 169, 255, 0.05);
     box-shadow: 0 0 0 3px rgba(58, 169, 255, 0.1);
 }
 
 .inputDisabled {
-    opacity: 0.5 !important;
+    opacity: 0.45 !important;
     cursor: not-allowed !important;
 }
 
@@ -255,30 +259,30 @@
 }
 
 .formActions {
-    padding-top: 4px;
+    padding-top: 2px;
 }
 
 .saveBtn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    height: 44px;
-    padding: 0 28px;
+    height: 42px;
+    padding: 0 26px;
     border: none;
     border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
     color: white;
     font-family: 'Syne', sans-serif;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
     transition: transform 0.15s, box-shadow 0.2s, filter 0.15s;
-    box-shadow: 0 4px 18px rgba(58, 169, 255, 0.3);
+    box-shadow: 0 4px 16px rgba(58, 169, 255, 0.28);
 }
 
 .saveBtn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 26px rgba(58, 169, 255, 0.45);
+    box-shadow: 0 6px 22px rgba(58, 169, 255, 0.42);
     filter: brightness(1.06);
 }
 
@@ -287,15 +291,15 @@
 }
 
 .saveBtn:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
     transform: none;
 }
 
 .spinner {
     display: inline-block;
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: white;
     border-radius: 50%;
@@ -308,13 +312,11 @@
     }
 }
 
-/* ────────────────────────────────
-   ORDERS
-──────────────────────────────── */
+/* ── ORDERS ── */
 .orderList {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
 }
 
 .orderCard {
@@ -329,14 +331,13 @@
 }
 
 .orderCard:hover {
-    border-color: rgba(58, 169, 255, 0.25);
+    border-color: rgba(58, 169, 255, 0.2);
 }
 
 .orderCardTop {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 10px;
 }
 
 .orderId {
@@ -365,27 +366,39 @@
 
 .orderProducts {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
 }
 
 .orderProductChip {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    font-size: 12px;
-    color: var(--text-dim);
+    gap: 10px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
 }
 
 .orderProductChip img {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
     background: white;
-    border-radius: 4px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.orderProductName {
+    display: block;
+    font-size: 13px;
+    color: white;
+}
+
+.orderProductPrice {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
 }
 
 .orderCardBottom {
@@ -402,18 +415,68 @@
     font-size: 16px;
 }
 
-/* ────────────────────────────────
-   CREDIT CARD VISUAL
-──────────────────────────────── */
+/* ── SAVED CARDS ── */
+.savedCards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.savedCardRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+}
+
+.savedCardInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.savedCardNum {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.savedCardExp {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.deleteCardBtn {
+    background: rgba(255, 77, 77, 0.1);
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    color: #ff8080;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.18s;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.deleteCardBtn:hover {
+    background: rgba(255, 77, 77, 0.2);
+}
+
+/* ── CREDIT CARD VISUAL ── */
 .creditCardVisual {
     background: linear-gradient(135deg, #1a5fff 0%, #0a2a6a 50%, #061030 100%);
     border-radius: 14px;
     padding: 22px 22px 18px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    box-shadow: 0 8px 32px rgba(26, 95, 255, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 16px;
+    box-shadow: 0 8px 28px rgba(26, 95, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
 }
@@ -427,19 +490,18 @@
     height: 180px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.04);
-    pointer-events: none;
 }
 
 .ccChip {
-    width: 38px;
-    height: 28px;
+    width: 36px;
+    height: 26px;
     border-radius: 5px;
-    background: linear-gradient(135deg, #f0c060 0%, #d4924a 100%);
+    background: linear-gradient(135deg, #f0c060, #d4924a);
 }
 
 .ccNumber {
     font-family: 'Syne', sans-serif;
-    font-size: 18px;
+    font-size: 17px;
     letter-spacing: 3px;
     font-weight: 600;
     color: white;
@@ -447,15 +509,15 @@
 
 .ccBottom {
     display: flex;
-    gap: 30px;
+    gap: 28px;
 }
 
 .ccLabel {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.5);
     line-height: 1.6;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
 }
 
 .ccLabel strong {
@@ -465,20 +527,25 @@
     letter-spacing: 0;
 }
 
-/* ────────────────────────────────
-   EMPTY STATE
-──────────────────────────────── */
+/* ── WISHLIST GRID ── */
+.wishlistProductGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+}
+
+/* ── EMPTY STATE ── */
 .emptyState {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 48px 20px;
-    gap: 12px;
+    gap: 10px;
     color: var(--text-muted);
 }
 
 .emptyIcon {
-    font-size: 40px;
+    font-size: 38px;
     opacity: 0.6;
 }
 
@@ -487,9 +554,7 @@
     margin: 0;
 }
 
-/* ────────────────────────────────
-   RESPONSIVE
-──────────────────────────────── */
+/* ── RESPONSIVE ── */
 @media (max-width: 900px) {
     .profileLayout {
         grid-template-columns: 1fr;
@@ -514,10 +579,6 @@
     .tabActiveBar {
         display: none;
     }
-
-    .sidebarTabActive {
-        background: var(--blue-glow) !important;
-    }
 }
 
 @media (max-width: 600px) {
@@ -530,10 +591,14 @@
     }
 
     .contentCard {
-        padding: 20px 16px;
+        padding: 18px 14px;
     }
 
     .formGrid {
         grid-template-columns: 1fr;
+    }
+
+    .wishlistProductGrid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

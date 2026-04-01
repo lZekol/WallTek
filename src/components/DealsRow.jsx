@@ -2,152 +2,134 @@ import "./DealsRow.css"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
 
+const deals = [
+    { id: 56, name: "TCL 65 inç Akıllı TV", price: 71932, oldPrice: 79999, image: "/images/TCL65inç65Q7C4k.png" },
+    { id: 1, name: "RTX 4070", price: 18999, oldPrice: 22999, image: "/images/rtx4070.png" },
+    { id: 24, name: "MSI 31.5 MAG321", price: 44999, oldPrice: 47999, image: "/images/MSI31.5MAG321UPQD-OLED.png" },
+    { id: 28, name: "Havit Gamenote H2002D", price: 949, oldPrice: 1149, image: "/images/HavitGamenoteH2002D.png" },
+    { id: 8, name: "Logitech G G203", price: 799, oldPrice: 1199, image: "/images/LogitechGG203.png" },
+]
+
 function DealsRow({ addToCart }) {
 
     const navigate = useNavigate()
     const [index, setIndex] = useState(0)
+    const [addedId, setAddedId] = useState(null)
     const touchStart = useRef(null)
+    const intervalRef = useRef(null)
 
-    const deals = [
-        {
-            id: 56,
-            name: "TCL 65 inc Akıllı TV",
-            price: 71932,
-            oldPrice: 79999,
-            image: "/images/TCL65inç65Q7C4k.png"
-        },
-        {
-            id: 1,
-            name: "RTX 4070",
-            price: 18999,
-            oldPrice: 22999,
-            image: "/images/rtx4070.png"
-        },
-        {
-            id: 24,
-            name: "MSI 31.5 MAG321",
-            price: 44999,
-            oldPrice: 47999,
-            image: "/images/MSI31.5MAG321UPQD-OLED.png"
-        },
-        {
-            id: 28,
-            name: "Havit Gamenote H2002D",
-            price: 949,
-            oldPrice: 1149,
-            image: "/images/HavitGamenoteH2002D.png"
-        },
-        {
-            id: 8,
-            name: "Logitech G G203",
-            price: 799,
-            oldPrice: 1199,
-            image: "/images/LogitechGG203.png"
-        }
-    ]
-
-    useEffect(() => {
-        const interval = setInterval(() => {
+    const startAuto = () => {
+        intervalRef.current = setInterval(() => {
             setIndex(prev => (prev + 1) % deals.length)
-        }, 3000)
-
-        return () => clearInterval(interval)
-    }, [])
-
-    const next = () => setIndex(prev => (prev + 1) % deals.length)
-    const prev = () => setIndex(prev => prev === 0 ? deals.length - 1 : prev - 1)
-
-    /* SWIPE */
-    const handleTouchStart = (e) => {
-        touchStart.current = e.touches[0].clientX
+        }, 3500)
     }
 
-    const handleTouchEnd = (e) => {
-        const end = e.changedTouches[0].clientX
+    useEffect(() => {
+        startAuto()
+        return () => clearInterval(intervalRef.current)
+    }, [])
 
-        if (touchStart.current - end > 50) next()
-        if (touchStart.current - end < -50) prev()
+    const goTo = (i) => {
+        clearInterval(intervalRef.current)
+        setIndex(i)
+        startAuto()
+    }
+
+    const next = () => goTo((index + 1) % deals.length)
+    const prev = () => goTo(index === 0 ? deals.length - 1 : index - 1)
+
+    const handleTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
+    const handleTouchEnd = (e) => {
+        const diff = touchStart.current - e.changedTouches[0].clientX
+        if (diff > 50) next()
+        if (diff < -50) prev()
+    }
+
+    const handleAddCart = (e, item) => {
+        e.stopPropagation()
+        addToCart({ id: item.id, name: item.name, price: item.price, image: item.image })
+        setAddedId(item.id)
+        setTimeout(() => setAddedId(null), 1500)
+    }
+
+    /* visible cards: active ± 1 */
+    const getPos = (i) => {
+        const total = deals.length
+        const diff = (i - index + total) % total
+        if (diff === 0) return "center"
+        if (diff === 1) return "right"
+        if (diff === total - 1) return "left"
+        return "hidden"
     }
 
     return (
-
         <section className="dealsRow">
 
             <div className="dealsHeader">
-                <h2>🔥 Fırsatlar</h2>
-                <div className="arrows">
-                    <button onClick={prev}>‹</button>
-                    <button onClick={next}>›</button>
+                <div className="dealsTitleGroup">
+                    <span className="dealsFlame">🔥</span>
+                    <h2>Günün Fırsatları</h2>
+                </div>
+                <div className="dealsArrows">
+                    <button onClick={prev} aria-label="Önceki">‹</button>
+                    <button onClick={next} aria-label="Sonraki">›</button>
                 </div>
             </div>
 
             <div
-                className="slider"
+                className="dealsSlider"
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             >
-
                 {deals.map((item, i) => {
-
-                    const discount = Math.round(
-                        ((item.oldPrice - item.price) / item.oldPrice) * 100
-                    )
+                    const pos = getPos(i)
+                    const discount = Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)
+                    const added = addedId === item.id
 
                     return (
-
                         <div
                             key={item.id}
-                            className={`dealCard ${i === index ? "active" : ""}`}
-                            onClick={() => navigate(`/product/${item.id}`)}
+                            className={`dealCard dealCard--${pos}`}
+                            onClick={() => pos === "center" && navigate(`/product/${item.id}`)}
                         >
+                            <span className="dealDiscountBadge">%{discount}</span>
 
-                            <span className="dealDiscount">%{discount}</span>
-
-                            <img src={item.image} alt={item.name} />
+                            <div className="dealImageWrap">
+                                <img src={item.image} alt={item.name} />
+                            </div>
 
                             <h4>{item.name}</h4>
 
-                            <div className="priceBox">
-
-                                <span className="oldPrice">
-                                    {item.oldPrice.toLocaleString("tr-TR")} TL
-                                </span>
-
-                                <span className="newPrice">
-                                    {item.price.toLocaleString("tr-TR")} TL
-                                </span>
-
+                            <div className="dealPriceBox">
+                                <span className="dealOldPrice">{item.oldPrice.toLocaleString("tr-TR")} TL</span>
+                                <span className="dealNewPrice">{item.price.toLocaleString("tr-TR")} TL</span>
                             </div>
 
-                            {/* 💥 FIX BURASI */}
                             <button
-                                className="dealBtn"
-                                onClick={(e) => {
-                                    e.stopPropagation()
-
-                                    addToCart({
-                                        id: item.id,
-                                        name: item.name,
-                                        price: item.price,
-                                        image: item.image
-                                    })
-                                }}
+                                className={`dealBtn${added ? " dealBtn--added" : ""}`}
+                                onClick={(e) => handleAddCart(e, item)}
                             >
-                                Sepete Ekle
+                                {added ? "✓ Eklendi" : "Sepete Ekle"}
                             </button>
-
                         </div>
-
                     )
-
                 })}
+            </div>
 
+            {/* dot indicators */}
+            <div className="dealsDots">
+                {deals.map((_, i) => (
+                    <button
+                        key={i}
+                        className={`dealDot${i === index ? " dealDot--active" : ""}`}
+                        onClick={() => goTo(i)}
+                        aria-label={`Slayt ${i + 1}`}
+                    />
+                ))}
             </div>
 
         </section>
-
     )
-
 }
 
 export default DealsRow
