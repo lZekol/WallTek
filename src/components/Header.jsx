@@ -2,337 +2,179 @@ import "./Header.css"
 import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "../lib/supabase"
+import { FaShoppingCart, FaSearch, FaUser, FaBars, FaHeart } from "react-icons/fa"
 
-import { FaShoppingCart, FaSearch, FaUser, FaBars } from "react-icons/fa"
-
-function Header({ cartCount, openCart, setSearch, wishlistCount }) {
+/* user artık prop'tan geliyor — Header kendi içinde auth tutmuyor */
+function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
 
     const navigate = useNavigate()
     const location = useLocation()
     const cartRef = useRef()
+    const searchRef = useRef()
 
     const [searchText, setSearchText] = useState("")
     const [allProducts, setAllProducts] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(-1)
-
-    const [user, setUser] = useState(null)
-
     const [menuOpen, setMenuOpen] = useState(false)
 
-    const searchRef = useRef()
-
+    /* ── ürün listesi (autocomplete için) ── */
     useEffect(() => {
-
-        const fetchProducts = async () => {
-
-            const { data } = await supabase
-                .from("products")
-                .select("*")
-
-            if (data) {
-                setAllProducts(data)
-            }
-
-        }
-
-        fetchProducts()
-
-    }, [])
-
-
-    /* USER */
-
-    useEffect(() => {
-
-        const getUser = async () => {
-
-            const { data } = await supabase.auth.getUser()
-            setUser(data.user)
-
-        }
-
-        getUser()
-
-        /* Listen for auth changes so header updates instantly on login/logout */
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null)
+        supabase.from("products").select("*").then(({ data }) => {
+            if (data) setAllProducts(data)
         })
-
-        return () => {
-            listener.subscription.unsubscribe()
-        }
-
     }, [])
 
-
-    const logout = async () => {
-
-        await supabase.auth.signOut()
-        setUser(null)
-        navigate("/")
-
-    }
-
-
+    /* ── sayfa değişince arama sıfırla ── */
     useEffect(() => {
-
         setSearchText("")
         setSearch("")
         setSelectedIndex(-1)
-
     }, [location.pathname])
 
-
-    const searchResults = allProducts
-        .filter(product =>
-            product.name.toLowerCase().includes(searchText.toLowerCase())
-        )
-        .slice(0, 5)
-
-
-    const handleSearch = (e) => {
-
-        if (e.key === "Enter") {
-
-            setSearch(searchText)
-            navigate("/")
-
-        }
-
+    /* ── logout ── */
+    const logout = async () => {
+        await supabase.auth.signOut()
+        navigate("/")
     }
 
+    /* ── Favoriler tıklaması: giriş yoksa login'e yönlendir ── */
+    const handleWishlistClick = (e) => {
+        if (!user) {
+            e.preventDefault()
+            navigate("/login", { state: { from: "/wishlist" } })
+        }
+        // giriş varsa Link normal davranır → /wishlist
+    }
+
+    const searchResults = allProducts
+        .filter(p => p.name.toLowerCase().includes(searchText.toLowerCase()))
+        .slice(0, 5)
+
+    const handleSearch = (e) => {
+        if (e.key === "Enter") {
+            setSearch(searchText)
+            navigate("/")
+        }
+    }
 
     return (
-
         <header className="header">
 
             {/* LOGO */}
-            <div className="logo" onClick={() => navigate("/")}>
-                WallTek
-            </div>
-
+            <div className="logo" onClick={() => navigate("/")}>WallTek</div>
 
             {/* SEARCH */}
-
             <div className="searchBox" ref={searchRef}>
-
                 <FaSearch />
-
                 <input
                     className="search"
                     placeholder="Ürün ara..."
                     value={searchText}
-
-                    onChange={(e) => {
-
-                        setSearchText(e.target.value)
-                        setSearch(e.target.value)
-
-                    }}
-
+                    onChange={(e) => { setSearchText(e.target.value); setSearch(e.target.value) }}
                     onKeyDown={handleSearch}
                 />
-
                 {searchText && searchResults.length > 0 && (
-
                     <div className="searchDropdown">
-
                         {searchResults.map((product, index) => (
-
                             <div
                                 key={product.id}
                                 className={`searchItem ${index === selectedIndex ? "active" : ""}`}
-                                onClick={() => {
-
-                                    navigate(`/product/${product.id}`)
-                                    setSearchText("")
-                                    setSearch("")
-                                }}
+                                onClick={() => { navigate(`/product/${product.id}`); setSearchText(""); setSearch("") }}
                             >
-
                                 <img src={product.image} alt="" />
-
                                 <div>
-
-                                    <span className="searchName">
-                                        {product.name}
-                                    </span>
-
-                                    <span className="searchPrice">
-                                        {product.price.toLocaleString("tr-TR")} TL
-                                    </span>
-
+                                    <span className="searchName">{product.name}</span>
+                                    <span className="searchPrice">{product.price.toLocaleString("tr-TR")} TL</span>
                                 </div>
-
                             </div>
-
                         ))}
-
                     </div>
-
                 )}
-
             </div>
 
-
             {/* NAV */}
-
             <nav className="nav">
-
                 <a onClick={() => navigate("/")}>Anasayfa</a>
 
                 <div className="dropdown">
-
                     <a>Kategoriler</a>
-
                     <div className="dropdownMenu">
-
                         <Link to="/category/laptop">Laptop</Link>
-
                         <Link to="/category/gpu">Ekran Kartı</Link>
-
                         <Link to="/category/monitor">Monitör</Link>
-
                         <Link to="/category/headset">Kulaklık</Link>
-
                         <Link to="/category/mouse">Mouse</Link>
-
                         <Link to="/category/keyboard">Klavye</Link>
-
                         <Link to="/category/tv">Televizyon</Link>
-
                     </div>
-
                 </div>
 
-                <a
-                    onClick={() => {
-
-                        navigate("/")
-
-                        setTimeout(() => {
-
-                            const el = document.getElementById("products")
-
-                            if (el) {
-
-                                const headerOffset = 90
-
-                                const elementPosition =
-                                    el.getBoundingClientRect().top + window.pageYOffset
-
-                                const offsetPosition = elementPosition - headerOffset
-
-                                window.scrollTo({
-                                    top: offsetPosition,
-                                    behavior: "smooth"
-                                })
-
-                                el.classList.add("highlight")
-
-                                setTimeout(() => {
-                                    el.classList.remove("highlight")
-                                }, 1200)
-
-                            }
-
-                        }, 120)
-
-                    }}
-                >
-                    Popüler
-                </a>
+                <a onClick={() => {
+                    navigate("/")
+                    setTimeout(() => {
+                        const el = document.getElementById("products")
+                        if (el) {
+                            const top = el.getBoundingClientRect().top + window.pageYOffset - 90
+                            window.scrollTo({ top, behavior: "smooth" })
+                            el.classList.add("highlight")
+                            setTimeout(() => el.classList.remove("highlight"), 1200)
+                        }
+                    }, 120)
+                }}>Popüler</a>
 
                 <Link to="/campaigns">Kampanyalar</Link>
-
             </nav>
 
-
-            {/* CART — always visible */}
+            {/* CART */}
             <div className="cart" ref={cartRef} onClick={openCart}>
-
                 <FaShoppingCart />
-
-                <span className={`cartCount ${cartCount > 0 ? "pop" : ""}`}>
-                    {cartCount}
-                </span>
-
+                <span className={`cartCount ${cartCount > 0 ? "pop" : ""}`}>{cartCount}</span>
             </div>
 
+            {/* ✅ FAVORİLER — her zaman görünür, giriş yoksa /login'e yönlendiriyor */}
+            <Link
+                to="/wishlist"
+                className="wishlistIcon"
+                id="wishlist-target"
+                onClick={handleWishlistClick}
+            >
+                <FaHeart className="heartIcon" />
+                <span className="wishlistText">Favoriler</span>
+                {wishlistCount > 0 && (
+                    <span className="wishlistCount">{wishlistCount}</span>
+                )}
+            </Link>
 
-            {/* USER AREA — logged in */}
-
+            {/* USER AREA */}
             {user ? (
-
                 <div className="userArea">
-
-                    <div
-                        className="userProfile"
-                        onClick={() => navigate("/profile")}
-                    >
+                    <div className="userProfile" onClick={() => navigate("/profile")}>
                         <FaUser />
                         <span>{user.email}</span>
                     </div>
-
-                    <Link to="/wishlist" className="wishlistIcon" id="wishlist-target">
-
-                        <span className="heartIcon">❤️</span>
-
-                        <span className="wishlistText">Favoriler</span>
-
-                        {wishlistCount > 0 && (
-                            <span className="wishlistCount">{wishlistCount}</span>
-                        )}
-
-                    </Link>
-
-                    <Link to="/orders" className="ordersLink">
-                        📦 Siparişlerim
-                    </Link>
-
-                    <button onClick={logout} className="logoutBtn">
-                        Çıkış
-                    </button>
-
+                    <Link to="/orders" className="ordersLink">📦 Siparişlerim</Link>
+                    <button onClick={logout} className="logoutBtn">Çıkış</button>
                 </div>
-
             ) : (
-
-                /* NOT logged in — only show login button */
                 <Link to="/login" className="loginBtn">
                     <FaUser />
                     Giriş Yap
                 </Link>
-
             )}
 
-
             {/* MOBILE MENU BUTTON */}
-
-            <div
-                className="mobileMenuBtn"
-                onClick={() => setMenuOpen(!menuOpen)}
-            >
+            <div className="mobileMenuBtn" onClick={() => setMenuOpen(!menuOpen)}>
                 <FaBars />
             </div>
 
+            {menuOpen && <div className="menuOverlay" onClick={() => setMenuOpen(false)} />}
 
-            {/* MOBILE MENU OVERLAY */}
             {menuOpen && (
-                <div className="menuOverlay" onClick={() => setMenuOpen(false)} />
-            )}
-
-            {/* MOBILE MENU */}
-            {menuOpen && (
-
                 <div className={`mobileMenu ${menuOpen ? "open" : ""}`}>
-
                     <Link to="/" onClick={() => setMenuOpen(false)}>Anasayfa</Link>
 
                     <div className="mobileCategories">
-
                         <span>Kategoriler</span>
-
                         <Link to="/category/laptop" onClick={() => setMenuOpen(false)}>Laptop</Link>
                         <Link to="/category/gpu" onClick={() => setMenuOpen(false)}>Ekran Kartı</Link>
                         <Link to="/category/monitor" onClick={() => setMenuOpen(false)}>Monitör</Link>
@@ -340,29 +182,27 @@ function Header({ cartCount, openCart, setSearch, wishlistCount }) {
                         <Link to="/category/mouse" onClick={() => setMenuOpen(false)}>Mouse</Link>
                         <Link to="/category/keyboard" onClick={() => setMenuOpen(false)}>Klavye</Link>
                         <Link to="/category/tv" onClick={() => setMenuOpen(false)}>Televizyon</Link>
-
                     </div>
 
                     <Link to="/" onClick={() => setMenuOpen(false)}>Popüler</Link>
-
                     <Link to="/campaigns" onClick={() => setMenuOpen(false)}>Kampanyalar</Link>
 
-                    {/* Only show these links when logged in */}
+                    {/* Favoriler mobilde her zaman görünür */}
+                    <Link
+                        to="/wishlist"
+                        onClick={(e) => { setMenuOpen(false); handleWishlistClick(e) }}
+                    >
+                        ❤️ Favoriler {wishlistCount > 0 && `(${wishlistCount})`}
+                    </Link>
+
                     {user && (
-                        <>
-                            <Link to="/wishlist" onClick={() => setMenuOpen(false)}>❤️ Favoriler</Link>
-                            <Link to="/orders" onClick={() => setMenuOpen(false)}>📦 Siparişlerim</Link>
-                        </>
+                        <Link to="/orders" onClick={() => setMenuOpen(false)}>📦 Siparişlerim</Link>
                     )}
-
                 </div>
-
             )}
 
         </header>
-
     )
-
 }
 
 export default Header

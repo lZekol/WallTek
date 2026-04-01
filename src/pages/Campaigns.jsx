@@ -1,139 +1,111 @@
 import "./Campaigns.css"
 import { supabase } from "../lib/supabase"
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import ProductCard from "../components/ProductCard"
 
-function Campaigns({ addToCart }) {
+function Campaigns({ addToCart, toggleWishlist, wishlist, user }) {
 
     const [campaignProducts, setCampaignProducts] = useState([])
-    const [time, setTime] = useState(3600)
-    const navigate = useNavigate()
-    
+    const [loading, setLoading] = useState(true)
+    const [time, setTime] = useState(24 * 3600)
 
-    // SUPABASE CAMPAIGNS
-
+    /* ── fetch ── */
     useEffect(() => {
-
         const fetchCampaigns = async () => {
-
             const { data } = await supabase
                 .from("products")
                 .select("*")
                 .eq("is_campaign", true)
-
-            if (data) setCampaignProducts(data)
-
+            setCampaignProducts(data || [])
+            setLoading(false)
         }
-
         fetchCampaigns()
-
     }, [])
 
-    // COUNTDOWN
-
+    /* ── countdown ── */
     useEffect(() => {
-
         const interval = setInterval(() => {
-
-            setTime(prev => {
-
-                if (prev <= 0) return 0
-                return prev - 1
-
-            })
-
+            setTime(prev => (prev <= 0 ? 0 : prev - 1))
         }, 1000)
-
         return () => clearInterval(interval)
-
     }, [])
 
-    const hours = Math.floor(time / 3600)
-    const minutes = Math.floor((time % 3600) / 60)
-    const seconds = time % 60
+    const pad = n => String(n).padStart(2, "0")
+    const hrs = pad(Math.floor(time / 3600))
+    const mins = pad(Math.floor((time % 3600) / 60))
+    const secs = pad(time % 60)
 
     return (
-
         <section className="campaigns">
+            <div className="campaignsInner">
 
-            <div className="campaignBanner">
+                {/* ── BANNER ── */}
+                <div className="campaignBanner">
+                    <div className="bannerLeft">
+                        <div className="bannerEyebrow">
+                            <span className="bannerPulse" />
+                            Sınırlı Süreli Fırsat
+                        </div>
+                        <h2>⚡ Büyük Gaming<br />Kampanyası</h2>
+                        <p>Seçili ürünlerde %35'e varan indirimler</p>
+                    </div>
 
-                <h2>⚡ Büyük Gaming Kampanyası</h2>
+                    <div className="bannerRight">
+                        <span className="countdownLabel">Kampanya bitimine kalan</span>
+                        <div className="countdown">
+                            <div className="countUnit">
+                                <span className="countNum">{hrs}</span>
+                                <span className="countSub">Saat</span>
+                            </div>
+                            <span className="countSep">:</span>
+                            <div className="countUnit">
+                                <span className="countNum">{mins}</span>
+                                <span className="countSub">Dakika</span>
+                            </div>
+                            <span className="countSep">:</span>
+                            <div className="countUnit">
+                                <span className="countNum">{secs}</span>
+                                <span className="countSub">Saniye</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <p>%35'e varan indirimler </p>
+                {/* ── SECTION HEADER ── */}
+                <div className="campaignSectionHeader">
+                    <h3>Kampanyalı Ürünler</h3>
+                    <span className="campaignCount">
+                        {loading ? "…" : `${campaignProducts.length} ürün`}
+                    </span>
+                </div>
 
-                <div className="countdown">
-
-                    <span>{hours}h</span>
-                    <span>{minutes}m</span>
-                    <span>{seconds}s</span>
-
+                {/* ── GRID — artık ProductCard kullanıyor ── */}
+                <div className="campaignGrid">
+                    {loading ? (
+                        Array(6).fill(null).map((_, i) => (
+                            <div key={i} className="campaignSkeleton" />
+                        ))
+                    ) : campaignProducts.length === 0 ? (
+                        <div className="campaignEmpty">
+                            Şu an aktif kampanya bulunmuyor.
+                        </div>
+                    ) : (
+                        campaignProducts.map(product => (
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                addToCart={addToCart}
+                                toggleWishlist={toggleWishlist}
+                                wishlist={wishlist}
+                                user={user}
+                            />
+                        ))
+                    )}
                 </div>
 
             </div>
-
-            <div className="campaignGrid">
-
-                {campaignProducts.map(product => {
-
-                    const discount = product.old_price
-                        ? Math.round(
-                            ((product.old_price - product.price) / product.old_price) * 100
-                        )
-                        : 0
-
-                    return (
-
-                        <div className="campaignCard" key={product.id}>
-
-                            {discount > 0 && (
-                                <div className="discountBadge">
-                                    %{discount}
-                                </div>
-                            )}
-
-                            <img
-                                src={product.image}
-                                alt={product.name}
-                                onClick={() => navigate(`/product/${product.id}`)}
-                            />
-
-                            <h3
-                                onClick={() => navigate(`/product/${product.id}`)}
-                            >
-                                {product.name}
-                            </h3>
-
-                            <div className="priceArea">
-
-                                {product.old_price && (
-                                    <span className="oldPrice">
-                                        {product.old_price.toLocaleString("tr-TR")} TL
-                                    </span>
-                                )}
-
-                                <span className="newPrice">
-                                    {product.price.toLocaleString("tr-TR")} TL
-                                </span>
-
-                            </div>
-
-                            <button onClick={() => addToCart(product)}>
-                                Sepete Ekle
-                            </button>
-
-                        </div>
-
-                    )
-
-                })}
-
-            </div>
-
         </section>
-
     )
-
 }
 
 export default Campaigns

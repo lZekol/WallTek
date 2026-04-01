@@ -1,214 +1,282 @@
+/* ─── CAMPAIGNS PAGE ──────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
 .campaigns {
-
-    padding-top: 120px;
-    padding-left: 80px;
-    padding-right: 80px;
-
+    padding-top: 110px;
+    padding-bottom: 80px;
     min-height: 100vh;
-
-   background: linear-gradient(120deg, #020024, #090979, #000000);
-
-
+    background: #f5f5f5;
+    color: #1a1a1a;
+    font-family: 'DM Sans', sans-serif;
 }
 
-/* BANNER */
+.campaignsInner {
+    max-width: 1260px;
+    margin: 0 auto;
+    padding: 0 28px;
+}
 
+/* ── BANNER ── */
 .campaignBanner {
-
-    background: linear-gradient(160deg, #020024, #5d12b1, #000000);
-
-    padding: 40px;
-
-    border-radius: 14px;
-
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 48px 48px;
     margin-bottom: 40px;
+    background: linear-gradient(135deg, #0a0a2e 0%, #12105a 40%, #1a0a40 70%, #040412 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+}
 
-    color: white;
+.campaignBanner::before,
+.campaignBanner::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    pointer-events: none;
+    animation: orbFloat 7s ease-in-out infinite alternate;
+}
 
-    text-align: center;
+.campaignBanner::before {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #5d12b1 0%, transparent 70%);
+    top: -80px;
+    left: -60px;
+    opacity: 0.5;
+}
 
+.campaignBanner::after {
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, #1a6fff 0%, transparent 70%);
+    bottom: -60px;
+    right: 80px;
+    opacity: 0.4;
+    animation-delay: -3.5s;
+    animation-direction: alternate-reverse;
+}
+
+@keyframes orbFloat {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+
+    to {
+        transform: translate(20px, 15px) scale(1.08);
+    }
+}
+
+.bannerLeft {
+    position: relative;
+    z-index: 1;
+}
+
+.bannerEyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 77, 77, 0.15);
+    border: 1px solid rgba(255, 77, 77, 0.35);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ff8080;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+}
+
+.bannerPulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ff4d4d;
+    box-shadow: 0 0 6px #ff4d4d;
+    animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .5;
+        transform: scale(.7);
+    }
 }
 
 .campaignBanner h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0 0 8px;
+    color: white;
+}
 
-    font-size: 32px;
+.bannerLeft>p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
 
-    margin-bottom: 10px;
+.bannerRight {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
 
-
-
+.countdownLabel {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 600;
 }
 
 .countdown {
-
     display: flex;
-
-    gap: 15px;
-
-    justify-content: center;
-
-    margin-top: 15px;
-
+    align-items: center;
+    gap: 6px;
 }
 
-.countdown span {
-
-    background: #0f1535;
-
-    padding: 12px 18px;
-
-    border-radius: 8px;
-
-    font-weight: bold;
-
-    font-size: 16px;
-
-}
-
-/* GRID */
-
-.campaignGrid {
-
-    display: grid;
-
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-
-    gap: 40px;
-
-    justify-content: center;
-
-    margin-top: 40px;
-
-}
-
-/* CARD */
-
-.campaignCard {
-
-    background: #0f1535;
-
-    border-radius: 14px;
-
-    padding: 25px;
-
-    text-align: center;
-
-    position: relative;
-
-    transition: .3s;
-
-
-
+.countUnit {
     display: flex;
-
     flex-direction: column;
-
-    justify-content: center;
-    min-height: 300px;
+    align-items: center;
+    gap: 4px;
 }
 
-.campaignCard:hover {
-
-    transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-
-}
-
-.campaignCard img {
-
-    width: 150px;
-    margin: 0 auto 15px;
-
-    transition: .3s;
-
-}
-
-.campaignCard:hover img {
-
-    transform: scale(1.1);
-
-}
-
-.campaignCard h3 {
-
+.countNum {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
     color: white;
-    font-size: 18px;
-    margin-bottom: 10px;
-
+    min-width: 58px;
+    text-align: center;
+    line-height: 1;
 }
 
-/* PRICE */
+.countSub {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.4);
+}
 
-.priceArea {
+.countSep {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 16px;
+}
 
+/* ── SECTION HEADER ── */
+.campaignSectionHeader {
     display: flex;
-
-    gap: 10px;
-
-    justify-content: center;
-
-    margin-bottom: 15px;
-
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-.oldPrice {
-
-    text-decoration: line-through;
-    color: #8a8a8a;
-
-}
-
-.newPrice {
-
-    color: #3aa9ff;
+.campaignSectionHeader h3 {
+    font-family: 'Syne', sans-serif;
     font-size: 20px;
-    font-weight: bold;
-
+    font-weight: 700;
+    margin: 0;
+    color: #1a1a1a;
 }
 
-/* BUTTON */
-
-.campaignCard button {
-
-    background: linear-gradient(35deg, #020024, #5d12b1, #000000);
-
-    border: none;
-
-    padding: 10px 20px;
-
-    border-radius: 8px;
-
-    color: white;
-
-    cursor: pointer;
-
+.campaignCount {
+    font-size: 13px;
+    color: #888;
 }
 
-.campaignCard button:hover {
-
-    background: #2ced93;
-
+/* ── GRID ── */
+.campaignGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
 }
 
-/* DISCOUNT */
+/* skeleton */
+.campaignSkeleton {
+    background: #e8e8e8;
+    border-radius: 12px;
+    min-height: 320px;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
 
-.discountBadge {
+@keyframes shimmer {
 
-    position: absolute;
+    0%,
+    100% {
+        opacity: 0.5;
+    }
 
-    top: 10px;
-    left: 10px;
+    50% {
+        opacity: 1;
+    }
+}
 
-    background: #ff3b3b;
+/* empty */
+.campaignEmpty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 15px;
+}
 
-    padding: 6px 12px;
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+    .campaignBanner {
+        padding: 32px 24px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-    border-radius: 6px;
+    .bannerRight {
+        align-items: flex-start;
+    }
+}
 
-    font-size: 14px;
+@media (max-width: 600px) {
+    .campaignsInner {
+        padding: 0 14px;
+    }
 
-    color: white;
+    .campaignBanner h2 {
+        font-size: 24px;
+    }
 
-    font-weight: bold;
+    .countNum {
+        font-size: 20px;
+        padding: 10px 12px;
+        min-width: 46px;
+    }
 
+    .campaignGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
 }
