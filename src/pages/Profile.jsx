@@ -121,6 +121,22 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
 
     /* ── save card ── */
     const handleSaveCard = async () => {
+        const clean = cardNumber.replace(/\s/g, "")
+
+        if (clean.length !== 16) {
+            showToast("Kart numarası geçersiz", "error")
+            return
+        }
+
+        if (!/^\d{2}\/\d{2}$/.test(cardExpiry)) {
+            showToast("Son kullanma tarihi geçersiz", "error")
+            return
+        }
+
+        if (!cardCvv || cardCvv.length !== 3) {
+            showToast("CVV geçersiz", "error")
+            return
+        }
         if (!cardNumber || !cardExpiry) {
             showToast("Kart numarası ve son kullanma tarihi gerekli", "error")
             return
@@ -131,7 +147,7 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
             .from("cards")
             .insert([{
                 user_id: user.id,
-                last4,
+                last4: clean.slice(-4),
                 expiry: cardExpiry,
                 name: cardName || fullName || "Kart Sahibi",
             }])

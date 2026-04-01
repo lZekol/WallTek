@@ -210,3 +210,123 @@
     }
 
 }
+
+.savedCard {
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.savedCard.active {
+    border: 1px solid #00ffae;
+    background: rgba(0, 255, 174, 0.1);
+}
+
+.paymentSuccess {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.check {
+    font-size: 80px;
+    color: #00ffae;
+    animation: pop 0.4s ease;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+/* 🔥 PAYMENT SWITCH */
+
+.paymentSwitch {
+    display: flex;
+    gap: 15px;
+}
+
+.paymentSwitch label {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.paymentSwitch label.active {
+    border: 1px solid #3aa9ff;
+    background: rgba(58, 169, 255, 0.1);
+}
+
+.paymentSwitch input {
+    accent-color: #3aa9ff;
+}
+
+/* 🔥 SAVED CARD UI */
+
+.savedCard {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.savedCard:hover {
+    border-color: #3aa9ff;
+}
+
+.savedCard.active {
+    border: 1px solid #3aa9ff;
+    background: rgba(58, 169, 255, 0.1);
+}
+
+.cardLeft {
+    display: flex;
+    align-items: center;
+}
+
+.cardInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.cardInfo p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.cardInfo span {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* 🔥 SUCCESS TEXT */
+
+.paymentSuccess p {
+    margin-top: 10px;
+    font-size: 18px;
+}
