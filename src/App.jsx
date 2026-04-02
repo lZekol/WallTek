@@ -10,6 +10,7 @@ import DailyDeal from "./components/DailyDeal"
 import DealsRow from "./components/DealsRow"
 import CartDrawer from "./components/CartDrawer"
 import CartToast from "./components/CartToast"
+import Footer from "./components/Footer"
 
 import CategoryPage from "./pages/CategoryPage"
 import ProductDetail from "./pages/ProductDetail"
@@ -159,6 +160,7 @@ function AppInner() {
                         <DailyDeal />
                         <DealsRow addToCart={addToCart} />
                         <Products {...sharedProps} search={search} />
+                        <Footer />
                     </>
                 } />
 

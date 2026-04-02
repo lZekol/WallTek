@@ -53,7 +53,7 @@ function Products({ addToCart, search = "", toggleWishlist, wishlist = [], user 
     const featuredProducts = allProducts.filter(
         p => p.featured === true || p.featured === "true"
     )
-    const displayProducts = search ? searchResults : featuredProducts.slice(0, 8)
+    const displayProducts = search ? searchResults : featuredProducts.slice(0, 24)
 
     return (
         <section id="products" className="products highlightTarget">
