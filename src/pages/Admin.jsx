@@ -44,13 +44,25 @@ function Admin() {
 
     const addProduct = async () => {
 
+        if (!name || !price || !image) {
+            alert("Tüm alanları doldur")
+            return
+        }
+
+        const parsedPrice = Number(price)
+
+        if (isNaN(parsedPrice)) {
+            alert("Fiyat geçersiz")
+            return
+        }
+
         const { error } = await supabase
             .from("products")
             .insert([
                 {
-                    name,
-                    price: Number(price),
-                    image: `/images/${image}`,
+                    name: name.trim(),
+                    price: parsedPrice,
+                    image: `/images/${image.trim()}`,
                     category,
                     featured
                 }
@@ -58,6 +70,7 @@ function Admin() {
 
         if (error) {
 
+            console.log(error) // 🔥 bunu ekledim
             alert("Ürün eklenemedi")
 
         } else {
