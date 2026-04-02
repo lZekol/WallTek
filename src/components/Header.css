@@ -3,85 +3,183 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 80px;
-
-    background: rgba(10, 10, 40, 0.85);
-    backdrop-filter: blur(12px);
-
+    max-width: 100vw;
+    overflow: visible;
+    /* dropdown'ın dışarı çıkabilmesi için */
+    height: 70px;
+    background: rgba(10, 10, 40, 0.9);
+    backdrop-filter: blur(14px);
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     padding: 0 20px;
-
+    gap: 16px;
     z-index: 9999;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: .3s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    box-sizing: border-box;
+    transition: background .3s;
 }
 
 .header.scrolled {
-    background: rgba(5, 5, 30, 0.95);
+    background: rgba(5, 5, 30, 0.97);
 }
 
-/* LOGO */
-
+/* ── LOGO ── */
 .logo {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 22px;
+    font-weight: 800;
     color: white;
     cursor: pointer;
     flex-shrink: 0;
+    letter-spacing: -0.5px;
 }
 
-/* SEARCH */
-
+/* ── SEARCH BOX ── */
 .searchBox {
     position: relative;
     display: flex;
     align-items: center;
-    max-width: 380px;
+    flex: 1;
+    max-width: 360px;
 }
 
-/* Input fills the box */
 .search {
-    width: 300px;
+    width: 100%;
     height: 38px;
-
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
-
-    /* leave room for the icon on the right */
-    padding-left: 12px;
-    padding-right: 38px;
-
-    background: white;
+    padding: 0 40px 0 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+    box-sizing: border-box;
 }
 
-/* Icon sits inside, on the right */
-.searchBox svg {
+.search::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.search:focus {
+    border-color: rgba(58, 169, 255, 0.5);
+    background: rgba(58, 169, 255, 0.07);
+    box-shadow: 0 0 0 3px rgba(58, 169, 255, 0.1);
+}
+
+.searchIconBtn {
     position: absolute;
-    right: 10px;
-    color: #555;
-    font-size: 15px;
-    pointer-events: none;
-    /* so clicks pass through to the input */
+    right: 0;
+    top: 0;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: color .18s, background .18s;
+    z-index: 2;
 }
 
-/* NAV */
+.searchIconBtn:hover {
+    color: #3aa9ff;
+    background: rgba(58, 169, 255, 0.1);
+}
 
+/* ── SEARCH DROPDOWN ── */
+.searchDropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    min-width: 280px;
+    background: #0f1440;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    z-index: 99999;
+    /* hero'nun üstünde */
+}
+
+.searchItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background .15s;
+    position: relative;
+}
+
+.searchItem:hover,
+.searchItem--active {
+    background: rgba(58, 169, 255, 0.1);
+}
+
+.searchItem img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    background: white;
+    border-radius: 6px;
+    padding: 3px;
+    flex-shrink: 0;
+}
+
+.searchName {
+    display: block;
+    font-size: 13px;
+    color: white;
+    font-weight: 500;
+}
+
+.searchPrice {
+    display: block;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 1px;
+}
+
+.searchItemArrow {
+    position: absolute;
+    right: 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 1px 6px;
+}
+
+.searchFooter {
+    display: flex;
+    gap: 14px;
+    padding: 7px 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ── NAV ── */
 .nav {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 22px;
+    flex-shrink: 0;
 }
 
 .nav a {
-    color: white;
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
-    transition: .25s;
+    transition: color .2s;
+    white-space: nowrap;
     position: relative;
 }
 
@@ -93,7 +191,7 @@
     width: 0%;
     height: 2px;
     background: #3aa9ff;
-    transition: .25s;
+    transition: width .25s;
 }
 
 .nav a:hover::after {
@@ -104,91 +202,94 @@
     color: #3aa9ff;
 }
 
-/* DROPDOWN */
-
+/* ── DROPDOWN ── */
 .dropdown {
     position: relative;
+    display: inline-block;
 }
 
 .dropdownMenu {
     position: absolute;
     top: 100%;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
 
-    background: #0f0f3c;
-
-    padding: 12px;
-
-    border-radius: 10px;
-
+    background: rgba(8, 10, 45, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
-
-    gap: 10px;
-
-    min-width: 160px;
-
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-
+    gap: 4px;
+    min-width: 120px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-10px);
 
-    transition: .25s;
+    transition: opacity .22s, transform .22s, visibility .22s;
+    /* ✅ hero'nun tamamen üstünde */
+    z-index: 99999;
+    pointer-events: none;
+    margin-top: 3px;
+    padding-bottom: 10px;
 }
 
 .dropdownMenu a {
-    display: block;
-    color: white;
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     font-size: 14px;
-    padding: 6px 4px;
-    transition: .2s;
+    padding: 8px 10px;
+    border-radius: 7px;
+    transition: background .15s, color .15s;
+    display: block;
 }
 
 .dropdownMenu a:hover {
-    color: #3aa9ff;
+    color: white;
+    background: rgba(58, 169, 255, 0.12);
+}
+
+.dropdownMenu a::after {
+    display: none;
 }
 
 .dropdown:hover .dropdownMenu {
-    display: flex;
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
 }
 
-/* CART */
-
+/* ── CART ── */
 .cart {
     position: relative;
     display: flex;
     align-items: center;
     cursor: pointer;
     flex-shrink: 0;
-}
-
-.cart svg {
     color: white;
     font-size: 20px;
+    transition: color .2s;
+}
+
+.cart:hover {
+    color: #3aa9ff;
 }
 
 .cartCount {
     position: absolute;
-    top: -6px;
-    right: -8px;
-
-    background: red;
+    top: -7px;
+    right: -9px;
+    background: #ff3b3b;
     color: white;
-    font-size: 12px;
-
+    font-size: 11px;
     width: 18px;
     height: 18px;
-
     border-radius: 50%;
-
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 700;
 }
 
 .cartCount.pop {
@@ -209,13 +310,13 @@
     }
 }
 
-/* USER AREA (logged in) */
-
+/* ── USER AREA ── */
 .userArea {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     color: white;
+    flex-shrink: 0;
 }
 
 .userProfile {
@@ -224,18 +325,20 @@
     gap: 6px;
     cursor: pointer;
     color: white;
-    transition: .2s;
+    transition: color .2s;
     white-space: nowrap;
+    font-size: 14px;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .userProfile:hover {
     color: #3aa9ff;
 }
 
-/* LOGIN BUTTON (logged out) */
-
 .loginBtn {
-    height: 40px;
+    height: 38px;
     padding: 0 14px;
     background: #3aa9ff;
     border-radius: 8px;
@@ -244,88 +347,90 @@
     text-decoration: none;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 6px;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 600;
     flex-shrink: 0;
+    transition: background .2s;
 }
 
 .loginBtn:hover {
     background: #1d8cd6;
 }
 
-/* LOGOUT BUTTON */
-
 .logoutBtn {
-    background: #ff4d4d;
-    border: none;
+    background: rgba(255, 77, 77, 0.2);
+    border: 1px solid rgba(255, 77, 77, 0.4);
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
-    color: white;
-    font-size: 14px;
+    color: #ff8080;
+    font-size: 13px;
     flex-shrink: 0;
-    transition: .2s;
+    transition: background .18s;
+    white-space: nowrap;
 }
 
 .logoutBtn:hover {
-    background: #e63939;
+    background: rgba(255, 77, 77, 0.35);
+    color: white;
 }
 
-/* WISHLIST */
-
+/* ── FAVORİLER ── */
 .wishlistIcon {
     position: relative;
-    font-size: 18px;
     cursor: pointer;
     text-decoration: none;
-    transition: .3s;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     flex-shrink: 0;
+    color: white;
+    transition: color .2s;
+}
+
+.heartIcon {
+    font-size: 17px;
+    transition: transform .2s;
 }
 
 .wishlistIcon:hover .heartIcon {
     transform: scale(1.2);
+    color: #ff6b6b;
 }
 
 .wishlistText {
-    color: white;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .wishlistIcon:hover .wishlistText {
-    color: #4aa8ff;
+    color: #3aa9ff;
 }
 
 .wishlistCount {
     position: absolute;
-    top: -6px;
-    right: -18px;
-
+    top: -7px;
+    right: -12px;
     background: #ff3b3b;
     color: white;
-    font-size: 11px;
-
-    width: 18px;
-    height: 18px;
-
+    font-size: 10px;
+    width: 17px;
+    height: 17px;
     border-radius: 50%;
-
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 700;
 }
 
-/* ORDERS LINK */
-
 .ordersLink {
-    color: white;
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
+    font-size: 14px;
     font-weight: 500;
-    transition: 0.2s;
+    transition: color .2s;
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -334,57 +439,17 @@
     color: #3aa9ff;
 }
 
-/* SEARCH DROPDOWN */
-
-.searchDropdown {
-    position: absolute;
-    top: 48px;
-    left: 0;
-    width: 300px;
-
-    background: white;
-
-    border-radius: 8px;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-
-    overflow: hidden;
-
-    z-index: 999;
-}
-
-.searchItem {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
+/* ── MOBİL ARAMA ── */
+.mobileSearchBtn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
     cursor: pointer;
+    padding: 6px;
+    flex-shrink: 0;
 }
-
-.searchItem img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-}
-
-.searchItem:hover {
-    background: #f3f3f3;
-}
-
-.searchName {
-    display: block;
-    font-size: 14px;
-    color: #222;
-    font-weight: 500;
-}
-
-.searchPrice {
-    display: block;
-    font-size: 13px;
-    color: #555;
-}
-
-/* MOBILE MENU BUTTON */
 
 .mobileMenuBtn {
     display: none;
@@ -394,28 +459,21 @@
     flex-shrink: 0;
 }
 
-/* MOBILE MENU */
-
+/* ── MOBİL MENÜ ── */
 .mobileMenu {
     position: fixed;
     top: 0;
-    left: -280px;
-    width: 260px;
+    left: -290px;
+    width: 270px;
     height: 100vh;
-
-    background: #0f0f3c;
-
+    background: #0d1140;
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
     display: flex;
     flex-direction: column;
-
-    gap: 20px;
-
-    padding: 25px;
-
+    gap: 16px;
+    padding: 24px 20px;
     z-index: 99999;
-
-    transition: 0.3s;
-
+    transition: left .3s;
     overflow-y: auto;
 }
 
@@ -424,9 +482,10 @@
 }
 
 .mobileMenu a {
-    color: white;
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    font-size: 18px;
+    font-size: 16px;
+    padding: 6px 0;
 }
 
 .mobileMenu a:hover {
@@ -436,29 +495,22 @@
 .mobileCategories {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-left: 10px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-left: 8px;
 }
 
 .mobileCategories span {
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .mobileCategories a {
-    font-size: 16px;
-    color: white;
-    text-decoration: none;
-    padding-left: 10px;
+    font-size: 15px;
+    padding-left: 8px;
 }
-
-.mobileCategories a:hover {
-    color: #3aa9ff;
-}
-
-/* MENU OVERLAY */
 
 .menuOverlay {
     position: fixed;
@@ -466,33 +518,50 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.55);
     z-index: 9998;
 }
 
-/* ── RESPONSIVE ─────────────────────────────────── */
-
+/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
 
-    .header {
-        flex-wrap: wrap;
-        height: auto;
-        padding: 10px 12px;
-        gap: 10px;
+    html,
+    body {
+        overflow-x: hidden;
+        max-width: 100vw;
     }
 
-    .logo {
-        font-size: 20px;
+    .header {
+        height: auto;
+        min-height: 58px;
+        padding: 10px 14px;
+        gap: 10px;
+        flex-wrap: nowrap;
+        overflow: visible;
     }
 
     .searchBox {
-        order: 10;
+        position: absolute;
+        top: 58px;
+        left: 0;
         width: 100%;
         max-width: 100%;
+        padding: 10px 14px;
+        background: rgba(10, 10, 40, 0.97);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        box-sizing: border-box;
+        display: none;
+        z-index: 9998;
     }
 
-    .search {
-        width: 100%;
+    .searchBox.searchOpen {
+        display: flex;
+    }
+
+    .searchDropdown {
+        top: calc(100% + 2px);
+        left: 14px;
+        width: calc(100% - 28px);
     }
 
     .nav {
@@ -513,11 +582,30 @@
 
     .loginBtn {
         padding: 6px 10px;
-        font-size: 14px;
+        font-size: 13px;
+    }
+
+    .mobileSearchBtn {
+        display: flex;
+        align-items: center;
     }
 
     .mobileMenuBtn {
         display: block;
     }
 
+    .logo {
+        font-size: 19px;
+    }
+}
+
+@media (max-width: 480px) {
+    .userArea {
+        gap: 6px;
+    }
+
+    .logoutBtn {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
 }

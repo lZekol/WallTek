@@ -88,7 +88,7 @@ function ProductCard({ product, addToCart, toggleWishlist, wishlist }) {
                         <span className="oldPrice">{product.old_price.toLocaleString("tr-TR")} TL</span>
                     )}
                     <span className="newPrice">{product.price.toLocaleString("tr-TR")} TL</span>
-                    {savings && <span className="priceSaving">{savings} TL tasarruf</span>}
+                    {savings && <span className="priceSaving">{savings} TL indirim</span>}
                 </div>
             </div>
 

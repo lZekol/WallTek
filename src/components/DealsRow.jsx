@@ -8,6 +8,8 @@ const deals = [
     { id: 24, name: "MSI 31.5 MAG321", price: 44999, oldPrice: 47999, image: "/images/MSI31.5MAG321UPQD-OLED.png" },
     { id: 28, name: "Havit Gamenote H2002D", price: 949, oldPrice: 1149, image: "/images/HavitGamenoteH2002D.png" },
     { id: 8, name: "Logitech G G203", price: 799, oldPrice: 1199, image: "/images/LogitechGG203.png" },
+    { id: 12, name: "RTX 3050", price: 10837, oldPrice: 14000, image: "/images/rtx3050.png" },
+    { id: 35, name: "Logitech G305", price: 1999, oldPrice: 2499, image: "/images/logitech-g305.png" },
 ]
 
 function DealsRow({ addToCart }) {
@@ -19,24 +21,17 @@ function DealsRow({ addToCart }) {
     const intervalRef = useRef(null)
 
     const startAuto = () => {
+        clearInterval(intervalRef.current)
         intervalRef.current = setInterval(() => {
             setIndex(prev => (prev + 1) % deals.length)
         }, 3500)
     }
 
-    useEffect(() => {
-        startAuto()
-        return () => clearInterval(intervalRef.current)
-    }, [])
+    useEffect(() => { startAuto(); return () => clearInterval(intervalRef.current) }, [])
 
-    const goTo = (i) => {
-        clearInterval(intervalRef.current)
-        setIndex(i)
-        startAuto()
-    }
-
+    const goTo = (i) => { setIndex(i); startAuto() }
     const next = () => goTo((index + 1) % deals.length)
-    const prev = () => goTo(index === 0 ? deals.length - 1 : index - 1)
+    const prev = () => goTo((index + deals.length - 1) % deals.length)
 
     const handleTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
     const handleTouchEnd = (e) => {
@@ -52,14 +47,20 @@ function DealsRow({ addToCart }) {
         setTimeout(() => setAddedId(null), 1500)
     }
 
-    /* visible cards: active ± 1 */
-    const getPos = (i) => {
+    /*
+        Pozisyon sistemi — 5 kart, 5 slot:
+        slot -2 : soldan 2. (gizli)
+        slot -1 : soldan 1. (görünür, küçük)
+        slot  0 : merkez   (görünür, büyük)
+        slot +1 : sağdan 1.(görünür, küçük)
+        slot +2 : sağdan 2.(gizli)
+    */
+    const getSlot = (i) => {
         const total = deals.length
-        const diff = (i - index + total) % total
-        if (diff === 0) return "center"
-        if (diff === 1) return "right"
-        if (diff === total - 1) return "left"
-        return "hidden"
+        let diff = (i - index + total) % total
+        // -2 ile +2 arasına normalize et
+        if (diff > total / 2) diff -= total
+        return diff  // -2, -1, 0, 1, 2
     }
 
     return (
@@ -70,29 +71,41 @@ function DealsRow({ addToCart }) {
                     <span className="dealsFlame">🔥</span>
                     <h2>Günün Fırsatları</h2>
                 </div>
-                <div className="dealsArrows">
-                    <button onClick={prev} aria-label="Önceki">‹</button>
-                    <button onClick={next} aria-label="Sonraki">›</button>
-                </div>
             </div>
 
             <div
-                className="dealsSlider"
+                className="dealsStage"
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             >
                 {deals.map((item, i) => {
-                    const pos = getPos(i)
+                    const slot = getSlot(i)
                     const discount = Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)
                     const added = addedId === item.id
+                    const abs = Math.abs(slot)
+
+                    /* abs > 1 olan kartlar tamamen gizli */
+                    if (abs > 2) return null
 
                     return (
                         <div
                             key={item.id}
-                            className={`dealCard dealCard--${pos}`}
-                            onClick={() => pos === "center" && navigate(`/product/${item.id}`)}
+                            className={`dealCard dealCard--slot${slot}`}
+                            onClick={() => {
+                                if (slot === 0) navigate(`/product/${item.id}`)
+                                else goTo(i)
+                            }}
                         >
+                            {/* indirim badge */}
                             <span className="dealDiscountBadge">%{discount}</span>
+
+                            {/* merkez kartta ok butonları */}
+                            {slot === 0 && (
+                                <>
+                                    <button className="dealArrow dealArrow--left" onClick={(e) => { e.stopPropagation(); prev() }}>‹</button>
+                                    <button className="dealArrow dealArrow--right" onClick={(e) => { e.stopPropagation(); next() }}>›</button>
+                                </>
+                            )}
 
                             <div className="dealImageWrap">
                                 <img src={item.image} alt={item.name} />
@@ -105,12 +118,14 @@ function DealsRow({ addToCart }) {
                                 <span className="dealNewPrice">{item.price.toLocaleString("tr-TR")} TL</span>
                             </div>
 
-                            <button
-                                className={`dealBtn${added ? " dealBtn--added" : ""}`}
-                                onClick={(e) => handleAddCart(e, item)}
-                            >
-                                {added ? "✓ Eklendi" : "Sepete Ekle"}
-                            </button>
+                            {slot === 0 && (
+                                <button
+                                    className={`dealBtn${added ? " dealBtn--added" : ""}`}
+                                    onClick={(e) => handleAddCart(e, item)}
+                                >
+                                    {added ? "✓ Eklendi" : "Sepete Ekle"}
+                                </button>
+                            )}
                         </div>
                     )
                 })}

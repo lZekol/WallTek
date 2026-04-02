@@ -92,7 +92,7 @@ function Login() {
                 <div className="loginHeader">
                     <div className="loginLogoMark">W</div>
                     <h2>Giriş Yap</h2>
-                    <p className="loginSubtitle">WallTek hesabınıza devam edin</p>
+                    <p className="loginSubtitle">WallTek hesabınızla devam edin</p>
                 </div>
 
                 {errors.general && (

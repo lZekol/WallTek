@@ -1,9 +1,9 @@
-/* ─── DEALS ROW ───────────────────────────────────────────────── */
+/* ─── DEALS ROW — 2·1·2 LAYOUT ───────────────────────────────── */
 
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
 .dealsRow {
-    max-width: 1260px;
+    max-width: 1400px;
     margin: 0 auto 60px;
     padding: 0 28px;
     color: white;
@@ -13,7 +13,6 @@
 /* ── header ── */
 .dealsHeader {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 28px;
 }
@@ -25,7 +24,7 @@
 }
 
 .dealsFlame {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .dealsHeader h2 {
@@ -39,113 +38,121 @@
     background-clip: text;
 }
 
-.dealsArrows {
-    display: flex;
-    gap: 8px;
-}
-
-.dealsArrows button {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.06);
-    color: white;
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, transform 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dealsArrows button:hover {
-    background: rgba(58, 169, 255, 0.15);
-    border-color: rgba(58, 169, 255, 0.4);
-    transform: scale(1.1);
-}
-
-/* ── slider ── */
-.dealsSlider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    min-height: 360px;
+/* ── stage: sabit yükseklik, overflow hidden ── */
+.dealsStage {
     position: relative;
-    perspective: 1000px;
+    height: 400px;
+    /* sabit yükseklik — kaymayı önler */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* ── deal card base ── */
+/* ── KART BASE ── */
 .dealCard {
     position: absolute;
-    width: 240px;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 18px;
-    padding: 22px 18px 18px;
-    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    padding: 20px 16px 26px;
     cursor: pointer;
-    transition: all 0.42s cubic-bezier(0.22, 1, 0.36, 1);
-    user-select: none;
+    transition: all 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     overflow: hidden;
+    /* pointer events sadece görünen kartlarda */
 }
 
-/* center */
-.dealCard--center {
-    transform: translateX(0) scale(1) translateZ(0);
-    opacity: 1;
+/* ── SLOT POZİSYONLARI ── */
+
+/* merkez — büyük kart */
+.dealCard--slot0 {
+    width: 280px;
     z-index: 10;
-    border-color: rgba(58, 169, 255, 0.25);
-    background: rgba(255, 255, 255, 0.07);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(58, 169, 255, 0.1);
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    border-color: rgba(58, 169, 255, 0.28);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(58, 169, 255, 0.12);
 }
 
-/* left */
-.dealCard--left {
-    transform: translateX(-200px) scale(0.82) translateZ(-80px);
-    opacity: 0.45;
+/* sol 1 */
+.dealCard--slot-1 {
+    width: 210px;
+    transform: translateX(-260px) scale(0.85);
+    opacity: 0.55;
     z-index: 5;
-    pointer-events: none;
 }
 
-/* right */
-.dealCard--right {
-    transform: translateX(200px) scale(0.82) translateZ(-80px);
-    opacity: 0.45;
+/* sağ 1 */
+.dealCard--slot1 {
+    width: 210px;
+    transform: translateX(260px) scale(0.85);
+    opacity: 0.55;
     z-index: 5;
-    pointer-events: none;
 }
 
-/* hidden */
-.dealCard--hidden {
-    transform: translateX(0) scale(0.6);
-    opacity: 0;
-    z-index: 1;
-    pointer-events: none;
+/* tüm yan kartlar hover */
+.dealCard--slot-1:hover,
+.dealCard--slot1:hover {
+    opacity: 0.75;
 }
 
-/* discount badge */
+/* ── İNDİRİM BADGE ── */
 .dealDiscountBadge {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: linear-gradient(135deg, #ff3c3c, #ff6b6b);
+    background: linear-gradient(135deg, #06ff17, #2d752b);
     color: white;
     font-size: 11px;
     font-weight: 700;
     padding: 4px 9px;
     border-radius: 6px;
     font-family: 'Syne', sans-serif;
-    box-shadow: 0 2px 8px rgba(255, 60, 60, 0.4);
+    box-shadow: 0 2px 8px rgba(24, 144, 52, 0.4);
+    z-index: 2;
 }
 
-/* image */
+/* ── OK BUTONLARI — merkez kartın içinde ── */
+.dealArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    transition: background .18s, border-color .18s, transform .15s;
+    padding: 0;
+}
+
+.dealArrow--left {
+    left: 10px;
+}
+
+.dealArrow--right {
+    right: 10px;
+}
+
+.dealArrow:hover {
+    background: rgba(58, 169, 255, 0.2);
+    border-color: rgba(58, 169, 255, 0.5);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* ── GÖRSEL ── */
 .dealImageWrap {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -154,37 +161,36 @@
     justify-content: center;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 4px;
 }
 
 .dealCard img {
-    width: 75%;
-    height: 75%;
+    width: 72%;
+    height: 72%;
     object-fit: contain;
-    transition: transform 0.3s ease;
+    transition: transform .3s ease;
     filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.4));
 }
 
-.dealCard--center:hover img {
-    transform: scale(1.06);
+.dealCard--slot0:hover img {
+    transform: scale(1.05);
 }
 
-/* title */
+/* ── BAŞLIK ── */
 .dealCard h4 {
     font-family: 'Syne', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: white;
     margin: 0;
+    text-align: center;
     line-height: 1.3;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* price */
+/* ── FİYAT ── */
 .dealPriceBox {
     display: flex;
     flex-direction: column;
@@ -200,12 +206,12 @@
 
 .dealNewPrice {
     font-family: 'Syne', sans-serif;
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
     color: #3aa9ff;
 }
 
-/* button */
+/* ── BUTON (sadece merkez kartta) ── */
 .dealBtn {
     width: 100%;
     height: 38px;
@@ -217,10 +223,10 @@
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
-    transition: filter 0.18s, transform 0.15s, background 0.25s;
+    transition: filter .18s, transform .15s;
     box-shadow: 0 3px 12px rgba(58, 169, 255, 0.3);
+    z-index: 15;
     position: relative;
-    z-index: 10;
 }
 
 .dealBtn:hover {
@@ -237,12 +243,12 @@
     box-shadow: 0 3px 12px rgba(52, 211, 153, 0.3) !important;
 }
 
-/* ── dots ── */
+/* ── DOTS ── */
 .dealsDots {
     display: flex;
     justify-content: center;
     gap: 6px;
-    margin-top: 24px;
+    margin-top: 20px;
 }
 
 .dealDot {
@@ -252,7 +258,7 @@
     border: none;
     background: rgba(255, 255, 255, 0.2);
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s, width 0.25s;
+    transition: background .2s, width .25s;
     padding: 0;
 }
 
@@ -262,38 +268,69 @@
     border-radius: 4px;
 }
 
-/* ── responsive ── */
-@media (max-width: 900px) {
+/* 🔥 YENİ: EN DIŞ KARTLAR (5'Lİ SİSTEM) */
 
-    .dealCard--left,
-    .dealCard--right {
-        transform: translateX(±160px) scale(0.78);
-    }
+.dealCard--slot-2 {
+    width: 190px;
+    transform: translateX(-440px) scale(0.65);
+    opacity: 0.2;
+    z-index: 2;
+    filter: blur(1px);
 }
 
-@media (max-width: 600px) {
+.dealCard--slot2 {
+    width: 190px;
+    transform: translateX(440px) scale(0.65);
+    opacity: 0.2;
+    z-index: 2;
+    filter: blur(1px);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
     .dealsRow {
         padding: 0 14px;
     }
 
-    .dealsSlider {
-        min-height: 300px;
+    .dealsStage {
+        height: 340px;
     }
 
-    .dealCard {
-        width: 200px;
-        padding: 16px 14px 14px;
+    .dealCard--slot0 {
+        width: 210px;
     }
 
-    .dealCard--left {
-        transform: translateX(-150px) scale(0.75);
+    .dealCard--slot-1 {
+        transform: translateX(-175px) scale(0.82);
+        width: 175px;
     }
 
-    .dealCard--right {
-        transform: translateX(150px) scale(0.75);
+    .dealCard--slot1 {
+        transform: translateX(175px) scale(0.82);
+        width: 175px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dealsStage {
+        height: 300px;
+    }
+
+    .dealCard--slot0 {
+        width: 180px;
+    }
+
+    .dealCard--slot-1 {
+        transform: translateX(-148px) scale(0.78);
+        width: 155px;
+    }
+
+    .dealCard--slot1 {
+        transform: translateX(148px) scale(0.78);
+        width: 155px;
     }
 
     .dealNewPrice {
-        font-size: 17px;
+        font-size: 16px;
     }
 }
