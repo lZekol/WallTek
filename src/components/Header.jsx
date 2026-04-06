@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { supabase } from "../lib/supabase"
 import { FaShoppingCart, FaSearch, FaUser, FaBars, FaHeart } from "react-icons/fa"
 
-function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
+function Header({ cartCount, openCart, setSearch, wishlistCount, user, profileName }) {
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -16,27 +16,26 @@ function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
     const [allProducts, setAllProducts] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(-1)
     const [menuOpen, setMenuOpen] = useState(false)
-    const [searchOpen, setSearchOpen] = useState(false) // mobil arama toggle
+    const [searchOpen, setSearchOpen] = useState(false)
+    const [dropdownOpen, setDropdownOpen] = useState(false)
 
-    /* ── ürün listesi ── */
     useEffect(() => {
-        supabase.from("products").select("*").then(({ data }) => {
+        supabase.from("products").select("id,name,price,image").then(({ data }) => {
             if (data) setAllProducts(data)
         })
     }, [])
 
-    /* ── sayfa değişince sıfırla ── */
     useEffect(() => {
         setSearchText("")
-        setSearch("")
         setSelectedIndex(-1)
+        setDropdownOpen(false)
         setSearchOpen(false)
     }, [location.pathname])
 
-    /* ── dışarı tıklayınca dropdown kapat ── */
     useEffect(() => {
         const handler = (e) => {
             if (searchRef.current && !searchRef.current.contains(e.target)) {
+                setDropdownOpen(false)
                 setSelectedIndex(-1)
             }
         }
@@ -56,74 +55,62 @@ function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
         }
     }
 
-    const searchResults = allProducts
-        .filter(p => p.name.toLowerCase().includes(searchText.toLowerCase()))
-        .slice(0, 6)
-
-    /* ── ikona tıklayınca arama yap / input'a odaklan ── */
-    const handleSearchIconClick = () => {
-        if (searchText.trim()) {
-            /* yazı varsa ara */
-            setSearch(searchText)
-            navigate("/")
-            setSelectedIndex(-1)
-        } else {
-            /* yazı yoksa input'a fokusla */
-            inputRef.current?.focus()
-        }
-    }
-
-    /* ── klavye navigasyonu ── */
-    const handleKeyDown = (e) => {
-        if (!searchResults.length) {
-            if (e.key === "Enter") {
-                setSearch(searchText)
-                navigate("/")
-            }
-            return
-        }
-
-        if (e.key === "ArrowDown") {
-            e.preventDefault()
-            setSelectedIndex(prev =>
-                prev < searchResults.length - 1 ? prev + 1 : 0
-            )
-        } else if (e.key === "ArrowUp") {
-            e.preventDefault()
-            setSelectedIndex(prev =>
-                prev > 0 ? prev - 1 : searchResults.length - 1
-            )
-        } else if (e.key === "Enter") {
-            e.preventDefault()
-            if (selectedIndex >= 0 && searchResults[selectedIndex]) {
-                navigate(`/product/${searchResults[selectedIndex].id}`)
-                setSearchText("")
-                setSearch("")
-                setSelectedIndex(-1)
-            } else {
-                setSearch(searchText)
-                navigate("/")
-                setSelectedIndex(-1)
-            }
-        } else if (e.key === "Escape") {
-            setSelectedIndex(-1)
-            setSearchText("")
-            setSearch("")
-            inputRef.current?.blur()
-        }
-    }
-
-    const handleItemClick = (product) => {
+    const goToProduct = (product) => {
         navigate(`/product/${product.id}`)
         setSearchText("")
-        setSearch("")
+        setDropdownOpen(false)
         setSelectedIndex(-1)
     }
+
+    const handleSearchIconClick = () => {
+        if (!searchText.trim()) { inputRef.current?.focus(); return }
+        if (selectedIndex >= 0 && searchResults[selectedIndex]) {
+            goToProduct(searchResults[selectedIndex]); return
+        }
+        if (searchResults.length > 0) goToProduct(searchResults[0])
+    }
+
+    const searchResults = allProducts
+        .filter(p => searchText.trim() && p.name.toLowerCase().includes(searchText.toLowerCase()))
+        .slice(0, 6)
+
+    const handleInputChange = (e) => {
+        const val = e.target.value
+        setSearchText(val)
+        setSelectedIndex(-1)
+        setDropdownOpen(val.trim().length > 0)
+        /* setSearch çağrılmıyor — ana sayfayı tetiklemez */
+    }
+
+    const handleKeyDown = (e) => {
+        if (!dropdownOpen || !searchResults.length) {
+            if (e.key === "Enter" && searchResults.length > 0) goToProduct(searchResults[0])
+            if (e.key === "Escape") { setDropdownOpen(false); setSearchText("") }
+            return
+        }
+        if (e.key === "ArrowDown") {
+            e.preventDefault()
+            setSelectedIndex(p => p < searchResults.length - 1 ? p + 1 : 0)
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault()
+            setSelectedIndex(p => p > 0 ? p - 1 : searchResults.length - 1)
+        } else if (e.key === "Enter") {
+            e.preventDefault()
+            if (selectedIndex >= 0) goToProduct(searchResults[selectedIndex])
+            else if (searchResults.length > 0) goToProduct(searchResults[0])
+        } else if (e.key === "Escape") {
+            setDropdownOpen(false); setSearchText(""); inputRef.current?.blur()
+        }
+    }
+
+    /* ✅ gösterilecek isim: önce profil adı, sonra email, sonra "Hesabım" */
+    const displayName = profileName
+        ? (profileName.split(" ")[0])   /* sadece ad kısmı — header'da kısa */
+        : (user?.email?.split("@")[0] || "Hesabım")
 
     return (
         <header className="header">
 
-            {/* LOGO */}
             <div className="logo" onClick={() => navigate("/")}>WallTek</div>
 
             {/* SEARCH */}
@@ -133,20 +120,15 @@ function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
                     className="search"
                     placeholder="Ürün ara..."
                     value={searchText}
-                    onChange={(e) => {
-                        setSearchText(e.target.value)
-                        setSearch(e.target.value)
-                        setSelectedIndex(-1)
-                    }}
+                    onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
+                    onFocus={() => searchText.trim() && setDropdownOpen(true)}
                 />
-                {/* ✅ arama ikonu tıklanabilir */}
                 <button className="searchIconBtn" onClick={handleSearchIconClick} aria-label="Ara">
                     <FaSearch />
                 </button>
 
-                {/* dropdown */}
-                {searchText && searchResults.length > 0 && (
+                {dropdownOpen && searchResults.length > 0 && (
                     <div className="searchDropdown">
                         {searchResults.map((product, index) => (
                             <div
@@ -154,23 +136,19 @@ function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
                                 className={`searchItem${index === selectedIndex ? " searchItem--active" : ""}`}
                                 onMouseEnter={() => setSelectedIndex(index)}
                                 onMouseLeave={() => setSelectedIndex(-1)}
-                                onClick={() => handleItemClick(product)}
+                                onClick={() => goToProduct(product)}
                             >
                                 <img src={product.image} alt="" />
                                 <div>
                                     <span className="searchName">{product.name}</span>
-                                    <span className="searchPrice">
-                                        {product.price.toLocaleString("tr-TR")} TL
-                                    </span>
+                                    <span className="searchPrice">{product.price?.toLocaleString("tr-TR")} TL</span>
                                 </div>
-                                {index === selectedIndex && (
-                                    <span className="searchItemArrow">↵</span>
-                                )}
+                                {index === selectedIndex && <span className="searchItemArrow">↵</span>}
                             </div>
                         ))}
                         <div className="searchFooter">
                             <span>↑↓ gezin</span>
-                            <span>↵ seç</span>
+                            <span>↵ ürüne git</span>
                             <span>Esc kapat</span>
                         </div>
                     </div>
@@ -180,9 +158,8 @@ function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
             {/* NAV */}
             <nav className="nav">
                 <a onClick={() => navigate("/")}>Anasayfa</a>
-
                 <div className="dropdown">
-                    <a>Kategoriler ⏬︎</a>
+                    <a>Kategoriler</a>
                     <div className="dropdownMenu">
                         <Link to="/category/laptop">Laptop</Link>
                         <Link to="/category/gpu">Ekran Kartı</Link>
@@ -193,7 +170,6 @@ function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
                         <Link to="/category/tv">Televizyon</Link>
                     </div>
                 </div>
-
                 <a onClick={() => {
                     navigate("/")
                     setTimeout(() => {
@@ -205,66 +181,40 @@ function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
                         }
                     }, 120)
                 }}>Popüler</a>
-
                 <Link to="/campaigns">Kampanyalar</Link>
             </nav>
 
-            {/* CART */}
             <div className="cart" ref={cartRef} onClick={openCart}>
                 <FaShoppingCart />
                 <span className={`cartCount${cartCount > 0 ? " pop" : ""}`}>{cartCount}</span>
             </div>
 
-            {/* FAVORİLER */}
-            <Link
-                to="/wishlist"
-                className="wishlistIcon"
-                id="wishlist-target"
-                onClick={handleWishlistClick}
-            >
+            <Link to="/wishlist" className="wishlistIcon" id="wishlist-target" onClick={handleWishlistClick}>
                 <FaHeart className="heartIcon" />
                 <span className="wishlistText">Favoriler</span>
-                {wishlistCount > 0 && (
-                    <span className="wishlistCount">{wishlistCount}</span>
-                )}
+                {wishlistCount > 0 && <span className="wishlistCount">{wishlistCount}</span>}
             </Link>
 
-            {/* USER */}
             {user ? (
                 <div className="userArea">
+                    {/* ✅ mail yerine isim göster */}
                     <div className="userProfile" onClick={() => navigate("/profile")}>
                         <FaUser />
-                        <span>{user.email}</span>
+                        <span>{displayName}</span>
                     </div>
                     <Link to="/orders" className="ordersLink">📦 Siparişlerim</Link>
                     <button onClick={logout} className="logoutBtn">Çıkış</button>
                 </div>
             ) : (
-                <Link to="/login" className="loginBtn">
-                    <FaUser />
-                    Giriş Yap
-                </Link>
+                <Link to="/login" className="loginBtn"><FaUser />Giriş Yap</Link>
             )}
 
-            {/* MOBİL ARAMA BUTONU */}
-            <button
-                className="mobileSearchBtn"
-                onClick={() => {
-                    setSearchOpen(prev => !prev)
-                    setTimeout(() => inputRef.current?.focus(), 100)
-                }}
-                aria-label="Ara"
-            >
+            <button className="mobileSearchBtn" onClick={() => { setSearchOpen(p => !p); setTimeout(() => inputRef.current?.focus(), 100) }}>
                 <FaSearch />
             </button>
-
-            {/* MOBİL MENÜ BUTONU */}
-            <div className="mobileMenuBtn" onClick={() => setMenuOpen(!menuOpen)}>
-                <FaBars />
-            </div>
+            <div className="mobileMenuBtn" onClick={() => setMenuOpen(!menuOpen)}><FaBars /></div>
 
             {menuOpen && <div className="menuOverlay" onClick={() => setMenuOpen(false)} />}
-
             {menuOpen && (
                 <div className={`mobileMenu${menuOpen ? " open" : ""}`}>
                     <Link to="/" onClick={() => setMenuOpen(false)}>Anasayfa</Link>
@@ -283,9 +233,7 @@ function Header({ cartCount, openCart, setSearch, wishlistCount, user }) {
                     <Link to="/wishlist" onClick={(e) => { setMenuOpen(false); handleWishlistClick(e) }}>
                         ❤️ Favoriler {wishlistCount > 0 && `(${wishlistCount})`}
                     </Link>
-                    {user && (
-                        <Link to="/orders" onClick={() => setMenuOpen(false)}>📦 Siparişlerim</Link>
-                    )}
+                    {user && <Link to="/orders" onClick={() => setMenuOpen(false)}>📦 Siparişlerim</Link>}
                 </div>
             )}
         </header>

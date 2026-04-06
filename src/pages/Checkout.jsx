@@ -8,57 +8,54 @@ import "./Checkout.css"
 function luhnCheck(num) {
     const digits = num.replace(/\D/g, "")
     if (digits.length !== 16) return false
-    let sum = 0
-    let shouldDouble = false
+    let sum = 0, shouldDouble = false
     for (let i = digits.length - 1; i >= 0; i--) {
         let d = parseInt(digits[i])
-        if (shouldDouble) {
-            d *= 2
-            if (d > 9) d -= 9
-        }
-        sum += d
-        shouldDouble = !shouldDouble
+        if (shouldDouble) { d *= 2; if (d > 9) d -= 9 }
+        sum += d; shouldDouble = !shouldDouble
     }
     return sum % 10 === 0
 }
 
-/* ── son kullanma tarihi kontrolü ── */
-function validateExpiry(value) {
-    if (!/^\d{2}\/\d{2}$/.test(value)) return "Son kullanma tarihi MM/YY formatında olmalı"
-    const [mm, yy] = value.split("/").map(Number)
-    if (mm < 1 || mm > 12) return "Ay geçersiz (01-12)"
-    const now = new Date()
-    const expDate = new Date(2000 + yy, mm)   /* ayın sonu */
-    if (expDate <= now) return "Kartın son kullanma tarihi geçmiş"
+function validateExpiry(mm, yy) {
+    const m = parseInt(mm), y = parseInt(yy)
+    if (m < 1 || m > 12) return "Ay geçersiz (01-12)"
+    const expDate = new Date(2000 + y, m)
+    if (expDate <= new Date()) return "Kartın son kullanma tarihi geçmiş"
     return null
 }
 
-/* ── tam kart validasyonu ── */
-function validateCard(number, expiry, cvv, name) {
-    if (!name.trim()) return "Kart üzerindeki isim gerekli"
-    if (!luhnCheck(number)) return "Geçersiz kart numarası"
-    const expiryErr = validateExpiry(expiry)
-    if (expiryErr) return expiryErr
-    if (cvv.length !== 3) return "CVV 3 haneli olmalı"
-    return null
+/* İyzico hata kodlarını Türkçeye çevir */
+function translateIyzicoError(code, msg) {
+    const map = {
+        "10051": "Kart limiti yetersiz",
+        "10005": "İşlem onaylanmadı",
+        "10012": "Geçersiz işlem",
+        "10041": "Kayıp kart",
+        "10043": "Çalıntı kart",
+        "10054": "Vadesi geçmiş kart",
+        "10057": "Kart sahibi bu işlemi yapamaz",
+        "10058": "Bu terminal bu işlemi yapamaz",
+        "10034": "Sahte işlem şüphesi",
+        "10093": "Kartınız e-ticaret işlemlerine kapalı",
+        "10201": "Kart, bankası tarafından engellendi",
+        "10204": "Ödeme yapılamıyor",
+    }
+    return map[code] || msg || "Ödeme başarısız. Kart bilgilerini kontrol edin."
 }
 
 function Checkout({ cart }) {
-
     const navigate = useNavigate()
 
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [address, setAddress] = useState("")
-
     const [cardName, setCardName] = useState("")
     const [cardNumber, setCardNumber] = useState("")
-    const [cardDate, setCardDate] = useState("")
+    const [cardMonth, setCardMonth] = useState("")
+    const [cardYear, setCardYear] = useState("")
     const [cardCvv, setCardCvv] = useState("")
-
-    /* validation errors inline */
     const [cardErrors, setCardErrors] = useState({})
-
     const [savedCards, setSavedCards] = useState([])
     const [selectedCard, setSelectedCard] = useState(null)
     const [paymentType, setPaymentType] = useState("saved")
@@ -66,93 +63,117 @@ function Checkout({ cart }) {
     const [loading, setLoading] = useState(false)
     const [user, setUser] = useState(null)
 
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0)
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0)
 
-    /* ── format helpers ── */
-    const fmtCardNumber = (v) =>
-        v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim()
+    const fmtCard = (v) => v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim()
+    const fmtMonth = (v) => v.replace(/\D/g, "").slice(0, 2)
+    const fmtYear = (v) => v.replace(/\D/g, "").slice(0, 2)
 
-    const fmtExpiry = (v) => {
-        const c = v.replace(/\D/g, "").slice(0, 4)
-        return c.length >= 3 ? c.slice(0, 2) + "/" + c.slice(2) : c
-    }
-
-    /* ── load user + cards ── */
     useEffect(() => {
         const init = async () => {
             const { data } = await supabase.auth.getUser()
             setUser(data.user)
             if (data.user) {
-                /* profil bilgilerini otomatik doldur */
-                const { data: profile } = await supabase
-                    .from("profiles")
-                    .select("*")
-                    .eq("id", data.user.id)
-                    .single()
-                if (profile) {
-                    setName(profile.full_name || "")
-                    setAddress(profile.address || "")
-                }
+                const { data: profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
+                if (profile) { setName(profile.full_name || ""); setAddress(profile.address || "") }
                 setEmail(data.user.email || "")
-
-                const { data: cardsData } = await supabase
-                    .from("cards")
-                    .select("*")
-                    .eq("user_id", data.user.id)
-                setSavedCards(cardsData || [])
-                if (cardsData?.length > 0) {
-                    setSelectedCard(cardsData[0])
-                } else {
-                    /* kayıtlı kart yoksa direkt yeni karta geç */
-                    setPaymentType("new")
-                }
+                const { data: cards } = await supabase.from("cards").select("*").eq("user_id", data.user.id)
+                setSavedCards(cards || [])
+                if (cards?.length > 0) setSelectedCard(cards[0])
+                else setPaymentType("new")
             }
         }
         init()
     }, [])
 
-    /* ── inline kart hata temizle ── */
-    const clearCardError = (field) =>
-        setCardErrors(prev => { const e = { ...prev }; delete e[field]; return e })
+    const clearCardError = (f) => setCardErrors(p => { const e = { ...p }; delete e[f]; return e })
 
-    /* ── sipariş oluştur ── */
+    /* ── Ödeme ── */
     const createOrder = async () => {
         if (cart.length === 0) return showToast("Sepet boş", "warning")
-        if (!name || !email || !address) return showToast("Teslimat bilgilerini eksiksiz doldur", "warning")
+        if (!name || !email || !address) return showToast("Teslimat bilgilerini doldur", "warning")
+
+        let finalCardName, finalCardNumber, finalMonth, finalYear, finalCvv
 
         if (paymentType === "saved") {
-            if (!selectedCard) return showToast("Lütfen bir kart seç", "error")
-        } else {
-            const err = validateCard(cardNumber, cardDate, cardCvv, cardName)
-            if (err) {
-                showToast(err, "error")
-                /* inline hata göster */
-                if (err.includes("kart numarası")) setCardErrors(p => ({ ...p, number: err }))
-                if (err.includes("kullanma")) setCardErrors(p => ({ ...p, expiry: err }))
-                if (err.includes("CVV")) setCardErrors(p => ({ ...p, cvv: err }))
-                if (err.includes("isim")) setCardErrors(p => ({ ...p, name: err }))
-                return
+            if (!selectedCard) return showToast("Kart seçmelisin", "error")
+            /* kayıtlı kartlar için CVV tekrar istenir (PCI gereği tam numara saklanmaz) */
+            if (!cardCvv || cardCvv.length !== 3) {
+                setCardErrors({ cvv: "Kayıtlı kart için CVV girin" })
+                return showToast("Kayıtlı kart için CVV girin", "error")
             }
+            /* Demo: kayıtlı kart için tam numarayı DB'de tutmuyoruz, gerçekte tokenization gerekir */
+            showToast("Kayıtlı kart ödemesi için bankadan token entegrasyonu gerekir. Şimdilik yeni kart kullanın.", "info")
+            return
         }
 
-        setLoading(true)
-        const { error } = await supabase
-            .from("orders")
-            .insert([{
-                user_email: user?.email || email,
-                products: cart,
-                total_price: total,
-                address,
-                status: "pending",
-            }])
-        setLoading(false)
+        /* yeni kart validasyonu */
+        const errs = {}
+        if (!cardName.trim()) errs.name = "Kart sahibi adı gerekli"
+        if (!luhnCheck(cardNumber)) errs.number = "Geçersiz kart numarası"
+        const expErr = validateExpiry(cardMonth, cardYear)
+        if (expErr) errs.expiry = expErr
+        if (!cardMonth || cardMonth.length !== 2) errs.expiry = "Ay 2 haneli olmalı (örn: 07)"
+        if (!cardYear || cardYear.length !== 2) errs.expiry = (errs.expiry || "") + " — Yıl 2 haneli olmalı (örn: 26)"
+        if (cardCvv.length !== 3) errs.cvv = "CVV 3 haneli olmalı"
 
-        if (error) {
-            showToast("Sipariş oluşturulamadı: " + error.message, "error")
-        } else {
-            setSuccessAnim(true)
-            showToast("Siparişin oluşturuldu! 🎉", "success")
-            setTimeout(() => navigate("/orders"), 2200)
+        if (Object.keys(errs).length) {
+            setCardErrors(errs)
+            showToast(Object.values(errs)[0], "error")
+            return
+        }
+
+        finalCardName = cardName
+        finalCardNumber = cardNumber
+        finalMonth = cardMonth
+        finalYear = cardYear
+        finalCvv = cardCvv
+
+        setLoading(true)
+
+        try {
+            const { data: { session } } = await supabase.auth.getSession()
+
+            const res = await fetch(
+                `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-payment`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                    },
+                    body: JSON.stringify({
+                        cart,
+                        address,
+                        cardHolderName: finalCardName,
+                        cardNumber: finalCardNumber,
+                        expireMonth: finalMonth,
+                        expireYear: finalYear,
+                        cvc: finalCvv,
+                        userEmail: user?.email || email,
+                        userId: user?.id || "guest",
+                    }),
+                }
+            )
+
+            const result = await res.json()
+
+            if (result.success) {
+                setSuccessAnim(true)
+                showToast("Ödeme başarılı! 🎉", "success")
+                setTimeout(() => navigate("/orders"), 2200)
+            } else {
+                const msg = translateIyzicoError(result.errorCode, result.errorMessage)
+                showToast(msg, "error")
+                /* kart numarası hatasıysa ilgili alanı kırmızı yap */
+                if (result.errorCode === "10051" || result.errorCode === "10005") {
+                    setCardErrors({ general: msg })
+                }
+            }
+        } catch (err) {
+            showToast("Bağlantı hatası: " + err.message, "error")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -161,28 +182,23 @@ function Checkout({ cart }) {
             <h1 className="checkoutTitle">Sipariş & Ödeme</h1>
 
             <div className="checkoutContainer">
-
-                {/* ── SOL ── */}
                 <div className="checkoutLeft">
 
                     {/* teslimat */}
                     <div className="checkoutBox">
                         <h3>📍 Teslimat Bilgileri</h3>
-                        <div className="checkoutField">
-                            <label>Ad Soyad</label>
+                        <div className="checkoutField"><label>Ad Soyad</label>
                             <input placeholder="Ad Soyad" value={name} onChange={e => setName(e.target.value)} />
                         </div>
-                        <div className="checkoutField">
-                            <label>E-posta</label>
+                        <div className="checkoutField"><label>E-posta</label>
                             <input type="email" placeholder="E-posta" value={email} onChange={e => setEmail(e.target.value)} />
                         </div>
-                        <div className="checkoutField">
-                            <label>Teslimat Adresi</label>
+                        <div className="checkoutField"><label>Teslimat Adresi</label>
                             <textarea placeholder="Adresinizi girin" value={address} onChange={e => setAddress(e.target.value)} />
                         </div>
                     </div>
 
-                    {/* ödeme yöntemi */}
+                    {/* ödeme switch */}
                     <div className="checkoutBox">
                         <h3>💳 Ödeme Yöntemi</h3>
                         <div className="paymentSwitch">
@@ -197,31 +213,37 @@ function Checkout({ cart }) {
                         </div>
                     </div>
 
-                    {/* kayıtlı kartlar */}
+                    {/* kayıtlı kart */}
                     {paymentType === "saved" && (
                         <div className="checkoutBox">
                             <h3>Kart Seç</h3>
                             {savedCards.length === 0 ? (
-                                <p className="noCardText">
-                                    Kayıtlı kartın yok.{" "}
-                                    <button className="switchToNewBtn" onClick={() => setPaymentType("new")}>
-                                        Yeni kart ekle →
-                                    </button>
+                                <p className="noCardText">Kayıtlı kartın yok.{" "}
+                                    <button className="switchToNewBtn" onClick={() => setPaymentType("new")}>Yeni kart ekle →</button>
                                 </p>
                             ) : (
-                                savedCards.map(card => (
-                                    <div
-                                        key={card.id}
-                                        className={`savedCard${selectedCard?.id === card.id ? " active" : ""}`}
-                                        onClick={() => setSelectedCard(card)}
-                                    >
-                                        <input type="radio" checked={selectedCard?.id === card.id} readOnly />
-                                        <div className="cardInfo">
-                                            <p>**** **** **** {card.last4}</p>
-                                            <span>{card.expiry} · {card.name}</span>
+                                <>
+                                    {savedCards.map(card => (
+                                        <div key={card.id}
+                                            className={`savedCard${selectedCard?.id === card.id ? " active" : ""}`}
+                                            onClick={() => setSelectedCard(card)}
+                                        >
+                                            <input type="radio" checked={selectedCard?.id === card.id} readOnly />
+                                            <div className="cardInfo">
+                                                <p>**** **** **** {card.last4}</p>
+                                                <span>{card.expiry} · {card.name}</span>
+                                            </div>
                                         </div>
+                                    ))}
+                                    <div className="checkoutField" style={{ marginTop: 8 }}>
+                                        <label>CVV (güvenlik kodu)</label>
+                                        <input placeholder="•••" type="password" maxLength={3}
+                                            value={cardCvv} className={cardErrors.cvv ? "inputErr" : ""}
+                                            onChange={e => { setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 3)); clearCardError("cvv") }}
+                                            style={{ maxWidth: 100 }} />
+                                        {cardErrors.cvv && <span className="fieldErr">{cardErrors.cvv}</span>}
                                     </div>
-                                ))
+                                </>
                             )}
                         </div>
                     )}
@@ -231,62 +253,56 @@ function Checkout({ cart }) {
                         <div className="checkoutBox">
                             <h3>💳 Kart Bilgileri</h3>
 
+                            {cardErrors.general && (
+                                <div style={{ background: "rgba(255,77,77,0.1)", border: "1px solid rgba(255,77,77,0.3)", color: "#ff8080", borderRadius: 8, padding: "10px 14px", fontSize: 13 }}>
+                                    {cardErrors.general}
+                                </div>
+                            )}
+
                             <div className="checkoutField">
                                 <label>Kart Üzerindeki İsim</label>
-                                <input
-                                    placeholder="Ad Soyad"
-                                    value={cardName}
-                                    className={cardErrors.name ? "inputErr" : ""}
-                                    onChange={e => { setCardName(e.target.value); clearCardError("name") }}
-                                />
+                                <input placeholder="AD SOYAD" value={cardName} className={cardErrors.name ? "inputErr" : ""}
+                                    onChange={e => { setCardName(e.target.value.toUpperCase()); clearCardError("name") }} />
                                 {cardErrors.name && <span className="fieldErr">{cardErrors.name}</span>}
                             </div>
 
                             <div className="checkoutField">
                                 <label>Kart Numarası</label>
-                                <input
-                                    placeholder="XXXX XXXX XXXX XXXX"
-                                    value={cardNumber}
-                                    className={cardErrors.number ? "inputErr" : ""}
-                                    onChange={e => { setCardNumber(fmtCardNumber(e.target.value)); clearCardError("number") }}
-                                />
+                                <input placeholder="XXXX XXXX XXXX XXXX" value={cardNumber} className={cardErrors.number ? "inputErr" : ""}
+                                    onChange={e => { setCardNumber(fmtCard(e.target.value)); clearCardError("number") }} />
                                 {cardErrors.number && <span className="fieldErr">{cardErrors.number}</span>}
                             </div>
 
                             <div className="cardRow">
                                 <div className="checkoutField">
-                                    <label>Son Kullanma</label>
-                                    <input
-                                        placeholder="MM/YY"
-                                        value={cardDate}
-                                        className={cardErrors.expiry ? "inputErr" : ""}
-                                        onChange={e => { setCardDate(fmtExpiry(e.target.value)); clearCardError("expiry") }}
-                                    />
+                                    <label>Ay / Yıl</label>
+                                    <div style={{ display: "flex", gap: 6 }}>
+                                        <input placeholder="MM" maxLength={2} value={cardMonth} className={cardErrors.expiry ? "inputErr" : ""}
+                                            onChange={e => { setCardMonth(fmtMonth(e.target.value)); clearCardError("expiry") }}
+                                            style={{ width: 64 }} />
+                                        <span style={{ color: "rgba(255,255,255,0.4)", alignSelf: "center" }}>/</span>
+                                        <input placeholder="YY" maxLength={2} value={cardYear} className={cardErrors.expiry ? "inputErr" : ""}
+                                            onChange={e => { setCardYear(fmtYear(e.target.value)); clearCardError("expiry") }}
+                                            style={{ width: 64 }} />
+                                    </div>
                                     {cardErrors.expiry && <span className="fieldErr">{cardErrors.expiry}</span>}
                                 </div>
                                 <div className="checkoutField">
                                     <label>CVV</label>
-                                    <input
-                                        placeholder="•••"
-                                        type="password"
-                                        maxLength={3}
-                                        value={cardCvv}
-                                        className={cardErrors.cvv ? "inputErr" : ""}
-                                        onChange={e => { setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 3)); clearCardError("cvv") }}
-                                    />
+                                    <input placeholder="•••" type="password" maxLength={3} value={cardCvv} className={cardErrors.cvv ? "inputErr" : ""}
+                                        onChange={e => { setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 3)); clearCardError("cvv") }} />
                                     {cardErrors.cvv && <span className="fieldErr">{cardErrors.cvv}</span>}
                                 </div>
                             </div>
 
-                            <p className="secureText">🔒 256-bit SSL şifrelemeli güvenli ödeme</p>
+                            <p className="secureText">🔒 256-bit SSL · İyzico güvenli ödeme altyapısı</p>
                         </div>
                     )}
                 </div>
 
-                {/* ── SAĞ — ÖZET ── */}
+                {/* özet */}
                 <div className="orderSummary">
                     <h3>Sipariş Özeti</h3>
-
                     <div className="orderItems">
                         {cart.map(item => (
                             <div className="orderItem" key={item.id}>
@@ -298,37 +314,22 @@ function Checkout({ cart }) {
                             </div>
                         ))}
                     </div>
-
-                    <div className="orderTotalRow">
-                        <span>Ara Toplam</span>
-                        <span>{total.toLocaleString("tr-TR")} TL</span>
-                    </div>
-                    <div className="orderTotalRow">
-                        <span>Kargo</span>
-                        <span className="freeShip">Ücretsiz</span>
-                    </div>
+                    <div className="orderTotalRow"><span>Ara Toplam</span><span>{total.toLocaleString("tr-TR")} TL</span></div>
+                    <div className="orderTotalRow"><span>Kargo</span><span className="freeShip">Ücretsiz</span></div>
                     <div className="orderTotalRow orderGrandTotal">
                         <span>Toplam</span>
                         <strong>{total.toLocaleString("tr-TR")} TL</strong>
                     </div>
-
-                    <button
-                        className="checkoutSubmitBtn"
-                        onClick={createOrder}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <><span className="btnSpinner" /> İşleniyor…</>
-                        ) : "Siparişi Tamamla"}
+                    <button className="checkoutSubmitBtn" onClick={createOrder} disabled={loading}>
+                        {loading ? <><span className="btnSpinner" /> İşleniyor…</> : "Siparişi Tamamla"}
                     </button>
                 </div>
             </div>
 
-            {/* başarı animasyonu */}
             {successAnim && (
                 <div className="paymentSuccess">
                     <div className="successCheck">✔</div>
-                    <h2>Sipariş Oluşturuldu!</h2>
+                    <h2>Ödeme Başarılı!</h2>
                     <p>Siparişlerim sayfasına yönlendiriliyorsunuz…</p>
                 </div>
             )}

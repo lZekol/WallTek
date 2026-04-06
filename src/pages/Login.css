@@ -1,6 +1,6 @@
 /* ─── LOGIN PAGE ──────────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
 .loginPage {
     min-height: 100vh;
@@ -13,32 +13,31 @@
     font-family: 'DM Sans', sans-serif;
 }
 
-/* ── animated background blobs ── */
 .loginPage::before,
 .loginPage::after {
     content: '';
     position: absolute;
     border-radius: 50%;
     filter: blur(90px);
-    opacity: 0.3;
+    opacity: 0.28;
     pointer-events: none;
     animation: blobFloat 9s ease-in-out infinite alternate;
 }
 
 .loginPage::before {
-    width: 520px;
-    height: 520px;
+    width: 500px;
+    height: 500px;
     background: radial-gradient(circle, #1a6fff 0%, #0a2a8a 55%, transparent 100%);
-    top: -140px;
-    left: -120px;
+    top: -130px;
+    left: -110px;
 }
 
 .loginPage::after {
-    width: 380px;
-    height: 380px;
+    width: 360px;
+    height: 360px;
     background: radial-gradient(circle, #00c6ff 0%, #0055cc 60%, transparent 100%);
-    bottom: -100px;
-    right: -80px;
+    bottom: -90px;
+    right: -70px;
     animation-delay: -4.5s;
     animation-direction: alternate-reverse;
 }
@@ -49,15 +48,14 @@
     }
 
     to {
-        transform: translate(24px, 18px) scale(1.07);
+        transform: translate(22px, 16px) scale(1.07);
     }
 }
 
 /* ── glass card ── */
 .loginBox {
     width: 420px;
-    padding: 44px 40px 26px;
-    margin-top: 40px;
+    padding: 42px 38px 34px;
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
@@ -69,17 +67,14 @@
     color: white;
     position: relative;
     z-index: 1;
-    box-shadow:
-        0 0 0 1px rgba(58, 169, 255, 0.06),
-        0 28px 72px rgba(0, 0, 0, 0.65),
-        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 0 1px rgba(58, 169, 255, 0.06), 0 28px 72px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.07);
     animation: cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes cardIn {
     from {
         opacity: 0;
-        transform: translateY(30px) scale(0.97);
+        transform: translateY(28px) scale(0.97);
     }
 
     to {
@@ -88,20 +83,20 @@
     }
 }
 
-/* ── header area ── */
+/* ── header ── */
 .loginHeader {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .loginLogoMark {
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #3aa9ff 0%, #1a5fff 100%);
+    background: linear-gradient(135deg, #3aa9ff, #1a5fff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,7 +106,6 @@
     color: white;
     box-shadow: 0 4px 18px rgba(58, 169, 255, 0.4);
     margin-bottom: 4px;
-    letter-spacing: -0.5px;
 }
 
 .loginBox h2 {
@@ -119,8 +113,7 @@
     text-align: center;
     font-size: 24px;
     font-weight: 700;
-    color: #ffffff;
-    letter-spacing: -0.3px;
+    color: white;
     margin: 0;
 }
 
@@ -131,7 +124,21 @@
     margin: 0;
 }
 
-/* ── input groups ── */
+/* ── success banner ── */
+.loginSuccess {
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    color: #34d399;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+/* ── inputs ── */
 .inputGroup {
     display: flex;
     flex-direction: column;
@@ -139,7 +146,6 @@
 }
 
 .inputWrapper {
-    position: relative;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -160,7 +166,9 @@
     align-items: center;
 }
 
-.loginBox input {
+.loginBox input[type="email"],
+.loginBox input[type="password"],
+.loginBox input[type="text"] {
     width: 100%;
     height: 46px;
     padding-left: 40px;
@@ -172,8 +180,8 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     box-sizing: border-box;
-    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
     outline: none;
+    transition: border-color .2s, background .2s, box-shadow .2s;
 }
 
 .loginBox input::placeholder {
@@ -186,15 +194,13 @@
     box-shadow: 0 0 0 3px rgba(58, 169, 255, 0.12);
 }
 
-/* ── validation states ── */
 .loginBox input.inputError {
     border-color: rgba(255, 90, 90, 0.55) !important;
     box-shadow: 0 0 0 3px rgba(255, 90, 90, 0.09) !important;
 }
 
 .loginBox input.inputSuccess {
-    border-color: rgba(52, 211, 153, 0.45);
-    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.07);
+    border-color: rgba(52, 211, 153, 0.4);
 }
 
 .fieldError {
@@ -204,7 +210,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    animation: errIn 0.2s ease;
+    animation: errIn .2s ease;
 }
 
 @keyframes errIn {
@@ -219,7 +225,47 @@
     }
 }
 
-/* ── forgot password ── */
+/* ── göz butonu ── */
+.eyeBtn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    transition: color .18s;
+}
+
+.eyeBtn:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── şifre gücü ── */
+.pwStrength {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 2px;
+}
+
+.pwStrengthBars {
+    display: flex;
+    gap: 4px;
+}
+
+.pwStrengthBar {
+    width: 36px;
+    height: 3px;
+    border-radius: 2px;
+    transition: background .3s;
+}
+
+/* ── forgot row ── */
 .forgotRow {
     display: flex;
     justify-content: flex-end;
@@ -234,8 +280,8 @@
     border: none;
     padding: 0;
     font-family: 'DM Sans', sans-serif;
-    opacity: 0.75;
-    transition: opacity 0.2s;
+    opacity: .75;
+    transition: opacity .2s;
 }
 
 .forgotLink:hover {
@@ -244,19 +290,18 @@
     background: none;
 }
 
-/* ── primary login button ── */
+/* ── primary button ── */
 .loginBox .loginBtn {
     height: 46px;
     border: none;
     border-radius: 10px;
-    background: linear-gradient(135deg, #3aa9ff 0%, #1a5fff 100%);
+    background: linear-gradient(135deg, #3aa9ff, #1a5fff);
     color: white;
     font-family: 'Syne', sans-serif;
     font-weight: 700;
     font-size: 15px;
-    letter-spacing: 0.2px;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.2s, filter 0.15s;
+    transition: transform .15s, box-shadow .2s, filter .15s;
     box-shadow: 0 4px 22px rgba(58, 169, 255, 0.38);
     position: relative;
     overflow: hidden;
@@ -266,40 +311,49 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 60%);
-    opacity: 1;
+    background: linear-gradient(135deg, rgba(255, 255, 255, .14), transparent 60%);
 }
 
 .loginBox .loginBtn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(58, 169, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(58, 169, 255, .5);
     filter: brightness(1.06);
 }
 
 .loginBox .loginBtn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 12px rgba(58, 169, 255, 0.3);
 }
 
-/* ── register button ── */
-.loginBox .registerBtn {
-    height: 46px;
-    border: 1px solid rgba(58, 169, 255, 0.3);
-    border-radius: 10px;
-    background: transparent;
+.loginBox .loginBtn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── mode switch ── */
+.modeSwitchRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.modeSwitchBtn {
+    background: none;
+    border: none;
     color: #3aa9ff;
-    font-family: 'Syne', sans-serif;
-    font-weight: 600;
-    font-size: 15px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
     cursor: pointer;
-    transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    padding: 0;
+    transition: opacity .2s;
 }
 
-.loginBox .registerBtn:hover {
-    background: rgba(58, 169, 255, 0.09);
-    border-color: rgba(58, 169, 255, 0.55);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(58, 169, 255, 0.15);
+.modeSwitchBtn:hover {
+    opacity: .75;
+    text-decoration: underline;
 }
 
 /* ── divider ── */
@@ -322,7 +376,7 @@
     background: rgba(255, 255, 255, 0.07);
 }
 
-/* ── google button ── */
+/* ── google ── */
 .loginBox .googleBtn {
     height: 46px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -337,17 +391,15 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    transition: background .2s, border-color .2s, transform .15s;
 }
 
 .loginBox .googleBtn:hover {
     background: rgba(255, 255, 255, 0.09);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
-    color: white;
 }
 
-/* google "G" badge */
 .googleGlyph {
     width: 18px;
     height: 18px;
@@ -363,7 +415,7 @@
     font-family: 'Syne', sans-serif;
 }
 
-/* ── guest button ── */
+/* ── guest ── */
 .loginBox .guestBtn {
     height: 38px;
     border: none;
@@ -373,18 +425,15 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
     cursor: pointer;
-    transition: color 0.2s;
-    margin-top: -2px;
     padding: 0;
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-color: transparent;
-    transition: color 0.2s, text-decoration-color 0.2s;
+    transition: color .2s, text-decoration-color .2s;
 }
 
 .loginBox .guestBtn:hover {
     color: rgba(255, 255, 255, 0.6);
-    background: transparent;
     text-decoration-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -392,7 +441,7 @@
 @media (max-width: 480px) {
     .loginBox {
         width: calc(100vw - 32px);
-        padding: 32px 22px 28px;
+        padding: 30px 20px 26px;
     }
 
     .loginBox h2 {

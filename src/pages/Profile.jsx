@@ -20,7 +20,7 @@ const STATUS_MAP = {
     cancelled: { label: "İptal", color: "#f87171" },
 }
 
-function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
+function Profile({ user, toggleWishlist, wishlist = [], addToCart, onProfileNameChange }) {
 
     const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState("profile")
@@ -28,15 +28,12 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
     const [saving, setSaving] = useState(false)
     const [loaded, setLoaded] = useState(false)
 
-    /* profile form */
     const [fullName, setFullName] = useState("")
     const [phone, setPhone] = useState("")
     const [address, setAddress] = useState("")
 
-    /* wishlist products */
     const [wishlistProducts, setWishlistProducts] = useState([])
 
-    /* cards */
     const [cards, setCards] = useState([])
     const [cardNumber, setCardNumber] = useState("")
     const [cardExpiry, setCardExpiry] = useState("")
@@ -44,23 +41,11 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
     const [cardName, setCardName] = useState("")
     const [savingCard, setSavingCard] = useState(false)
 
-    /* ── redirect if not logged in ── */
-    useEffect(() => {
-        if (user === null) {
-            // user henüz yüklenmemiş olabilir, kısa bekle
-        }
-    }, [user])
-
-    /* ── fetch profile ── */
     useEffect(() => {
         if (!user) return
         const fetchProfile = async () => {
             const { data } = await supabase
-                .from("profiles")
-                .select("*")
-                .eq("id", user.id)   /* ✅ id ile sorgula, email değil */
-                .single()
-
+                .from("profiles").select("*").eq("id", user.id).single()
             if (data) {
                 setFullName(data.full_name || "")
                 setPhone(data.phone || "")
@@ -71,18 +56,13 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
         fetchProfile()
     }, [user])
 
-    /* ── fetch orders ── */
     useEffect(() => {
         if (!user) return
-        supabase
-            .from("orders")
-            .select("*")
-            .eq("user_email", user.email)
+        supabase.from("orders").select("*").eq("user_email", user.email)
             .order("created_at", { ascending: false })
             .then(({ data }) => setOrders(data || []))
     }, [user])
 
-    /* ── fetch wishlist products ── */
     useEffect(() => {
         if (!wishlist || wishlist.length === 0) { setWishlistProducts([]); return }
         const ids = wishlist.map(w => w.product_id)
@@ -90,69 +70,49 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
             .then(({ data }) => setWishlistProducts(data || []))
     }, [wishlist])
 
-    /* ── fetch saved cards ── */
     useEffect(() => {
         if (!user) return
-        supabase
-            .from("cards")
-            .select("*")
-            .eq("user_id", user.id)
+        supabase.from("cards").select("*").eq("user_id", user.id)
             .then(({ data }) => setCards(data || []))
     }, [user])
 
-    /* ── save profile ── */
+    /* ── profil kaydet ── */
     const handleSave = async () => {
         if (!user) return
         setSaving(true)
-        const { error } = await supabase
-            .from("profiles")
-            .upsert({
-                id: user.id,          /* ✅ primary key */
-                email: user.email,
-                full_name: fullName,
-                phone: phone,
-                address: address,
-                updated_at: new Date().toISOString(),
-            }, { onConflict: "id" })
+        const { error } = await supabase.from("profiles").upsert({
+            id: user.id,
+            email: user.email,
+            full_name: fullName,
+            phone,
+            address,
+            updated_at: new Date().toISOString(),
+        }, { onConflict: "id" })
         setSaving(false)
-        if (error) showToast("Kaydedilemedi: " + error.message, "error")
-        else showToast("Profil bilgilerin kaydedildi ✓", "success")
+
+        if (error) {
+            showToast("Kaydedilemedi: " + error.message, "error")
+        } else {
+            showToast("Profil bilgilerin kaydedildi ✓", "success")
+            /* ✅ Header'ı anında güncelle */
+            if (onProfileNameChange && fullName) onProfileNameChange(fullName)
+        }
     }
 
-    /* ── save card ── */
+    /* ── kart kaydet ── */
     const handleSaveCard = async () => {
-        const clean = cardNumber.replace(/\s/g, "")
-
-        if (clean.length !== 16) {
-            showToast("Kart numarası geçersiz", "error")
-            return
-        }
-
-        if (!/^\d{2}\/\d{2}$/.test(cardExpiry)) {
-            showToast("Son kullanma tarihi geçersiz", "error")
-            return
-        }
-
-        if (!cardCvv || cardCvv.length !== 3) {
-            showToast("CVV geçersiz", "error")
-            return
-        }
         if (!cardNumber || !cardExpiry) {
-            showToast("Kart numarası ve son kullanma tarihi gerekli", "error")
-            return
+            showToast("Kart numarası ve son kullanma tarihi gerekli", "error"); return
         }
         setSavingCard(true)
         const last4 = cardNumber.replace(/\s/g, "").slice(-4)
-        const { data, error } = await supabase
-            .from("cards")
-            .insert([{
-                user_id: user.id,
-                last4: clean.slice(-4),
-                expiry: cardExpiry,
-                name: cardName || fullName || "Kart Sahibi",
-            }])
-            .select()
+        const { data, error } = await supabase.from("cards").insert([{
+            user_id: user.id,
+            last4, expiry: cardExpiry,
+            name: cardName || fullName || "Kart Sahibi",
+        }]).select()
         setSavingCard(false)
+
         if (error) {
             showToast("Kart kaydedilemedi: " + error.message, "error")
         } else {
@@ -162,7 +122,6 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
         }
     }
 
-    /* ── delete card ── */
     const handleDeleteCard = async (cardId) => {
         await supabase.from("cards").delete().eq("id", cardId)
         setCards(prev => prev.filter(c => c.id !== cardId))
@@ -171,10 +130,8 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
 
     if (!user) return (
         <section className="profilePage">
-            <div className="profileLayout">
-                <div style={{ padding: 40, color: "rgba(255,255,255,0.5)", textAlign: "center" }}>
-                    Giriş yapılıyor…
-                </div>
+            <div style={{ padding: 80, textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
+                Yükleniyor…
             </div>
         </section>
     )
@@ -183,22 +140,17 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
         <section className="profilePage">
             <div className="profileLayout">
 
-                {/* ── SIDEBAR ── */}
                 <aside className="profileSidebar">
                     <div className="sidebarHeader">
-                        <div className="avatarCircle">
-                            {user?.email?.[0]?.toUpperCase() || "?"}
-                        </div>
+                        <div className="avatarCircle">{user?.email?.[0]?.toUpperCase() || "?"}</div>
                         <div className="sidebarUserInfo">
                             <span className="sidebarName">{fullName || "Kullanıcı"}</span>
                             <span className="sidebarEmail">{user?.email}</span>
                         </div>
                     </div>
-
                     <nav className="sidebarNav">
                         {TABS.map(tab => (
-                            <button
-                                key={tab.id}
+                            <button key={tab.id}
                                 className={`sidebarTab${activeTab === tab.id ? " sidebarTabActive" : ""}`}
                                 onClick={() => setActiveTab(tab.id)}
                             >
@@ -213,10 +165,9 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                     </nav>
                 </aside>
 
-                {/* ── CONTENT ── */}
                 <main className="profileContent">
 
-                    {/* ── PROFİL ── */}
+                    {/* PROFİL */}
                     {activeTab === "profile" && (
                         <div className="contentCard">
                             <div className="contentCardHeader">
@@ -253,7 +204,7 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                         </div>
                     )}
 
-                    {/* ── SİPARİŞLER ── */}
+                    {/* SİPARİŞLER */}
                     {activeTab === "orders" && (
                         <div className="contentCard">
                             <div className="contentCardHeader">
@@ -275,9 +226,7 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                                                     <div>
                                                         <span className="orderId">#{String(order.id).slice(-6).toUpperCase()}</span>
                                                         <span className="orderDate">
-                                                            {new Date(order.created_at).toLocaleDateString("tr-TR", {
-                                                                day: "numeric", month: "long", year: "numeric"
-                                                            })}
+                                                            {new Date(order.created_at).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
                                                         </span>
                                                     </div>
                                                     <span className="orderStatus"
@@ -307,13 +256,10 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                         </div>
                     )}
 
-                    {/* ── ADRES ── */}
+                    {/* ADRES */}
                     {activeTab === "address" && (
                         <div className="contentCard">
-                            <div className="contentCardHeader">
-                                <h2>Adreslerim</h2>
-                                <p>Teslimat adresini yönet.</p>
-                            </div>
+                            <div className="contentCardHeader"><h2>Adreslerim</h2><p>Teslimat adresini yönet.</p></div>
                             <div className="formGroup fullWidth">
                                 <label>Adres</label>
                                 <textarea placeholder="Adresinizi girin…" rows={4}
@@ -327,15 +273,11 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                         </div>
                     )}
 
-                    {/* ── KARTLAR ── */}
+                    {/* KARTLAR */}
                     {activeTab === "cards" && (
                         <div className="contentCard">
-                            <div className="contentCardHeader">
-                                <h2>Kartlarım</h2>
-                                <p>Kayıtlı ödeme kartlarını yönet.</p>
-                            </div>
+                            <div className="contentCardHeader"><h2>Kartlarım</h2><p>Kayıtlı ödeme kartlarını yönet.</p></div>
 
-                            {/* saved cards */}
                             {cards.length > 0 && (
                                 <div className="savedCards">
                                     {cards.map(card => (
@@ -350,7 +292,6 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                                 </div>
                             )}
 
-                            {/* yeni kart formu */}
                             <div className="creditCardVisual">
                                 <div className="ccChip" />
                                 <span className="ccNumber">
@@ -365,31 +306,22 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                             <div className="formGrid">
                                 <div className="formGroup fullWidth">
                                     <label>Kart Üzerindeki İsim</label>
-                                    <input placeholder="Ad Soyad" value={cardName}
-                                        onChange={e => setCardName(e.target.value)} />
+                                    <input placeholder="Ad Soyad" value={cardName} onChange={e => setCardName(e.target.value)} />
                                 </div>
                                 <div className="formGroup fullWidth">
                                     <label>Kart Numarası</label>
-                                    <input placeholder="XXXX XXXX XXXX XXXX" maxLength={19}
-                                        value={cardNumber}
-                                        onChange={e => {
-                                            const v = e.target.value.replace(/\D/g, "").slice(0, 16)
-                                            setCardNumber(v.replace(/(.{4})/g, "$1 ").trim())
-                                        }} />
+                                    <input placeholder="XXXX XXXX XXXX XXXX" maxLength={19} value={cardNumber}
+                                        onChange={e => { const v = e.target.value.replace(/\D/g, "").slice(0, 16); setCardNumber(v.replace(/(.{4})/g, "$1 ").trim()) }} />
                                 </div>
                                 <div className="formGroup">
                                     <label>Son Kullanma</label>
                                     <input placeholder="AA/YY" maxLength={5} value={cardExpiry}
-                                        onChange={e => {
-                                            let v = e.target.value.replace(/\D/g, "").slice(0, 4)
-                                            if (v.length >= 3) v = v.slice(0, 2) + "/" + v.slice(2)
-                                            setCardExpiry(v)
-                                        }} />
+                                        onChange={e => { let v = e.target.value.replace(/\D/g, "").slice(0, 4); if (v.length >= 3) v = v.slice(0, 2) + "/" + v.slice(2); setCardExpiry(v) }} />
                                 </div>
                                 <div className="formGroup">
                                     <label>CVV</label>
-                                    <input placeholder="•••" maxLength={3} type="password"
-                                        value={cardCvv} onChange={e => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 3))} />
+                                    <input placeholder="•••" maxLength={3} type="password" value={cardCvv}
+                                        onChange={e => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 3))} />
                                 </div>
                             </div>
                             <div className="formActions">
@@ -400,7 +332,7 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                         </div>
                     )}
 
-                    {/* ── FAVORİLER ── */}
+                    {/* FAVORİLER */}
                     {activeTab === "wishlist" && (
                         <div className="contentCard">
                             <div className="contentCardHeader">
@@ -415,14 +347,9 @@ function Profile({ user, toggleWishlist, wishlist = [], addToCart }) {
                             ) : (
                                 <div className="wishlistProductGrid">
                                     {wishlistProducts.map(product => (
-                                        <ProductCard
-                                            key={product.id}
-                                            product={product}
-                                            addToCart={addToCart}
-                                            toggleWishlist={toggleWishlist}
-                                            wishlist={wishlist}
-                                            user={user}
-                                        />
+                                        <ProductCard key={product.id} product={product}
+                                            addToCart={addToCart} toggleWishlist={toggleWishlist}
+                                            wishlist={wishlist} user={user} />
                                     ))}
                                 </div>
                             )}

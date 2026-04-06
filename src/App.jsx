@@ -10,7 +10,6 @@ import DailyDeal from "./components/DailyDeal"
 import DealsRow from "./components/DealsRow"
 import CartDrawer from "./components/CartDrawer"
 import CartToast from "./components/CartToast"
-import Footer from "./components/Footer"
 
 import CategoryPage from "./pages/CategoryPage"
 import ProductDetail from "./pages/ProductDetail"
@@ -33,37 +32,48 @@ function AppInner() {
     const [toastProduct, setToastProduct] = useState("")
     const [wishlist, setWishlist] = useState([])
     const [user, setUser] = useState(null)
+    const [profileName, setProfileName] = useState("") // ✅ isim state'i
 
-    /* ── AUTH + WISHLIST SYNC ── */
+    /* ── AUTH + WISHLIST + PROFILE SYNC ── */
     useEffect(() => {
-        const getUser = async () => {
+        const init = async () => {
             const { data } = await supabase.auth.getUser()
             setUser(data.user)
             if (data.user) {
+                /* wishlist */
                 const { data: wl } = await supabase
-                    .from("wishlist")
-                    .select("*")
-                    .eq("user_email", data.user.email)
+                    .from("wishlist").select("*").eq("user_email", data.user.email)
                 setWishlist(wl || [])
+                /* profil adı */
+                fetchProfileName(data.user.id)
             }
         }
-        getUser()
+        init()
 
         const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
             setUser(session?.user || null)
             if (session?.user) {
-                supabase
-                    .from("wishlist")
-                    .select("*")
-                    .eq("user_email", session.user.email)
+                supabase.from("wishlist").select("*").eq("user_email", session.user.email)
                     .then(({ data }) => setWishlist(data || []))
+                fetchProfileName(session.user.id)
             } else {
                 setWishlist([])
+                setProfileName("")
             }
         })
 
         return () => listener.subscription.unsubscribe()
     }, [])
+
+    /* profil adını çek */
+    const fetchProfileName = async (userId) => {
+        const { data } = await supabase
+            .from("profiles")
+            .select("full_name")
+            .eq("id", userId)
+            .single()
+        if (data?.full_name) setProfileName(data.full_name)
+    }
 
     /* ── HEART ANIMATION ── */
     const flyHeart = (event) => {
@@ -117,7 +127,6 @@ function AppInner() {
         }
 
         const existing = wishlist.find(w => w.product_id === product.id)
-
         if (existing) {
             await supabase.from("wishlist").delete().eq("id", existing.id)
             setWishlist(prev => prev.filter(w => w.id !== existing.id))
@@ -142,6 +151,8 @@ function AppInner() {
                 openCart={() => setDrawerOpen(true)}
                 setSearch={setSearch}
                 user={user}
+                profileName={profileName}      /* ✅ isim geçiriliyor */
+                onProfileNameChange={setProfileName} /* profil kaydedince güncelle */
             />
 
             <CartDrawer
@@ -160,7 +171,6 @@ function AppInner() {
                         <DailyDeal />
                         <DealsRow addToCart={addToCart} />
                         <Products {...sharedProps} search={search} />
-                        <Footer />
                     </>
                 } />
 
@@ -168,19 +178,17 @@ function AppInner() {
                 <Route path="/product/:id" element={<ProductDetail {...sharedProps} />} />
                 <Route path="/campaigns" element={<Campaigns     {...sharedProps} />} />
                 <Route path="/wishlist" element={<Wishlist      {...sharedProps} />} />
-
                 <Route path="/login" element={<Login />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/checkout" element={<Checkout cart={cart} />} />
                 <Route path="/orders" element={<Orders user={user} />} />
-
-                {/* ✅ Profile'a toggleWishlist ve addToCart da geçiliyor */}
                 <Route path="/profile" element={
                     <Profile
                         user={user}
                         wishlist={wishlist}
                         toggleWishlist={toggleWishlist}
                         addToCart={addToCart}
+                        onProfileNameChange={setProfileName} /* ✅ kayıt sonrası güncelle */
                     />
                 } />
             </Routes>

@@ -107,6 +107,7 @@
     flex-direction: column;
     gap: 5px;
     flex: 1;
+    padding-bottom: 4px;
 }
 
 /* ── badge row ── */
@@ -189,8 +190,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 2px;
-    margin-top: 2px;
+    gap: 4px;
+    margin-top: auto;
 }
 
 .oldPrice {
@@ -200,10 +201,20 @@
 }
 
 .newPrice {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: 900;
     color: #3aa9ff;
     line-height: 1.1;
+    transition: all 0.25s ease;
+}
+
+.productCard:hover .newPrice {
+    color: #6bc7ff;
+    text-shadow: 0 0 10px rgba(58, 169, 255, 0.6);
+}
+
+.productCard:hover {
+    transform: translateY(-8px) scale(1.01);
 }
 
 .hasDiscount .newPrice {
@@ -223,7 +234,7 @@
 
 /* ── sepete ekle butonu ── */
 .addCartBtn {
-    margin: 8px 12px 12px;
+    margin: 10px 12px 12px;
     height: 38px;
     border: none;
     border-radius: 8px;
