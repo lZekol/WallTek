@@ -155,6 +155,7 @@ function AppInner() {
                         <Hero />
                         <DailyDeal />
                         <DealsRow addToCart={addToCart} />
+                        <Footer />
                         <Products {...sharedProps} search={search} />
                     </>
                 } />
