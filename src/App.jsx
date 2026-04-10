@@ -4,6 +4,7 @@ import { supabase } from "./lib/supabase"
 
 import ScrollToTop from "./components/ScrollToTop"
 import Header from "./components/Header"
+import Footer from "./components/Footer"
 import Hero from "./components/Hero"
 import Products from "./components/Products"
 import DailyDeal from "./components/DailyDeal"
@@ -20,6 +21,7 @@ import Login from "./pages/Login"
 import Checkout from "./pages/Checkout"
 import Orders from "./pages/Orders"
 import Profile from "./pages/Profile"
+import NotFound from "./pages/NotFound"
 
 function AppInner() {
 
@@ -32,19 +34,17 @@ function AppInner() {
     const [toastProduct, setToastProduct] = useState("")
     const [wishlist, setWishlist] = useState([])
     const [user, setUser] = useState(null)
-    const [profileName, setProfileName] = useState("") // ✅ isim state'i
+    const [profileName, setProfileName] = useState("")
 
-    /* ── AUTH + WISHLIST + PROFILE SYNC ── */
+    /* ── AUTH + WISHLIST + PROFILE ── */
     useEffect(() => {
         const init = async () => {
             const { data } = await supabase.auth.getUser()
             setUser(data.user)
             if (data.user) {
-                /* wishlist */
                 const { data: wl } = await supabase
                     .from("wishlist").select("*").eq("user_email", data.user.email)
                 setWishlist(wl || [])
-                /* profil adı */
                 fetchProfileName(data.user.id)
             }
         }
@@ -65,13 +65,9 @@ function AppInner() {
         return () => listener.subscription.unsubscribe()
     }, [])
 
-    /* profil adını çek */
     const fetchProfileName = async (userId) => {
         const { data } = await supabase
-            .from("profiles")
-            .select("full_name")
-            .eq("id", userId)
-            .single()
+            .from("profiles").select("full_name").eq("id", userId).single()
         if (data?.full_name) setProfileName(data.full_name)
     }
 
@@ -93,7 +89,7 @@ function AppInner() {
         setTimeout(() => heart.remove(), 700)
     }
 
-    /* ── ADD TO CART ── */
+    /* ── CART ── */
     const addToCart = (product) => {
         const existing = cart.find(item => item.id === product.id)
         if (existing) {
@@ -108,23 +104,14 @@ function AppInner() {
         setTimeout(() => setToast(false), 2000)
     }
 
-    const increaseQty = (id) =>
-        setCart(cart.map(item => item.id === id ? { ...item, qty: item.qty + 1 } : item))
-
-    const decreaseQty = (id) =>
-        setCart(cart.map(item => item.id === id ? { ...item, qty: item.qty - 1 } : item)
-            .filter(item => item.qty > 0))
-
+    const increaseQty = (id) => setCart(cart.map(item => item.id === id ? { ...item, qty: item.qty + 1 } : item))
+    const decreaseQty = (id) => setCart(cart.map(item => item.id === id ? { ...item, qty: item.qty - 1 } : item).filter(item => item.qty > 0))
     const removeFromCart = (id) => setCart(cart.filter(item => item.id !== id))
 
     /* ── WISHLIST ── */
     const toggleWishlist = async (product, e) => {
         if (e) { e.stopPropagation(); flyHeart(e) }
-
-        if (!user) {
-            navigate("/login", { state: { from: window.location.pathname } })
-            return
-        }
+        if (!user) { navigate("/login", { state: { from: window.location.pathname } }); return }
 
         const existing = wishlist.find(w => w.product_id === product.id)
         if (existing) {
@@ -132,9 +119,7 @@ function AppInner() {
             setWishlist(prev => prev.filter(w => w.id !== existing.id))
         } else {
             const { data } = await supabase
-                .from("wishlist")
-                .insert([{ user_email: user.email, product_id: product.id }])
-                .select()
+                .from("wishlist").insert([{ user_email: user.email, product_id: product.id }]).select()
             if (data?.length > 0) setWishlist(prev => [...prev, data[0]])
         }
     }
@@ -151,8 +136,8 @@ function AppInner() {
                 openCart={() => setDrawerOpen(true)}
                 setSearch={setSearch}
                 user={user}
-                profileName={profileName}      /* ✅ isim geçiriliyor */
-                onProfileNameChange={setProfileName} /* profil kaydedince güncelle */
+                profileName={profileName}
+                onProfileNameChange={setProfileName}
             />
 
             <CartDrawer
@@ -173,7 +158,6 @@ function AppInner() {
                         <Products {...sharedProps} search={search} />
                     </>
                 } />
-
                 <Route path="/category/:categoryName" element={<CategoryPage {...sharedProps} />} />
                 <Route path="/product/:id" element={<ProductDetail {...sharedProps} />} />
                 <Route path="/campaigns" element={<Campaigns     {...sharedProps} />} />
@@ -188,10 +172,15 @@ function AppInner() {
                         wishlist={wishlist}
                         toggleWishlist={toggleWishlist}
                         addToCart={addToCart}
-                        onProfileNameChange={setProfileName} /* ✅ kayıt sonrası güncelle */
+                        onProfileNameChange={setProfileName}
                     />
                 } />
+                {/* ✅ 404 — tüm bilinmeyen route'ları yakala */}
+                <Route path="*" element={<NotFound />} />
             </Routes>
+
+            {/* ✅ Footer her sayfada görünür */}
+            <Footer />
 
             <CartToast show={toast} productName={toastProduct} />
         </>
