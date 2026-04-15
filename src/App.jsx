@@ -21,7 +21,7 @@ import Login from "./pages/Login"
 import Checkout from "./pages/Checkout"
 import Orders from "./pages/Orders"
 import Profile from "./pages/Profile"
-import NotFound from "./pages/NotFound"
+import NotFound from "./pages/Notfound"
 
 function AppInner() {
 
@@ -179,7 +179,7 @@ function AppInner() {
                 <Route path="*" element={<NotFound />} />
             </Routes>
 
-            
+
             <Footer />
 
             <CartToast show={toast} productName={toastProduct} />
