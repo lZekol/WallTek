@@ -155,7 +155,6 @@ function AppInner() {
                         <Hero />
                         <DailyDeal />
                         <DealsRow addToCart={addToCart} />
-                        <Footer />
                         <Products {...sharedProps} search={search} />
                     </>
                 } />
@@ -176,11 +175,11 @@ function AppInner() {
                         onProfileNameChange={setProfileName}
                     />
                 } />
-                {/* ✅ 404 — tüm bilinmeyen route'ları yakala */}
+                {/* 404 — tüm bilinmeyen route'ları yakalaması için*/}
                 <Route path="*" element={<NotFound />} />
             </Routes>
 
-            {/* ✅ Footer her sayfada görünür */}
+            
             <Footer />
 
             <CartToast show={toast} productName={toastProduct} />
